@@ -50,6 +50,12 @@ public class Point3f {
 		return newPoint;
 	}
 	
+	// Prints the coordinates of the Point3f object
+	public String toString() {
+		String result = "x: "+ x + " y: " + y + " z: " + z;
+		return result;
+	}
+	
 	// getter and setter
 	public double getX() {
 		return x;
