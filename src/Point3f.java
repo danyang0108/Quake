@@ -11,16 +11,19 @@ public class Point3f {
 	private float x;
 	private float y;
 	private float z;
+	private int id;
 	
 	public Point3f() {
 		x = 0;
 		y = 0;
 		z = 0;
+		id = 1;
 	}
 	public Point3f(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		id = 1;
 	}
 	
 	// Point-point subtraction 
@@ -69,6 +72,9 @@ public class Point3f {
 		return z;
 	}
 	
+	public int getId() {
+		return id;
+	}
 	public void setX(float x) {
 		this.x = x;
 	}

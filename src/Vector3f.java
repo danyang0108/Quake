@@ -10,15 +10,18 @@ public class Vector3f {
 	
 	private float magnitude;
 	private Point3f direction;
+	private int id;
 
 	public Vector3f() {
 		magnitude = 0;
 		direction = new Point3f();
+		id = 0;
 	}
 
 	public Vector3f(Point3f direction) {
 		this.direction = direction;
 		magnitude = calcMagnitude(direction);
+		id = 0;
 	}
 
 	public float calcMagnitude(Point3f direction) {
@@ -115,6 +118,9 @@ public class Vector3f {
 		return this.direction.getZ();
 	}
 	
+	public float getId() {
+		return id;
+	}
 	
 	/*public static void main(String args[]) {
 		Vector3f v = new Vector3f(new Point3f(1,1,1));
