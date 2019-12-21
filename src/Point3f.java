@@ -8,16 +8,16 @@
 */
 public class Point3f {
 	
-	private double x;
-	private double y;
-	private double z;
+	private float x;
+	private float y;
+	private float z;
 	
 	public Point3f() {
 		x = 0;
 		y = 0;
 		z = 0;
 	}
-	public Point3f(double x, double y, double z) {
+	public Point3f(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -57,31 +57,31 @@ public class Point3f {
 	}
 	
 	// getter and setter
-	public double getX() {
+	public float getX() {
 		return x;
 	}
 	
-	public double getY() {
+	public float getY() {
 		return y;
 	}
 	
-	public double getZ() {
+	public float getZ() {
 		return z;
 	}
 	
-	public void setX(double x) {
+	public void setX(float x) {
 		this.x = x;
 	}
 	
-	public void setY(double y) {
+	public void setY(float y) {
 		this.y = y;
 	}
 	
-	public void setZ(double z) {
+	public void setZ(float z) {
 		this.z = z;
 	}
 	
-	public void set(double x, double y, double z) {
+	public void set(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

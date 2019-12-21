@@ -8,7 +8,7 @@
 */
 public class Vector3f {
 	
-	private double magnitude;
+	private float magnitude;
 	private Point3f direction;
 	
 	public Vector3f() {
@@ -21,13 +21,13 @@ public class Vector3f {
 		magnitude = calcMagnitude(direction);
 	}
 	
-	public double calcMagnitude(Point3f direction) {
-		double m = Math.sqrt(Math.pow(direction.getX(), 2) + Math.pow(direction.getY(), 2) + 
+	public float calcMagnitude(Point3f direction) {
+		float m = (float) Math.sqrt(Math.pow(direction.getX(), 2) + Math.pow(direction.getY(), 2) +
 				Math.pow(direction.getZ(), 2));
 		return m;
 	}
 	
-	public double getMagnitude() {
+	public float getMagnitude() {
 		return magnitude;
 	}
 	
@@ -61,14 +61,22 @@ public class Vector3f {
 		
 	}
 	
-	public void scale(double a) {
+	public void scale(float a) {
 		direction.set(a * direction.getX(), a * direction.getY(), a * direction.getZ());
 		set(direction);
 	}
 	
+	public float getX(){
+		return this.direction.getX();
+	}
+
+	public float getY(){
+		return this.direction.getY();
+	}
 	
-	
-	
+	public float getZ(){
+		return this.direction.getZ();
+	}
 	/*public static void main(String args[]) {
 		Vector3f v = new Vector3f(new Point3f(1,1,1));
 		Vector3f v2 = new Vector3f(new Point3f(2,1,-1));
