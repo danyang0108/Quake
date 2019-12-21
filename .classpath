@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-assimp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-assimp-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-assimp-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-assimp-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-bgfx.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-bgfx-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-bgfx-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-bgfx-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-glfw-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-glfw-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nanovg.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nanovg-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nanovg-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nanovg-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nuklear.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nuklear-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nuklear-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-nuklear-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-openal-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-openal-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-opengl-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-opengl-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-par.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-par-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-par-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-par-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-stb-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-stb-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-stb-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-vulkan.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-vulkan-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/danyang/LightWeight OpenGL/Jars/lwjgl-vulkan-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
