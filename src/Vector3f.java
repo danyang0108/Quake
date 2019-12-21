@@ -61,11 +61,48 @@ public class Vector3f {
 
 	}
 
+	
 	public void scale(float a) {
-		direction.set(a * direction.getX(), a * direction.getY(), a * direction.getZ());
-		set(direction);
+		if (a > 0) {
+			direction.set(a * direction.getX(), a * direction.getY(), a * direction.getZ());
+			set(direction);
+		}
 	}
 	
+	public float dotProduct(Vector3f v) {
+		float sum = 0;
+		
+		sum += v.getX() * direction.getX();
+		sum += v.getY() * direction.getY();
+		sum += v.getZ() * direction.getZ();
+		
+		return sum;
+		
+	}
+	
+	public Vector3f crossProduct(Vector3f v) {
+		Point3f newDirection = new Point3f();
+		
+		newDirection.setX(direction.getY() * v.getZ() - direction.getZ() * v.getY());
+		newDirection.setY(direction.getZ() * v.getX() - direction.getX() * v.getZ());
+		newDirection.setZ(direction.getX() * v.getY() - direction.getY() * v.getX());
+		
+		Vector3f newVector = new Vector3f(newDirection);
+		return newVector;
+	}
+	
+	public Vector3f calcNormal() {
+		Point3f newDirection = new Point3f();
+		
+		newDirection.setX(direction.getX() / magnitude);
+		newDirection.setY(direction.getY() / magnitude);
+		newDirection.setZ(direction.getZ() / magnitude);
+		
+		Vector3f newVector = new Vector3f(newDirection);
+		return newVector;
+	}
+	
+	//getter and setter
 	public float getX(){
 		return this.direction.getX();
 	}
@@ -77,6 +114,8 @@ public class Vector3f {
 	public float getZ(){
 		return this.direction.getZ();
 	}
+	
+	
 	/*public static void main(String args[]) {
 		Vector3f v = new Vector3f(new Point3f(1,1,1));
 		Vector3f v2 = new Vector3f(new Point3f(2,1,-1));
