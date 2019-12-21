@@ -39,6 +39,4 @@ public class Vector3f {
 		this.direction = direction;
 		magnitude = calcMagnitude(direction);
 	}
-	
-	testing
 }
