@@ -18,6 +18,13 @@ public class Vector3f {
 		id = 0;
 	}
 
+	public Vector3f(float dx, float dy, float dz){
+		Point3f direction = new Point3f(dx, dy, dz);
+		this.direction = direction;
+		magnitude = calcMagnitude(direction);
+		id = 0;
+	}
+
 	public Vector3f(Point3f direction) {
 		this.direction = direction;
 		magnitude = calcMagnitude(direction);

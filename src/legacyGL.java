@@ -119,21 +119,14 @@ public class legacyGL {
 
 	private void loop() throws Exception{
 		cube_obj = new MeshObject("Resource/Models/Health.obj");
-		sphere_obj = new MeshObject("Resource/Models/sphere.obj");
 		plane_obj = new MeshObject("Resource/Models/plane.obj");
 		//skele_obj = new MeshObject("Resource/SkeletonOutlaw/Animations/SkeletonOutlaw@Attack00.obj");
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
-
-
-		glEnable(GL_TEXTURE_2D);	// enable texture mapping
+		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
-
-		// Load our textures ...done in MeshObject
-
-
 		// set up lighting
 		FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
 		ambient.put(new float[] { 0.6f, 0.65f, 0.65f, 1f, });
@@ -152,46 +145,28 @@ public class legacyGL {
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
-		// Intensity of ambient light (RGBA)
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
-		// Calculation of specular reflection angles (local or infinite viewer?)
 		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_FALSE);
 		glLightfv(GL_LIGHT0, GL_POSITION, position);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, specular);
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_dir);
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
-		// Set the clear color
 		glClearColor(0.6f, 0.65f, 1.0f, 0.0f);
 
-
-		// Run the rendering loop until the user has attempted to close
-		// the window or has pressed the ESCAPE key.
-		while ( !glfwWindowShouldClose(window) ) {
-
-			// check for ESCAPE key pressed to exit program
-			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GL_TRUE)
-			{
+		while (!glfwWindowShouldClose(window)){
+			if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GL_TRUE){
 				glfwSetWindowShouldClose(window, true);
 			}
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
 			// draw your scene here...
-			//glColor3f(1, 0, 0);
 			glPushMatrix();
-			glTranslatef(0,-1,-10);
-			//glRotatef(1, 1,0,0);
 			plane_obj.draw();
 			glPopMatrix();
 			glPushMatrix();
-			glTranslatef(-2.1f,0,-10);
-			glRotatef(angle++, 0, 1, 0);
-			sphere_obj.draw();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(2.1f,0,-10);
+			glTranslatef(0,-4,-20);
 			glRotatef(angle++, 0, 1, 0);
 			cube_obj.draw();
 			glPopMatrix();
@@ -202,16 +177,12 @@ public class legacyGL {
 			skele_obj.draw();
 			glPopMatrix();*/
 			
-			glfwSwapBuffers(window); // swap the color buffers
-
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
+			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
 	}
-
 }
