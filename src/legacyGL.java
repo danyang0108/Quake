@@ -3,6 +3,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
+import java.io.File;
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -25,7 +26,7 @@ public class legacyGL {
 	MeshObject plane_obj;
 	float angle = 0;
 
-	public void run() {
+	public void run() throws Exception{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 
@@ -115,9 +116,9 @@ public class legacyGL {
 		glFrustum(left, right, bottom, top, near, far);
 	}
 
-	private void loop() {
-		cube_obj = new MeshObject("Resource/Models/box.obj");
-		sphere_obj = new MeshObject("Resource/Models/earth.obj");
+	private void loop() throws Exception{
+		cube_obj = new MeshObject("Resource/Models/Health.obj");
+		sphere_obj = new MeshObject("Resource/Models/sphere.obj");
 		plane_obj = new MeshObject("Resource/Models/plane.obj");
 
 		glMatrixMode(GL_PROJECTION);
@@ -202,7 +203,7 @@ public class legacyGL {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		new legacyGL().run();
 	}
 

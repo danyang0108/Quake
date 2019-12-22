@@ -34,8 +34,6 @@ public class MeshObject {
             glBegin(GL_POLYGON);
             for(int j=0; j<faces.get(i).getSize(); j++)
             {
-                Float[] tex = texCoords.get(faces.get(i).getTextureIndex(j)-1);
-                glTexCoord2f(tex[0], tex[1]);
                 Point3f p = vertex.get(faces.get(i).getVertexIndex(j)-1);
                 glVertex3f(p.getX(), p.getY(), p.getZ());
                 Vector3f v = normals.get(faces.get(i).getNormalIndex(j)-1);
@@ -80,10 +78,9 @@ public class MeshObject {
                     for(int i=1; i< lineArray.length; i++)
                     {
                         String[] attribString = lineArray[i].split("/");
-                        int[] attrib = new int[3];
+                        int[] attrib = new int[2];
                         attrib[0] = Integer.parseInt(attribString[0]);
-                        attrib[1] = Integer.parseInt(attribString[1]);
-                        attrib[2] = Integer.parseInt(attribString[2]);
+                        attrib[1] = Integer.parseInt(attribString[2]);
                         f.setVertex(i-1, attrib);
                     }
                     faces.add(f);
