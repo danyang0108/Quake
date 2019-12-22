@@ -4,13 +4,11 @@ import java.util.Scanner;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class MeshObject {
+public class MeshObject{
     private ArrayList<Point3f> vertex;
     private ArrayList<Float[]> texCoords;
     private ArrayList<Vector3f> normals;
-
     private ArrayList<Face> faces;    	// indices into the vertices array list
-
     private Texture texture;
 
     public MeshObject(){
@@ -35,6 +33,7 @@ public class MeshObject {
                 glNormal3f(v.getX(), v.getY(), v.getZ());
             }
             glEnd();
+
         }
     }
 
