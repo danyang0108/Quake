@@ -13,13 +13,13 @@ public class Point3f {
 	private float z;
 	private int id;
 	
-	public Point3f() {
+	public Point3f(){
 		x = 0;
 		y = 0;
 		z = 0;
 		id = 1;
 	}
-	public Point3f(float x, float y, float z) {
+	public Point3f(float x, float y, float z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -27,7 +27,7 @@ public class Point3f {
 	}
 	
 	// Point-point subtraction 
-	public Vector3f subract(Point3f p) {
+	public Vector3f subtract(Point3f p){
 		
 		Point3f newPoint = new Point3f();
 		
