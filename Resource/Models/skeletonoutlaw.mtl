@@ -1,0 +1,18 @@
+# 
+# Wavefront material file
+# Created with Kaydara FBX
+# 
+
+newmtl Skeleton__Atlas_png
+map_Kd Atlas.png
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+illum 1
+Tr 1.000000
+
+newmtl Axes__Untitled_001
+map_Kd Axe00.png
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+illum 1
+Tr 1.000000
