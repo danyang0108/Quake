@@ -120,7 +120,7 @@ public class legacyGL {
 	private void loop() throws Exception{
 		cube_obj = new MeshObject("Resource/Models/Health.obj");
 		plane_obj = new MeshObject("Resource/Models/plane.obj");
-		//skele_obj = new MeshObject("Resource/SkeletonOutlaw/Animations/SkeletonOutlaw@Attack00.obj");
+		skele_obj = new MeshObject("Resource/Models/SkeletonOutlaw.obj");
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
@@ -171,11 +171,11 @@ public class legacyGL {
 			cube_obj.draw();
 			glPopMatrix();
 
-			/*glPushMatrix();
-			glTranslatef(-2.1f,0,-10);
+			glPushMatrix();
+			glTranslatef(0,-2,-10);
 			glRotatef(angle++, 0, 1, 0);
 			skele_obj.draw();
-			glPopMatrix();*/
+			glPopMatrix();
 			
 			glfwSwapBuffers(window);
 			glfwPollEvents();
