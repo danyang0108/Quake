@@ -2,83 +2,52 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
-
-import java.io.File;
 import java.nio.*;
-
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class legacyGL {
-
-	// The window handle
+public class legacyGL{
 	private long window;
-	//Camera cam;
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
-	double fps = 50;
-
-	MeshObject cube_obj;
-	MeshObject sphere_obj;
-	MeshObject plane_obj;
 	MeshObject skele_obj;
 	float angle = 0;
 
 	public void run() throws Exception{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
-
 		init();
-		// This line is critical for LWJGL's interoperation with GLFW's
-		// OpenGL context, or any context that is managed externally.
-		// LWJGL detects the context that is current in the current thread,
-		// creates the GLCapabilities instance and makes the OpenGL
-		// bindings available for use.
 		GL.createCapabilities();
-
 		System.out.println("OpenGL version " + glGetString(GL_VERSION));
-
 		loop();
-
-		// Free the window callbacks and destroy the window
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
-
-		// Terminate GLFW and free the error callback
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
 
-	private void init() {
-		// Setup an error callback. The default implementation
-		// will print the error message in System.err.
+	private void init(){
 		GLFWErrorCallback.createPrint(System.err).set();
-
-		// Initialize GLFW. Most GLFW functions will not work before doing this.
-		if ( !glfwInit() )
-			throw new IllegalStateException("Unable to initialize GLFW");
-
-		// Configure GLFW
+		if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World!", NULL, NULL);
-		if ( window == NULL )
+		if (window == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 		});
 
 		// Get the thread stack and push a new frame
-		try ( MemoryStack stack = stackPush() ) {
+		try (MemoryStack stack = stackPush()){
 			IntBuffer pWidth = stack.mallocInt(1); // int*
 			IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -118,8 +87,6 @@ public class legacyGL {
 	}
 
 	private void loop() throws Exception{
-		cube_obj = new MeshObject("Resource/Models/Health.obj");
-		plane_obj = new MeshObject("Resource/Models/plane.obj");
 		skele_obj = new MeshObject("Resource/Models/SkeletonOutlaw.obj");
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -162,15 +129,6 @@ public class legacyGL {
 			glLoadIdentity();
 
 			// draw your scene here...
-			glPushMatrix();
-			plane_obj.draw();
-			glPopMatrix();
-			glPushMatrix();
-			glTranslatef(0,-4,-20);
-			glRotatef(angle++, 0, 1, 0);
-			cube_obj.draw();
-			glPopMatrix();
-
 			glPushMatrix();
 			glTranslatef(0,-2,-10);
 			glRotatef(angle++, 0, 1, 0);
