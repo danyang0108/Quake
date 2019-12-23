@@ -1,4 +1,4 @@
-//Author: Danyang Wang
+///Author: Danyang Wang
 //Class: ICS4U
 //Date: Dec 20th, 2019
 //Instructor: Mr Radulovic
