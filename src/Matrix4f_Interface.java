@@ -9,6 +9,7 @@ public interface Matrix4f_Interface{
 	
 	public Matrix4f identity();
 
+	public Matrix4f findInverse();
 	
 	public Matrix4f translate(Point3f p);
 	
