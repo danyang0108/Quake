@@ -1,4 +1,4 @@
-
+//
 public interface Matrix4f_Interface{
 	
 	public Matrix4f add(Matrix4f m);
