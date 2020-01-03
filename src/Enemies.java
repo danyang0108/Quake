@@ -1,5 +1,9 @@
 public class Enemies implements Entity{
 
+	private Point3f location;
+	private float health;
+	private float attackRange;
+	private float damage;
 	
 	//use bfs for shortest path movement
 	@Override

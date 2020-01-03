@@ -1,5 +1,14 @@
 public class User implements Entity {
-
+	
+	private Point3f location;
+	private float health;
+	private int weapon;	//index of the weapon in inventory bar
+	private int ammo;
+	
+	//private ArrayList<Weapon> weapon = new ArrayList<Weapon>();
+	//private ArrayList<Integer> ammoCount = new ArrayList<Integer>();
+	//private ArrayList<Integer> damage = new ArrayList<Integer>();	//weapon damage
+	
 	@Override
 	public void Move() {
 		// TODO Auto-generated method stub
