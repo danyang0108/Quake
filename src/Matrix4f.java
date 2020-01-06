@@ -64,26 +64,69 @@ public class Matrix4f implements Matrix4f_Interface{
 
 	@Override
 	public Matrix4f identity() {
-		// TODO Auto-generated method stub
-		return null;
+		float[][] d = new float[4][4];
+		for (int i=0; i<4; i++) {
+			d[i][i] = 1;
+		}
+		
+		Matrix4f m = new Matrix4f(d);
+		return m;
 	}
 
 	@Override
 	public Matrix4f translate(Point3f p) {
-		// TODO Auto-generated method stub
-		return null;
+		float[][] translation_matrix = new float[4][4];
+		translation_matrix[0][0] = 1; translation_matrix[0][3] = p.getX();   
+		translation_matrix[1][1] = 1; translation_matrix[1][3] = p.getY();  
+		translation_matrix[2][2] = 1; translation_matrix[2][3] = p.getZ();  
+		translation_matrix[3][3] = 1; 
+
+		Matrix4f m = new Matrix4f(translation_matrix);
+		return m;
 	}
 
+	//euler's angles
 	@Override
 	public Matrix4f rotate(Point3f p) {
-		// TODO Auto-generated method stub
-		return null;
+		float x = (float)Math.toRadians(p.getX());
+		float y = (float)Math.toRadians(p.getY());
+		float z = (float)Math.toRadians(p.getZ());
+		
+		float[][] rotZ = new float[4][4];
+		rotZ[0][0] = (float)Math.cos(z); rotZ[0][1] = -(float)Math.sin(z);
+		rotZ[1][0] = (float)Math.sin(z); rotZ[1][1] = (float)Math.cos(z);
+		rotZ[2][2] = 1;
+		rotZ[3][3] = 1;
+		Matrix4f mz = new Matrix4f(rotZ);
+		
+		float[][] rotY = new float[4][4];
+		rotY[0][0] = (float)Math.cos(y); rotY[0][2] = -(float)Math.sin(y);
+		rotY[1][1] = 1;
+		rotY[2][0] = (float)Math.sin(y); rotY[2][2] = (float)Math.cos(y);
+		rotY[3][3] = 1;
+		Matrix4f my = new Matrix4f(rotY);
+		
+		float[][] rotX = new float[4][4];
+		rotX[0][0] = 1;
+		rotX[1][1] = (float)Math.cos(x); rotX[1][2] = -(float)Math.sin(x);
+		rotX[2][1] = (float)Math.sin(x); rotX[2][2] = (float)Math.cos(x);
+		rotX[3][3] = 1;
+		Matrix4f mx = new Matrix4f(rotX);
+		
+		Matrix4f m = mz.multiply(my).multiply(mx);
+		return m;
 	}
 
 	@Override
 	public Matrix4f scale(Point3f p) {
-		// TODO Auto-generated method stub
-		return null;
+		float[][] scale_matrix = new float[4][4];
+		scale_matrix[0][0] = p.getX();
+		scale_matrix[1][1] = p.getY();
+		scale_matrix[2][2] = p.getZ();
+		scale_matrix[3][3] = 1;
+		
+		Matrix4f m = new Matrix4f(scale_matrix);
+		return m;
 	}
 
 	@Override
