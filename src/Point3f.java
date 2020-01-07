@@ -3,7 +3,7 @@
 //Date: Dec 20th, 2019
 //Instructor: Mr Radulovic
 //Assignment name: ICS4U Culminating
-/*Description: This program contains implements a 3d point object of the form (x,y,z) as well as 
+/*Description: This program implements a 3d point object of the form (x,y,z) as well as 
  * operations such as subtracting two points. 
 */
 public class Point3f {
@@ -13,6 +13,7 @@ public class Point3f {
 	private float z;
 	private int id;
 	
+	//Constructors for Point3f class
 	public Point3f(){
 		x = 0;
 		y = 0;
@@ -59,7 +60,7 @@ public class Point3f {
 		return result;
 	}
 	
-	// getter and setter
+	// getter and setter for the state variables
 	public float getX() {
 		return x;
 	}

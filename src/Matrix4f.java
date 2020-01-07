@@ -1,4 +1,12 @@
-
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 2nd, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This program implements a 4x4 matrix object which uses a 2d array 
+ * to store the elements. Additionally, it contains the operations and transformations 
+ * of matrix.
+*/
 public class Matrix4f implements Matrix4f_Interface {
 
 	private float[][] data;
@@ -167,9 +175,9 @@ public class Matrix4f implements Matrix4f_Interface {
 
 		// Search the pivoting element from each column
 		int k = 0;
-		for (int j = 0; j < 4 - 1; ++j) {
+		for (int j = 0; j < 4 - 1; j++) {
 			double pi1 = 0;
-			for (int i = j; i < 4; ++i) {
+			for (int i = j; i < 4; i++) {
 				double pi0 = Math.abs(a[index[i]][j]);
 				pi0 /= c[index[i]];
 				if (pi0 > pi1) {
@@ -182,26 +190,26 @@ public class Matrix4f implements Matrix4f_Interface {
 			int itmp = index[j];
 			index[j] = index[k];
 			index[k] = itmp;
-			for (int i = j + 1; i < 4; ++i) {
+			for (int i = j + 1; i < 4; i++) {
 				float pj = a[index[i]][j] / a[index[j]][j];
 
 				// Record pivoting ratios below the diagonal
 				a[index[i]][j] = pj;
 
 				// Modify other elements accordingly
-				for (int l = j + 1; l < 4; ++l)
+				for (int l = j + 1; l < 4; l++)
 					a[index[i]][l] -= pj * a[index[j]][l];
 			}
 		}
 
 		// Update the matrix b[i][j] with the ratios stored
-		for (int i = 0; i < 4 - 1; ++i)
-			for (int j = i + 1; j < 4; ++j)
+		for (int i = 0; i < 4 - 1; i++)
+			for (int j = i + 1; j < 4; j++)
 				for (int p = 0; p < 4; ++p)
 					b[index[j]][p] -= a[index[j]][i] * b[index[i]][p];
 
 		// Perform backward substitutions
-		for (int i = 0; i < 4; ++i) {
+		for (int i = 0; i < 4; i++) {
 			ans[4 - 1][i] = b[index[4 - 1]][i] / a[index[4 - 1]][4 - 1];
 			for (int j = 4 - 2; j >= 0; --j) {
 				ans[j][i] = b[index[j]][i];

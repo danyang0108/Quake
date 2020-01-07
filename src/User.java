@@ -1,6 +1,6 @@
 public class User implements Entity {
 	
-	private Point3f location;
+	private Point3f curPos;
 	private float health;
 	private int weapon;	//index of the weapon in inventory bar
 	private int ammo;
@@ -35,8 +35,7 @@ public class User implements Entity {
 
 	@Override
 	public Point3f getCurPos() {
-		// TODO Auto-generated method stub
-		return null;
+		return curPos;
 	}
 	
 	//detects collision between player and enemy
