@@ -43,7 +43,7 @@ public class MeshObject{
                     f.setVertex(i-1, attrib);
                 }
                 faces.add(f);
-            }else if (lineArray[0].equals("mtllib")){
+            }/*else if (lineArray[0].equals("mtllib")){
                 scanner = new Scanner(new File("Resource/Models/"+lineArray[1]));
             }else if (lineArray[0].equals("usemtl")){
                 String material = lineArray[1];
@@ -54,6 +54,7 @@ public class MeshObject{
                     }
                 }
             }
+            */
         }
         scan.close();
     }
