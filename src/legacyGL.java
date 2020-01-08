@@ -135,7 +135,6 @@ public class legacyGL{
 		dx = getCursorX() - WINDOW_WIDTH/2;
 		dy = getCursorY() - WINDOW_HEIGHT/2;
 		//First: change in x on the screen
-
 	}
 
 	private void render(){
