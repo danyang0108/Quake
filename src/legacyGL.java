@@ -14,8 +14,9 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
 	MeshObject skele_obj;
-	float angle = 0;
-	float tx = 0, ty = 0, tz = 0;
+	float tx = 0, ty = 0, tz = 0; //For translations
+	double dx = 0, dy = 0;
+	float rx = 0, ry = 0, rz = 0; //For rotations
 
 	public void run() throws Exception{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -55,7 +56,6 @@ public class legacyGL{
 				if (key == GLFW_KEY_DOWN) ty += 0.1;
 			}
 		});
-
 
 		try (MemoryStack stack = stackPush()){
 			IntBuffer pWidth = stack.mallocInt(1);
@@ -118,11 +118,18 @@ public class legacyGL{
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			update(); //For keyboard + mouse updates
 			render();
-			System.out.println(getCursorX() + " " + getCursorY());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+	}
+
+	private void update(){
+		dx = getCursorX() - WINDOW_WIDTH/2;
+		dy = getCursorY() - WINDOW_HEIGHT/2;
+		//First: change in x on the screen
+
 	}
 
 	private void render(){
@@ -130,6 +137,8 @@ public class legacyGL{
 		glLoadIdentity();
 		glColor3f(0, 1, 0);
 		glLineWidth(5);
+		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
+		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
 		glTranslatef(tx, ty, tz);
 		skele_obj.draw();
 	}
