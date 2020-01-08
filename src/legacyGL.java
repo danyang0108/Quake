@@ -53,10 +53,10 @@ public class legacyGL{
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
 				//A key is pressed
-				if (key == GLFW_KEY_W) tz += 0.1 * Math.cos(dx);
-				if (key == GLFW_KEY_S) tz -= 0.1 * Math.cos(dx);
-				if (key == GLFW_KEY_A) tx += 0.1 * Math.sin(dx);
-				if (key == GLFW_KEY_D) tx -= 0.1 * Math.sin(dx);
+				if (key == GLFW_KEY_W) tz += 0.1;
+				if (key == GLFW_KEY_S) tz -= 0.1;
+				if (key == GLFW_KEY_A) tx += 0.1;
+				if (key == GLFW_KEY_D) tx -= 0.1;
 				if (key == GLFW_KEY_UP) ty -= 0.1;
 				if (key == GLFW_KEY_DOWN) ty += 0.1;
 			}
@@ -96,7 +96,6 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		// set up lighting
-		/*
 		FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
 		ambient.put(new float[] { 0.6f, 0.65f, 0.65f, 1f, });
 		ambient.flip();
@@ -120,9 +119,7 @@ public class legacyGL{
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-
-		 */
-		objects.add(new MeshObject("Resource/Models/Map.obj"));
+		objects.add(new MeshObject("Resource/Models/NMap.obj"));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -137,7 +134,6 @@ public class legacyGL{
 		dx = getCursorX() - WINDOW_WIDTH/2;
 		dy = getCursorY() - WINDOW_HEIGHT/2;
 		//First: change in x on the screen
-
 	}
 
 	private void render(){

@@ -2,26 +2,18 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
-
 import javax.imageio.ImageIO;
-
 import org.lwjgl.BufferUtils;
 
 public class Texture{
     private int id;
-    private int width;
-    private int height;
 
     public Texture(String filename) throws Exception{
-        BufferedImage bi;
-        bi = ImageIO.read(new File(filename));
-        width = bi.getWidth();
-        height = bi.getHeight();
-
+        BufferedImage bi = ImageIO.read(new File(filename));
+        int width = bi.getWidth();
+        int height = bi.getHeight();
         int[] pixels_raw = bi.getRGB(0, 0, width, height, null, 0, width);
-
         ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
-
         for (int i = 0; i < width; i++){
             for (int j = 0; j < height; j++){
                 if (i * height + j < pixels_raw.length){
@@ -36,7 +28,6 @@ public class Texture{
         pixels.flip();
         id = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, id);
-
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -45,10 +36,4 @@ public class Texture{
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
-
-    public int getTextureID()
-    {
-        return id;
-    }
-
 }
