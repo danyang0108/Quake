@@ -45,17 +45,17 @@ public class legacyGL{
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-			if (key == GLFW_KEY_W && action == GLFW_PRESS){
-				glTranslatef(tx + 1, ty, tz);
+			if (action == GLFW_PRESS){
+				//A key is pressed
+				if (key == GLFW_KEY_W) tz += 0.1;
+				if (key == GLFW_KEY_S) tz -= 0.1;
+				if (key == GLFW_KEY_A) tx += 0.1;
+				if (key == GLFW_KEY_D) tx -= 0.1;
+				if (key == GLFW_KEY_UP) ty -= 0.1;
+				if (key == GLFW_KEY_DOWN) ty += 0.1;
 			}
-			if (key == GLFW_KEY_S && action == GLFW_PRESS){
-				glTranslatef(tx - 1, ty, tz);
-			}
-			if (key == GLFW_KEY_A && action == GLFW_PRESS){
-				glTranslatef(tx, ty + 1, tz);
-			}
-			if (key == GLFW_KEY_D && action == GLFW_PRESS){
-				glTranslatef(tx, ty - 1, tz);
+			if (action == GLFW_RELEASE){
+
 			}
 		});
 
@@ -131,6 +131,7 @@ public class legacyGL{
 		glLoadIdentity();
 		glColor3f(0, 1, 0);
 		glLineWidth(5);
+		glTranslatef(tx, ty, tz);
 		skele_obj.draw();
 	}
 
