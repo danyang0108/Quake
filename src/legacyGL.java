@@ -3,6 +3,8 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 import java.nio.*;
+import java.util.ArrayList;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -13,10 +15,14 @@ public class legacyGL{
 	private long window;
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
-	MeshObject skele_obj;
+	private ArrayList<MeshObject> objects = new ArrayList<>();
 	float tx = 0, ty = 0, tz = 0; //For translations
 	double dx = 0, dy = 0;
 	float rx = 0, ry = 0, rz = 0; //For rotations
+
+	public static void main(String[] args) throws Exception{
+		new legacyGL().run();
+	}
 
 	public void run() throws Exception{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -114,7 +120,7 @@ public class legacyGL{
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-		skele_obj = new MeshObject("Resource/Models/Map.obj");
+		objects.add(new MeshObject("Resource/Models/Map.obj"));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -140,11 +146,7 @@ public class legacyGL{
 		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
 		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
 		glTranslatef(tx, ty, tz);
-		skele_obj.draw();
-	}
-
-	public static void main(String[] args) throws Exception{
-		new legacyGL().run();
+		for (MeshObject object: objects) object.draw();
 	}
 
 	public double getCursorX(){
