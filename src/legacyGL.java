@@ -15,6 +15,7 @@ public class legacyGL{
 	private static final int WINDOW_HEIGHT = 800;
 	MeshObject skele_obj;
 	float angle = 0;
+	float tx = 0, ty = 0, tz = 0;
 
 	public void run() throws Exception{
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -44,36 +45,34 @@ public class legacyGL{
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+			if (key == GLFW_KEY_W && action == GLFW_PRESS){
+				glTranslatef(tx + 1, ty, tz);
+			}
+			if (key == GLFW_KEY_S && action == GLFW_PRESS){
+				glTranslatef(tx - 1, ty, tz);
+			}
+			if (key == GLFW_KEY_A && action == GLFW_PRESS){
+				glTranslatef(tx, ty + 1, tz);
+			}
+			if (key == GLFW_KEY_D && action == GLFW_PRESS){
+				glTranslatef(tx, ty - 1, tz);
+			}
 		});
 
-		// Get the thread stack and push a new frame
 		try (MemoryStack stack = stackPush()){
-			IntBuffer pWidth = stack.mallocInt(1); // int*
-			IntBuffer pHeight = stack.mallocInt(1); // int*
-
-			// Get the window size passed to glfwCreateWindow
+			IntBuffer pWidth = stack.mallocInt(1);
+			IntBuffer pHeight = stack.mallocInt(1);
 			glfwGetWindowSize(window, pWidth, pHeight);
-
-			// Get the resolution of the primary monitor
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-			// Center the window
 			glfwSetWindowPos(
 					window,
 					(vidmode.width() - pWidth.get(0)) / 2,
 					(vidmode.height() - pHeight.get(0)) / 2
 			);
-		} // the stack frame is popped automatically
-
-		// Make the OpenGL context current
+		}
 		glfwMakeContextCurrent(window);
-		// Enable v-sync
 		glfwSwapInterval(1);
-
 		// your code to initialize the scene goes here...
-
-
-		// Make the window visible
 		glfwShowWindow(window);
 	}
 
@@ -87,7 +86,6 @@ public class legacyGL{
 	}
 
 	private void loop() throws Exception{
-		skele_obj = new MeshObject("Resource/Models/SkeletonOutlaw.obj");
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
@@ -101,11 +99,9 @@ public class legacyGL{
 		FloatBuffer specular = BufferUtils.createFloatBuffer(4);
 		specular.put(new float[] { 0.8f, 0.8f, 0.8f, 1f, });
 		specular.flip();
-
 		FloatBuffer position = BufferUtils.createFloatBuffer(4);
 		position.put(new float[] { 0f, 5f, -5f, 1f, });
 		position.flip();
-
 		FloatBuffer spot_dir = BufferUtils.createFloatBuffer(4);
 		spot_dir.put(new float[] { 0f, -5f, -5f, 0f, });
 		spot_dir.flip();
@@ -118,26 +114,24 @@ public class legacyGL{
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, specular);
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_dir);
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
-		glClearColor(0.6f, 0.65f, 1.0f, 0.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+		skele_obj = new MeshObject("Resource/Models/Map.obj");
 
 		while (!glfwWindowShouldClose(window)){
-			if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GL_TRUE){
-				glfwSetWindowShouldClose(window, true);
-			}
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
-
-			// draw your scene here...
-			glPushMatrix();
-			glTranslatef(0,-2,-10);
-			glRotatef(angle++, 0, 1, 0);
-			skele_obj.draw();
-			glPopMatrix();
-			
+			render();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+	}
+
+	private void render(){
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glColor3f(0, 1, 0);
+		glLineWidth(5);
+		skele_obj.draw();
 	}
 
 	public static void main(String[] args) throws Exception{
