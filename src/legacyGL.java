@@ -13,12 +13,11 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
 	private long window;
-	private static final int WINDOW_WIDTH = 800;
-	private static final int WINDOW_HEIGHT = 800;
+	private static final int WINDOW_WIDTH = 1366;
+	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
 	float tx = 0, ty = 0, tz = 0; //For translations
-	double dx = 0, dy = 0;
-	float rx = 0, ry = 0, rz = 0; //For rotations
+	double dx = 0, dy = 0; //For rotations
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -44,7 +43,7 @@ public class legacyGL{
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World!", NULL, NULL);
+		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World!", glfwGetPrimaryMonitor(), NULL);
 		if (window == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -54,10 +53,10 @@ public class legacyGL{
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
 				//A key is pressed
-				if (key == GLFW_KEY_W) tz += 0.1;
-				if (key == GLFW_KEY_S) tz -= 0.1;
-				if (key == GLFW_KEY_A) tx += 0.1;
-				if (key == GLFW_KEY_D) tx -= 0.1;
+				if (key == GLFW_KEY_W) tz += 0.1 * Math.cos(dx);
+				if (key == GLFW_KEY_S) tz -= 0.1 * Math.cos(dx);
+				if (key == GLFW_KEY_A) tx += 0.1 * Math.sin(dx);
+				if (key == GLFW_KEY_D) tx -= 0.1 * Math.sin(dx);
 				if (key == GLFW_KEY_UP) ty -= 0.1;
 				if (key == GLFW_KEY_DOWN) ty += 0.1;
 			}
@@ -97,6 +96,7 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		// set up lighting
+		/*
 		FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
 		ambient.put(new float[] { 0.6f, 0.65f, 0.65f, 1f, });
 		ambient.flip();
@@ -120,6 +120,8 @@ public class legacyGL{
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+
+		 */
 		objects.add(new MeshObject("Resource/Models/Map.obj"));
 
 		while (!glfwWindowShouldClose(window)){
@@ -144,7 +146,7 @@ public class legacyGL{
 		glLineWidth(5);
 		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
 		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
-		glTranslatef(tx, ty, tz);
+		glTranslatef(tx, ty, tz); //NOTE: Only the x value changes; the height never changes
 		for (MeshObject object: objects) object.draw();
 	}
 
