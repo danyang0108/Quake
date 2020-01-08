@@ -45,7 +45,7 @@ public class legacyGL{
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
-			if (action == GLFW_PRESS){
+			if (action == GLFW_PRESS || action == GLFW_REPEAT){
 				//A key is pressed
 				if (key == GLFW_KEY_W) tz += 0.1;
 				if (key == GLFW_KEY_S) tz -= 0.1;
@@ -54,10 +54,8 @@ public class legacyGL{
 				if (key == GLFW_KEY_UP) ty -= 0.1;
 				if (key == GLFW_KEY_DOWN) ty += 0.1;
 			}
-			if (action == GLFW_RELEASE){
-
-			}
 		});
+
 
 		try (MemoryStack stack = stackPush()){
 			IntBuffer pWidth = stack.mallocInt(1);
@@ -121,6 +119,7 @@ public class legacyGL{
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
+			System.out.println(getCursorX() + " " + getCursorY());
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -137,5 +136,17 @@ public class legacyGL{
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
+	}
+
+	public double getCursorX(){
+		DoubleBuffer posX = BufferUtils.createDoubleBuffer(1);
+		glfwGetCursorPos(window, posX, null);
+		return posX.get(0);
+	}
+
+	public double getCursorY(){
+		DoubleBuffer posY = BufferUtils.createDoubleBuffer(1);
+		glfwGetCursorPos(window, null, posY);
+		return posY.get(0);
 	}
 }
