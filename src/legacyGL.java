@@ -23,7 +23,7 @@ public class legacyGL{
 		new legacyGL().run();
 	}
 
-	public void run() throws Exception{
+	public void run() throws Exception{	
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 		init();
 		GL.createCapabilities();
