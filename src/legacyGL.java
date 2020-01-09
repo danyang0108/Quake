@@ -18,6 +18,7 @@ public class legacyGL{
 	private ArrayList<MeshObject> objects = new ArrayList<>();
 	float tx = 0, ty = 0, tz = 0; //For translations
 	double dx = 0, dy = 0; //For rotations
+	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -36,43 +37,32 @@ public class legacyGL{
 	}
 
 	private void init(){
+		for (int i = 0; i < 4; i++) movement[i] = false;
 		GLFWErrorCallback.createPrint(System.err).set();
 		if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
-		glfwDefaultWindowHints(); // optional, the current window hints are already the default
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+		//Create the window
+		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
+		if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
 
-		// Create the window
-		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World!", glfwGetPrimaryMonitor(), NULL);
-		if (window == NULL)
-			throw new RuntimeException("Failed to create the GLFW window");
-
-		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
+		//Called when there's keyboard activity
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+				//Close the window
+				glfwSetWindowShouldClose(window, true);
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
 				//A key is pressed
-				if (key == GLFW_KEY_W) tz += 0.1 * Math.cos(dx);
-				if (key == GLFW_KEY_S) tz -= 0.1 * Math.cos(dx);
-				if (key == GLFW_KEY_A) tx += 0.1 * Math.sin(dx);
-				if (key == GLFW_KEY_D) tx -= 0.1 * Math.sin(dx);
-				if (key == GLFW_KEY_UP) ty -= 0.1;
-				if (key == GLFW_KEY_DOWN) ty += 0.1;
+				if (key == GLFW_KEY_W) movement[0] = true;
+				if (key == GLFW_KEY_S) movement[1] = true;
+				if (key == GLFW_KEY_A) movement[2] = true;
+				if (key == GLFW_KEY_D) movement[3] = true;
+			}else if (action == GLFW_RELEASE){
+				//A key is released
+				if (key == GLFW_KEY_W) movement[0] = false;
+				if (key == GLFW_KEY_S) movement[1] = false;
+				if (key == GLFW_KEY_A) movement[2] = false;
+				if (key == GLFW_KEY_D) movement[3] = false;
 			}
 		});
-
-		try (MemoryStack stack = stackPush()){
-			IntBuffer pWidth = stack.mallocInt(1);
-			IntBuffer pHeight = stack.mallocInt(1);
-			glfwGetWindowSize(window, pWidth, pHeight);
-			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-			glfwSetWindowPos(
-					window,
-					(vidmode.width() - pWidth.get(0)) / 2,
-					(vidmode.height() - pHeight.get(0)) / 2
-			);
-		}
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		// your code to initialize the scene goes here...
@@ -96,7 +86,6 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		// set up lighting
-		/*
 		FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
 		ambient.put(new float[] { 0.6f, 0.65f, 0.65f, 1f, });
 		ambient.flip();
@@ -110,6 +99,8 @@ public class legacyGL{
 		spot_dir.put(new float[] { 0f, -5f, -5f, 0f, });
 		spot_dir.flip();
 
+		/*
+		//Default Lighting; NOT USED
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -119,10 +110,9 @@ public class legacyGL{
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_dir);
 		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-
 		 */
-		objects.add(new MeshObject("Resource/Models/Map.obj"));
+
+		objects.add(new MeshObject("Resource/Models/NMap.obj"));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,20 +132,26 @@ public class legacyGL{
 	private void render(){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glColor3f(0, 1, 0);
-		glLineWidth(5);
 		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
 		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
+		if (movement[0]) tz += 0.1;
+		else if (movement[1]) tz -= 0.1;
+		if (movement[2]) tx += 0.1;
+		else if (movement[3]) tx -= 0.1;
+		System.out.println(tx + " " + ty + " " + tz);
+		//Note: tx is for left/right, tz is for forward/back
 		glTranslatef(tx, ty, tz); //NOTE: Only the x value changes; the height never changes
-		for (MeshObject object: objects) object.draw();
+		for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
 
+	//Finds the x-value of the current position of the cursor on the screen.
 	public double getCursorX(){
 		DoubleBuffer posX = BufferUtils.createDoubleBuffer(1);
 		glfwGetCursorPos(window, posX, null);
 		return posX.get(0);
 	}
 
+	//Finds the y-value of the current position of the cursor on the screen.
 	public double getCursorY(){
 		DoubleBuffer posY = BufferUtils.createDoubleBuffer(1);
 		glfwGetCursorPos(window, null, posY);
