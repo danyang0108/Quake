@@ -19,7 +19,7 @@ public class Face{
         textureCoordIndices[i] = attrib[1];
         normalIndices[i] = attrib[2];
     }
-
+//hi this is dany im 18!
     public int getVertexIndex(int i){
         return vertexIndices[i];
     }
