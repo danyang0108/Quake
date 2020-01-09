@@ -18,6 +18,7 @@ public class legacyGL{
 	private ArrayList<MeshObject> objects = new ArrayList<>();
 	float tx = 0, ty = 0, tz = 0; //For translations
 	double dx = 0, dy = 0; //For rotations
+	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -36,6 +37,7 @@ public class legacyGL{
 	}
 
 	private void init(){
+		for (int i = 0; i < 4; i++) movement[i] = false;
 		GLFWErrorCallback.createPrint(System.err).set();
 		if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -53,12 +55,16 @@ public class legacyGL{
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
 				//A key is pressed
-				if (key == GLFW_KEY_W) tz += 0.1;
-				if (key == GLFW_KEY_S) tz -= 0.1;
-				if (key == GLFW_KEY_A) tx += 0.1;
-				if (key == GLFW_KEY_D) tx -= 0.1;
-				if (key == GLFW_KEY_UP) ty -= 0.1;
-				if (key == GLFW_KEY_DOWN) ty += 0.1;
+				if (key == GLFW_KEY_W) movement[0] = true;
+				if (key == GLFW_KEY_S) movement[1] = true;
+				if (key == GLFW_KEY_A) movement[2] = true;
+				if (key == GLFW_KEY_D) movement[3] = true;
+			}else if (action == GLFW_RELEASE){
+				//A key is released
+				if (key == GLFW_KEY_W) movement[0] = false;
+				if (key == GLFW_KEY_S) movement[1] = false;
+				if (key == GLFW_KEY_A) movement[2] = false;
+				if (key == GLFW_KEY_D) movement[3] = false;
 			}
 		});
 
@@ -143,6 +149,12 @@ public class legacyGL{
 		glLineWidth(5);
 		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
 		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
+		if (movement[0]) tz += 0.1;
+		else if (movement[1]) tz -= 0.1;
+		if (movement[2]) tx += 0.1;
+		else if (movement[3]) tx -= 0.1;
+		System.out.println(tx + " " + ty + " " + tz);
+		//Note: tx is for left/right, tz is for forward/back
 		glTranslatef(tx, ty, tz); //NOTE: Only the x value changes; the height never changes
 		for (MeshObject object: objects) object.draw();
 	}
