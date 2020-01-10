@@ -62,6 +62,8 @@ public class legacyGL{
 				if (key == GLFW_KEY_D) movement[3] = false;
 			}
 		});
+		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		// your code to initialize the scene goes here...
@@ -107,29 +109,47 @@ public class legacyGL{
 		glLoadIdentity();
 
 		//Calculations
-		double degreeX = 360.0 / WINDOW_WIDTH * dx; //Up to 180 degrees for x
-		double degreeY = 180.0 / WINDOW_HEIGHT * dy; //Only 90 degrees for y
+		double degreeX = (360.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
+		double degreeY = (180.0 / WINDOW_HEIGHT * dy + 360.0) % 360.0; //Only 90 degrees for y
 		//Note: Half the screen for x => 180 degrees
 		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
-		glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f);
+		//glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
 		tx = ty = tz = 0;
-		if (movement[0]){
-			tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
-			tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+		if ((degreeX > 90 && degreeX < 180) || (degreeX > 270 && degreeX < 360)){
+			if (movement[0]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[1]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[2]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[3]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+		}else{
+			if (movement[0]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[1]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[2]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[3]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
 		}
-		if (movement[1]){
-			tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
-			tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
-		}
-		if (movement[2]){
-			tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
-			tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
-		}
-		if (movement[3]){
-			tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
-			tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
-		}
-		System.out.println("LEFT " + tx + " FORWARD " + tz);
 		//Note: tx is for left/right, tz is for forward/back
 		glTranslatef(TX + tx, TY + ty, TZ + tz);
 		TX += tx;
