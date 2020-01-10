@@ -1,14 +1,12 @@
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 import java.nio.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
@@ -16,7 +14,8 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
-	float tx = 0, ty = 0, tz = 0; //For translations
+	float tx = 0, ty = 0, tz = 0; //For translations per frame
+	float TX = 0, TY = 0, TZ = 0; //For actual translations
 	double dx = 0, dy = 0; //For rotations
 	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
@@ -106,14 +105,36 @@ public class legacyGL{
 	private void render(){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
-		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
-		if (movement[0]) tz += 0.1;
-		else if (movement[1]) tz -= 0.1;
-		if (movement[2]) tx += 0.1;
-		else if (movement[3]) tx -= 0.1;
+
+		//Calculations
+		double degreeX = 360.0 / WINDOW_WIDTH * dx; //Up to 180 degrees for x
+		double degreeY = 180.0 / WINDOW_HEIGHT * dy; //Only 90 degrees for y
+		//Note: Half the screen for x => 180 degrees
+		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
+		glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f);
+		tx = ty = tz = 0;
+		if (movement[0]){
+			tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+		}
+		if (movement[1]){
+			tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+		}
+		if (movement[2]){
+			tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+		}
+		if (movement[3]){
+			tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+		}
+		System.out.println("LEFT " + tx + " FORWARD " + tz);
 		//Note: tx is for left/right, tz is for forward/back
-		glTranslatef(tx, ty, tz); //NOTE: Only the x value changes; the height never changes
+		glTranslatef(TX + tx, TY + ty, TZ + tz);
+		TX += tx;
+		TY += ty;
+		TZ += tz;
 		for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
 
