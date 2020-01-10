@@ -19,6 +19,7 @@ public class Panel {
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
 	double fps = 50;
+	Colour gray = new Colour(211,211,211);
 
 	public void run() {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -115,7 +116,7 @@ public class Panel {
 
 		glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
-	    setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
+	    setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.05f, 100f);
 		
 		
 		glEnable(GL_TEXTURE_2D);	// enable texture mapping
@@ -144,16 +145,16 @@ public class Panel {
 
 			// draw your scene here...
 			// first draw a line with thickness 5
-			glLineWidth(5);
+			/*glLineWidth(5);
 			glBegin(GL_LINES);
 				glColor3f(1, 0, 0);
 				glVertex3f(0, 0, -5);
 				glColor3f(0, 1, 0);
 				glVertex3f(1, -1, -5);
-			glEnd();
+			glEnd();*/
 			
 			// Now draw a triangle with each vertex a different color
-			glLineWidth(1);
+			/*glLineWidth(1);
 			glBegin(GL_TRIANGLES);
 				glColor3f(0, 1, 0);
 				glVertex3f(-1, 0, -5);
@@ -161,9 +162,19 @@ public class Panel {
 				glVertex3f(0, 1.5f, -5);
 				glColor3f(1, 0, 0);
 				glVertex3f(1, 1, -5);
+			glEnd();*/
+			glColor3f(gray.getR(),gray.getG(),gray.getB());
+			glLineWidth(1);
+			glBegin(GL_QUADS);
+				glVertex3f(-0.8f, -0.6f, -4);
+				glVertex3f(0.8f, -0.6f, -4);
+				glVertex3f(0.8f, -1.4f, -4);
+				glVertex3f(-0.8f, -1.4f, -4);
+				//glTranslatef(0,0,0);
 			glEnd();
-			glColor3f(0,1,0);
-			Rect(-1,-1,1,2);
+			//glTranslatef(-1,0,0);
+			//glLineWidth(1);
+			//Rect(50,50,50,100);
 
 			glfwSwapBuffers(window); // swap the color buffers
 
@@ -179,10 +190,11 @@ public class Panel {
 	
 	public void Rect(float x, float y, float width, float height) {
 		glBegin(GL_QUADS);
-		glVertex3f(x,y,-5);
-		glVertex3f(x+width,y,-5);
-		glVertex3f(x+width,y+height,-5);
-		glVertex3f(x,y+height,-5);
+		glColor3f(0,1,0);
+		glVertex3f(x,y,0);
+		glVertex3f(x+width,y,0);
+		glVertex3f(x+width,y+height,0);
+		glVertex3f(x,y+height,0);
 		glEnd();
 	}
 }
