@@ -1,7 +1,5 @@
-import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import java.nio.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -14,20 +12,17 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
-	float TX = 0, TY = 0, TZ = 0; //For actual translations
-	double dx = 0, dy = 0; //For rotations
-	float SEN = 0.03f, SED = 0.03f/(float)Math.sqrt(2);
-	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
+	private float TX = 0, TY = 0, TZ = 0; //For actual translations
+	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
 	}
 
-	public void run() throws Exception{	
-		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+	private void run() throws Exception{
+		System.out.println("STARTUP");
 		init();
 		GL.createCapabilities();
-		System.out.println("OpenGL version " + glGetString(GL_VERSION));
 		loop();
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
@@ -68,8 +63,8 @@ public class legacyGL{
 	}
 
 	// sets a perspective projection
-	public static void setPerspective(float fovy, float aspect, float near, float far) {
-		float bottom = -near * (float) Math.tan(fovy / 2);
+	private static void setPerspective(float fovy, float aspect, float near, float far){
+		float bottom = -near * (float)Math.tan(fovy / 2);
 		float top = -bottom;
 		float left = aspect * bottom;
 		float right = -left;
@@ -79,7 +74,7 @@ public class legacyGL{
 	private void loop() throws Exception{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.05f, 100f);
+		setPerspective((float)Math.toRadians(40), (float)(WINDOW_WIDTH/WINDOW_HEIGHT), 0.01f, 100f);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);

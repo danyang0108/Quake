@@ -1,14 +1,9 @@
 import org.lwjgl.BufferUtils;
-
 import java.nio.DoubleBuffer;
-
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import static org.lwjgl.opengl.GL11.glRotatef;
 
 public class Control{
-    //Finds the x-value of the current position of the cursor on the screen.
-    private double WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
-    private float SEN = 0.03f, SED = 0.03f/(float)Math.sqrt(2);
     public double getCursorX(long window){
         DoubleBuffer posX = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window, posX, null);
@@ -23,19 +18,22 @@ public class Control{
     }
 
     public Point3f movement(long window, boolean[] movement){
-        double dx = getCursorX(window) - WINDOW_WIDTH/2;
-        double dy = getCursorY(window) - WINDOW_HEIGHT/2;
-        double degreeX = (180.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
-        System.out.println("SPIN: " + degreeX);
-        double degreeY = (180.0 / WINDOW_HEIGHT * dy + 360.0) % 360.0; //Only 90 degrees for y
-        glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
-        //glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
+        //Finds the x-value of the current position of the cursor on the screen.
+        double WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
+        double cycle = 360, Q1 = 90, Q2 = 180, Q3 = 270;
         float tx = 0, ty = 0, tz = 0;
+        float SEN = 0.05f, SED = SEN/(float)Math.sqrt(2);
+        double dx = getCursorX(window) - WINDOW_WIDTH / 2;
+        double dy = getCursorY(window) - WINDOW_HEIGHT / 2;
         boolean FB = movement[0] || movement[1];
         boolean LR = movement[2] || movement[3];
-        if (degreeX >= 270 && degreeX <= 360){
-            //Front-left
-            double RAA = 360.0 - degreeX;
+        double degreeX = (cycle / 2 / WINDOW_WIDTH * dx + cycle) % cycle; //Up to 180 degrees for x
+        double degreeY = (cycle / 2 / WINDOW_HEIGHT * dy + cycle) % cycle; //180 degrees for y as well
+        glRotatef((float)degreeX, 0f, 1f, 0f);
+        //glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
+        if (degreeX >= Q3 && degreeX <= cycle){
+            //Front-left; 270-360 degree quadrant
+            double RAA = cycle - degreeX;
             if (movement[0]){
                 tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
                 tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
@@ -52,8 +50,8 @@ public class Control{
                 tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
                 tz += (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
             }
-        }else if (degreeX >= 0 && degreeX <= 90){
-            //Front-right
+        }else if (degreeX >= 0 && degreeX <= Q1){
+            //Front-right; 0-90 degree quadrant
             if (movement[0]){
                 tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
                 tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
@@ -70,9 +68,9 @@ public class Control{
                 tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
                 tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
             }
-        }else if (degreeX >= 90 && degreeX <= 180){
-            //Back-right
-            double RAA = 180.0 - degreeX;
+        }else if (degreeX >= Q1 && degreeX <= Q2){
+            //Back-right; 90-180 degree quadrant
+            double RAA = cycle / 2 - degreeX;
             if (movement[0]){
                 tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
                 tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
@@ -90,8 +88,8 @@ public class Control{
                 tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
             }
         }else{
-            //Back-left
-            double RAA = degreeX - 180.0;
+            //Back-left; 180-270 degree quadrant
+            double RAA = degreeX - cycle / 2;
             if (movement[0]){
                 tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
                 tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
