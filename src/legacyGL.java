@@ -14,11 +14,9 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
-	float tx = 0, tz = 0; //For translations per frame
-	float TX = 0, TZ = 0; //For actual translations
-	//Note: there is no TY because we don't need changes in the height
+	float TX = 0, TY = 0, TZ = 0; //For actual translations
 	double dx = 0, dy = 0; //For rotations
-	float SEN = 0.03f;
+	float SEN = 0.03f, SED = 0.03f/(float)Math.sqrt(2);
 	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
 	public static void main(String[] args) throws Exception{
@@ -39,7 +37,7 @@ public class legacyGL{
 
 	private void init(){
 		GLFWErrorCallback.createPrint(System.err).set();
-		//Create the window
+		glfwInit();
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
 
 		//Called when there's keyboard activity
@@ -48,7 +46,7 @@ public class legacyGL{
 				//Close the window
 				glfwSetWindowShouldClose(window, true);
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
-				//A key is pressed/held down
+				//A key is pressed
 				if (key == GLFW_KEY_W) movement[0] = true;
 				if (key == GLFW_KEY_S) movement[1] = true;
 				if (key == GLFW_KEY_A) movement[2] = true;
@@ -109,90 +107,94 @@ public class legacyGL{
 
 		//Calculations
 		double degreeX = (180.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
+		System.out.println("SPIN: " + degreeX);
 		double degreeY = (180.0 / WINDOW_HEIGHT * dy + 360.0) % 360.0; //Only 90 degrees for y
 		//Note: Half the screen for x => 180 degrees
 		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
 		//glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
-		tx = tz = 0;
+		float tx = 0, ty = 0, tz = 0;
+		boolean FB = movement[0] || movement[1];
+		boolean LR = movement[2] || movement[3];
 		if (degreeX >= 270 && degreeX <= 360){
 			//Front-left
 			double RAA = 360.0 - degreeX;
 			if (movement[0]){
-				tx += SEN * Math.sin(Math.toRadians(RAA));
-				tz += SEN * Math.cos(Math.toRadians(RAA));
+				tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx -= SEN * Math.sin(Math.toRadians(RAA));
-				tz -= SEN * Math.cos(Math.toRadians(RAA));
+				tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx += SEN * Math.cos(Math.toRadians(RAA));
-				tz -= SEN * Math.sin(Math.toRadians(RAA));
+				tx += (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx -= SEN * Math.cos(Math.toRadians(RAA));
-				tz += SEN * Math.sin(Math.toRadians(RAA));
+				tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz += (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 		}else if (degreeX >= 0 && degreeX <= 90){
 			//Front-right
 			if (movement[0]){
-				tx -= SEN * Math.sin(Math.toRadians(degreeX));
-				tz += SEN * Math.cos(Math.toRadians(degreeX));
+				tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
+				tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
 			}
 			if (movement[1]){
-				tx += SEN * Math.sin(Math.toRadians(degreeX));
-				tz -= SEN * Math.cos(Math.toRadians(degreeX));
+				tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
+				tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
 			}
 			if (movement[2]){
-				tx += SEN * Math.cos(Math.toRadians(degreeX));
-				tz += SEN * Math.sin(Math.toRadians(degreeX));
+				tx += (FB ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
+				tz += (FB ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
 			}
 			if (movement[3]){
-				tx -= SEN * Math.cos(Math.toRadians(degreeX));
-				tz -= SEN * Math.sin(Math.toRadians(degreeX));
+				tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
+				tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
 			}
 		}else if (degreeX >= 90 && degreeX <= 180){
 			//Back-right
 			double RAA = 180.0 - degreeX;
 			if (movement[0]){
-				tx -= SEN * Math.sin(Math.toRadians(RAA));
-				tz -= SEN * Math.cos(Math.toRadians(RAA));
+				tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx += SEN * Math.sin(Math.toRadians(RAA));
-				tz += SEN * Math.cos(Math.toRadians(RAA));
+				tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx -= SEN * Math.cos(Math.toRadians(RAA));
-				tz += SEN * Math.sin(Math.toRadians(RAA));
+				tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz += (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx += SEN * Math.cos(Math.toRadians(RAA));
-				tz -= SEN * Math.sin(Math.toRadians(RAA));
+				tx += (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 		}else{
 			//Back-left
 			double RAA = degreeX - 180.0;
 			if (movement[0]){
-				tx += SEN * Math.sin(Math.toRadians(RAA));
-				tz -= SEN * Math.cos(Math.toRadians(RAA));
+				tx += (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz -= (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx -= SEN * Math.sin(Math.toRadians(RAA));
-				tz += SEN * Math.cos(Math.toRadians(RAA));
+				tx -= (LR ? SED : SEN) * Math.sin(Math.toRadians(RAA));
+				tz += (LR ? SED : SEN) * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx -= SEN * Math.cos(Math.toRadians(RAA));
-				tz -= SEN * Math.sin(Math.toRadians(RAA));
+				tx -= (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz -= (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx += SEN * Math.cos(Math.toRadians(RAA));
-				tz += SEN * Math.sin(Math.toRadians(RAA));
+				tx += (FB ? SED : SEN) * Math.cos(Math.toRadians(RAA));
+				tz += (FB ? SED : SEN) * Math.sin(Math.toRadians(RAA));
 			}
 		}
 		//Note: tx is for left/right, tz is for forward/back
-		glTranslatef(TX + tx, 0, TZ + tz);
+		glTranslatef(TX + tx, TY + ty, TZ + tz);
 		TX += tx;
+		TY += ty;
 		TZ += tz;
 		for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
