@@ -17,6 +17,7 @@ public class legacyGL{
 	float tx = 0, ty = 0, tz = 0; //For translations per frame
 	float TX = 0, TY = 0, TZ = 0; //For actual translations
 	double dx = 0, dy = 0; //For rotations
+	float SEN = 0.03f;
 	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
 	public static void main(String[] args) throws Exception{
@@ -82,7 +83,7 @@ public class legacyGL{
 	private void loop() throws Exception{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
+		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.05f, 100f);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
@@ -109,8 +110,7 @@ public class legacyGL{
 		glLoadIdentity();
 
 		//Calculations
-		double degreeX = (360.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
-		System.out.println("SPIN: " + degreeX);
+		double degreeX = (180.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
 		double degreeY = (180.0 / WINDOW_HEIGHT * dy + 360.0) % 360.0; //Only 90 degrees for y
 		//Note: Half the screen for x => 180 degrees
 		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
@@ -120,76 +120,76 @@ public class legacyGL{
 			//Front-left
 			double RAA = 360.0 - degreeX;
 			if (movement[0]){
-				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx += SEN * Math.sin(Math.toRadians(RAA));
+				tz += SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx -= SEN * Math.sin(Math.toRadians(RAA));
+				tz -= SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx += SEN * Math.cos(Math.toRadians(RAA));
+				tz -= SEN * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx -= SEN * Math.cos(Math.toRadians(RAA));
+				tz += SEN * Math.sin(Math.toRadians(RAA));
 			}
 		}else if (degreeX >= 0 && degreeX <= 90){
 			//Front-right
 			if (movement[0]){
-				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
-				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+				tx -= SEN * Math.sin(Math.toRadians(degreeX));
+				tz += SEN * Math.cos(Math.toRadians(degreeX));
 			}
 			if (movement[1]){
-				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
-				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+				tx += SEN * Math.sin(Math.toRadians(degreeX));
+				tz -= SEN * Math.cos(Math.toRadians(degreeX));
 			}
 			if (movement[2]){
-				tx += (float)0.1 * Math.cos(Math.toRadians(degreeX));
-				tz += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tx += SEN * Math.cos(Math.toRadians(degreeX));
+				tz += SEN * Math.sin(Math.toRadians(degreeX));
 			}
 			if (movement[3]){
-				tx -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
-				tz -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tx -= SEN * Math.cos(Math.toRadians(degreeX));
+				tz -= SEN * Math.sin(Math.toRadians(degreeX));
 			}
 		}else if (degreeX >= 90 && degreeX <= 180){
 			//Back-right
 			double RAA = 180.0 - degreeX;
 			if (movement[0]){
-				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx -= SEN * Math.sin(Math.toRadians(RAA));
+				tz -= SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx += SEN * Math.sin(Math.toRadians(RAA));
+				tz += SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx -= SEN * Math.cos(Math.toRadians(RAA));
+				tz += SEN * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx += SEN * Math.cos(Math.toRadians(RAA));
+				tz -= SEN * Math.sin(Math.toRadians(RAA));
 			}
 		}else{
 			//Back-left
 			double RAA = degreeX - 180.0;
 			if (movement[0]){
-				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx += SEN * Math.sin(Math.toRadians(RAA));
+				tz -= SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[1]){
-				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tx -= SEN * Math.sin(Math.toRadians(RAA));
+				tz += SEN * Math.cos(Math.toRadians(RAA));
 			}
 			if (movement[2]){
-				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx -= SEN * Math.cos(Math.toRadians(RAA));
+				tz -= SEN * Math.sin(Math.toRadians(RAA));
 			}
 			if (movement[3]){
-				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
-				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tx += SEN * Math.cos(Math.toRadians(RAA));
+				tz += SEN * Math.sin(Math.toRadians(RAA));
 			}
 		}
 		//Note: tx is for left/right, tz is for forward/back
