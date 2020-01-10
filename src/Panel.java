@@ -162,7 +162,8 @@ public class Panel {
 				glColor3f(1, 0, 0);
 				glVertex3f(1, 1, -5);
 			glEnd();
-
+			glColor3f(0,1,0);
+			Rect(-1,-1,1,2);
 
 			glfwSwapBuffers(window); // swap the color buffers
 
@@ -175,5 +176,13 @@ public class Panel {
 	public static void main(String[] args) {
 		new Panel().run();
 	}
-
+	
+	public void Rect(float x, float y, float width, float height) {
+		glBegin(GL_QUADS);
+		glVertex3f(x,y,-5);
+		glVertex3f(x+width,y,-5);
+		glVertex3f(x+width,y+height,-5);
+		glVertex3f(x,y+height,-5);
+		glEnd();
+	}
 }

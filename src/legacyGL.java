@@ -82,7 +82,7 @@ public class legacyGL{
 	private void loop() throws Exception{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
+		setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.05f, 100f);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
