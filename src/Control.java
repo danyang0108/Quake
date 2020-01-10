@@ -30,7 +30,7 @@ public class Control{
         double degreeX = (cycle / 2 / WINDOW_WIDTH * dx + cycle) % cycle; //Up to 180 degrees for x
         double degreeY = (cycle / 2 / WINDOW_HEIGHT * dy + cycle) % cycle; //180 degrees for y as well
         glRotatef((float)degreeX, 0f, 1f, 0f);
-        //glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
+        //glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f);
         if (degreeX >= Q3 && degreeX <= cycle){
             //Front-left; 270-360 degree quadrant
             double RAA = cycle - degreeX;

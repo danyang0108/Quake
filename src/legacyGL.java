@@ -1,5 +1,6 @@
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
+
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -20,21 +21,9 @@ public class legacyGL{
 	}
 
 	private void run() throws Exception{
-		System.out.println("STARTUP");
-		init();
-		GL.createCapabilities();
-		loop();
-		glfwFreeCallbacks(window);
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		glfwSetErrorCallback(null).free();
-	}
-
-	private void init(){
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwInit();
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
-
 		//Called when there's keyboard activity
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
@@ -60,21 +49,26 @@ public class legacyGL{
 		glfwSwapInterval(1);
 		// your code to initialize the scene goes here...
 		glfwShowWindow(window);
+		GL.createCapabilities();
+		loop();
+		glfwFreeCallbacks(window);
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
 	}
 
 	// sets a perspective projection
-	private static void setPerspective(float fovy, float aspect, float near, float far){
-		float bottom = -near * (float)Math.tan(fovy / 2);
-		float top = -bottom;
-		float left = aspect * bottom;
-		float right = -left;
-		glFrustum(left, right, bottom, top, near, far);
+	private static void setPerspective(){
+		float near = 0.01f, far = 2000f;
+		float v = -near * (float)Math.tan(Math.toRadians(20));
+		v *= (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
+		glFrustum(v, -v, v, -v, near, far);
 	}
 
 	private void loop() throws Exception{
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		setPerspective((float)Math.toRadians(40), (float)(WINDOW_WIDTH/WINDOW_HEIGHT), 0.01f, 100f);
+		setPerspective();
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
@@ -100,5 +94,13 @@ public class legacyGL{
 		glTranslatef(TX, TY, TZ);
 
 		for (MeshObject object: objects) object.draw(); //Draw the objects
+
+		glTranslatef(TX + 1000, TY, TZ);
+		glDisable(GL_TEXTURE_2D);
+		glColor3f(0.5f, 0.5f, 0f);
+		glRectf(100, 100, 400, 400);
+		glEnable(GL_TEXTURE_2D);
+		glTranslatef(TX, TY, TZ);
+		glColor3f(1f, 1f, 1f);
 	}
 }
