@@ -1,14 +1,12 @@
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 import java.nio.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
@@ -16,7 +14,8 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
-	float tx = 0, ty = 0, tz = 0; //For translations
+	float tx = 0, ty = 0, tz = 0; //For translations per frame
+	float TX = 0, TY = 0, TZ = 0; //For actual translations
 	double dx = 0, dy = 0; //For rotations
 	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
 
@@ -63,6 +62,8 @@ public class legacyGL{
 				if (key == GLFW_KEY_D) movement[3] = false;
 			}
 		});
+		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		// your code to initialize the scene goes here...
@@ -85,32 +86,6 @@ public class legacyGL{
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
-		// set up lighting
-		FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
-		ambient.put(new float[] { 0.6f, 0.65f, 0.65f, 1f, });
-		ambient.flip();
-		FloatBuffer specular = BufferUtils.createFloatBuffer(4);
-		specular.put(new float[] { 0.8f, 0.8f, 0.8f, 1f, });
-		specular.flip();
-		FloatBuffer position = BufferUtils.createFloatBuffer(4);
-		position.put(new float[] { 0f, 5f, -5f, 1f, });
-		position.flip();
-		FloatBuffer spot_dir = BufferUtils.createFloatBuffer(4);
-		spot_dir.put(new float[] { 0f, -5f, -5f, 0f, });
-		spot_dir.flip();
-
-		/*
-		//Default Lighting; NOT USED
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
-		glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_FALSE);
-		glLightfv(GL_LIGHT0, GL_POSITION, position);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, specular);
-		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_dir);
-		glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		 */
 
 		objects.add(new MeshObject("Resource/Models/NMap.obj"));
 
@@ -132,15 +107,96 @@ public class legacyGL{
 	private void render(){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glRotatef((float)dx/(float)2.0, 0.0f, 1.0f, 0.0f);
-		glRotatef((float)dy/(float)2.0, 1.0f, 0.0f, 0.0f);
-		if (movement[0]) tz += 0.1;
-		else if (movement[1]) tz -= 0.1;
-		if (movement[2]) tx += 0.1;
-		else if (movement[3]) tx -= 0.1;
-		System.out.println(tx + " " + ty + " " + tz);
+
+		//Calculations
+		double degreeX = (360.0 / WINDOW_WIDTH * dx + 360.0) % 360.0; //Up to 180 degrees for x
+		System.out.println("SPIN: " + degreeX);
+		double degreeY = (180.0 / WINDOW_HEIGHT * dy + 360.0) % 360.0; //Only 90 degrees for y
+		//Note: Half the screen for x => 180 degrees
+		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
+		//glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
+		tx = ty = tz = 0;
+		if (degreeX >= 270 && degreeX <= 360){
+			//Front-left
+			double RAA = 360.0 - degreeX;
+			if (movement[0]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[1]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[2]){
+				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+			if (movement[3]){
+				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+		}else if (degreeX >= 0 && degreeX <= 90){
+			//Front-right
+			if (movement[0]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[1]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+			}
+			if (movement[2]){
+				tx += (float)0.1 * Math.cos(Math.toRadians(degreeX));
+				tz += (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			}
+			if (movement[3]){
+				tx -= (float)0.1 * Math.cos(Math.toRadians(degreeX));
+				tz -= (float)0.1 * Math.sin(Math.toRadians(degreeX));
+			}
+		}else if (degreeX >= 90 && degreeX <= 180){
+			//Back-right
+			double RAA = 180.0 - degreeX;
+			if (movement[0]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[1]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[2]){
+				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+			if (movement[3]){
+				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+		}else{
+			//Back-left
+			double RAA = degreeX - 180.0;
+			if (movement[0]){
+				tx += (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[1]){
+				tx -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.cos(Math.toRadians(RAA));
+			}
+			if (movement[2]){
+				tx -= (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz -= (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+			if (movement[3]){
+				tx += (float)0.1 * Math.cos(Math.toRadians(RAA));
+				tz += (float)0.1 * Math.sin(Math.toRadians(RAA));
+			}
+		}
 		//Note: tx is for left/right, tz is for forward/back
-		glTranslatef(tx, ty, tz); //NOTE: Only the x value changes; the height never changes
+		glTranslatef(TX + tx, TY + ty, TZ + tz);
+		TX += tx;
+		TY += ty;
+		TZ += tz;
 		for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
 

@@ -8,7 +8,7 @@ public class MeshObject{
     private ArrayList<Float[]> texCoords;
     private ArrayList<Vector3f> normals;
     private ArrayList<Face> faces;
-    private ArrayList<Texture> textures;
+    private Texture texture;
     private Scanner scanner;
 
     public MeshObject(String filename) throws Exception{
@@ -16,7 +16,6 @@ public class MeshObject{
         texCoords = new ArrayList<>();
         normals = new ArrayList<>();
         faces = new ArrayList<>();
-        textures = new ArrayList<>();
         Scanner scan = new Scanner(new File(filename));
         while (scan.hasNextLine()){
             String[] lineArray = scan.nextLine().split(" ");
@@ -51,7 +50,7 @@ public class MeshObject{
                 while (scanner.hasNextLine()){
                     String[] tempLine = scanner.nextLine().split(",");
                     if (tempLine[0].equals(material)){
-                        textures.add(new Texture(tempLine[1]));
+                        texture = new Texture(tempLine[1]);
                     }
                 }
             }
@@ -60,11 +59,9 @@ public class MeshObject{
     }
 
     public void draw(){
-        if(textures.size() != 0){
+        if(texture != null){
             glEnable(GL_TEXTURE_2D);	// enable texture mapping
-            for (Texture t: textures){
-                t.bind();
-            }
+            texture.bind();
         }else glDisable(GL_TEXTURE_2D);	// disable texture mapping
         for (Face face: faces){
             glBegin(GL_POLYGON);
