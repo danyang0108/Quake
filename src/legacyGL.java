@@ -14,8 +14,9 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
-	float tx = 0, ty = 0, tz = 0; //For translations per frame
-	float TX = 0, TY = 0, TZ = 0; //For actual translations
+	float tx = 0, tz = 0; //For translations per frame
+	float TX = 0, TZ = 0; //For actual translations
+	//Note: there is no TY because we don't need changes in the height
 	double dx = 0, dy = 0; //For rotations
 	float SEN = 0.03f;
 	boolean movement[] = new boolean[4]; //For keyboard controls (W, S, A, D)
@@ -37,12 +38,9 @@ public class legacyGL{
 	}
 
 	private void init(){
-		for (int i = 0; i < 4; i++) movement[i] = false;
 		GLFWErrorCallback.createPrint(System.err).set();
-		if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
 		//Create the window
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
-		if (window == NULL) throw new RuntimeException("Failed to create the GLFW window");
 
 		//Called when there's keyboard activity
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -50,7 +48,7 @@ public class legacyGL{
 				//Close the window
 				glfwSetWindowShouldClose(window, true);
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
-				//A key is pressed
+				//A key is pressed/held down
 				if (key == GLFW_KEY_W) movement[0] = true;
 				if (key == GLFW_KEY_S) movement[1] = true;
 				if (key == GLFW_KEY_A) movement[2] = true;
@@ -115,7 +113,7 @@ public class legacyGL{
 		//Note: Half the screen for x => 180 degrees
 		glRotatef((float)degreeX, 0.0f, 1.0f, 0.0f);
 		//glRotatef((float)degreeY, 1.0f, 0.0f, 0.0f); Oh please stop my headache
-		tx = ty = tz = 0;
+		tx = tz = 0;
 		if (degreeX >= 270 && degreeX <= 360){
 			//Front-left
 			double RAA = 360.0 - degreeX;
@@ -193,9 +191,8 @@ public class legacyGL{
 			}
 		}
 		//Note: tx is for left/right, tz is for forward/back
-		glTranslatef(TX + tx, TY + ty, TZ + tz);
+		glTranslatef(TX + tx, 0, TZ + tz);
 		TX += tx;
-		TY += ty;
 		TZ += tz;
 		for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
