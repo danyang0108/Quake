@@ -2,7 +2,6 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -14,10 +13,12 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
+	private ArrayList<Boolean> display = new ArrayList<>();
 	private ArrayList<MeshObject> walk = new ArrayList<>();
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
+	int walkSize = 26;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -79,23 +80,19 @@ public class legacyGL{
 
 		String path1 = "Resource/Models/NMap.obj";
 		objects.add(new MeshObject(path1));
+		display.add(true);
 		String path2 = "Resource/Models/Move";
-		walk.add(new MeshObject(path2 + 1 + ".obj", new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
-		//objects.add(enemy2);
-
-		double past = System.nanoTime() / 1e9;
+		for (int i = 1; i < walkSize; i++){
+			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+			objects.add(walk.get(i - 1));
+			display.add(i == 1);
+		}
 
 		while (!glfwWindowShouldClose(window)){
-			double cur = System.nanoTime() / 1e9;
-			double diff = cur - past;
-			while (diff >= 1f/60f){
-				diff -= 1f/60f;
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				render();
-				glfwSwapBuffers(window);
-				glfwPollEvents();
-			}
-			past = cur;
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			render();
+			glfwSwapBuffers(window);
+			glfwPollEvents();
 		}
 	}
 
@@ -109,11 +106,13 @@ public class legacyGL{
 		TZ += move.z;
 		glTranslatef(TX, TY, TZ);
 
-		objects.add(walk.get(0));
+        for (int i = 0; i < objects.size(); i++){
+        	if (display.get(i)){
+				objects.get(i).draw(); //Draw the objects
+			}
+		}
 
-        for (MeshObject object: objects) object.draw(); //Draw the objects
-
-		if (index < 9) index++;
-		else index = 0;
+        for (int i = 1; i < walkSize; i++) display.set(i, i == index);
+        index = index < walkSize - 1 ? index + 1 : 1;
 	}
 }
