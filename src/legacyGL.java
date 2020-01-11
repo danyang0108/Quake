@@ -74,6 +74,7 @@ public class legacyGL{
 		glEnable(GL_DEPTH_TEST);
 
 		objects.add(new MeshObject("Resource/Models/NMap.obj"));
+		objects.add(new MeshObject("Resource/Models/first.obj"));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -94,13 +95,5 @@ public class legacyGL{
 		glTranslatef(TX, TY, TZ);
 
 		for (MeshObject object: objects) object.draw(); //Draw the objects
-
-		glTranslatef(TX + 1000, TY, TZ);
-		glDisable(GL_TEXTURE_2D);
-		glColor3f(0.5f, 0.5f, 0f);
-		glRectf(100, 100, 400, 400);
-		glEnable(GL_TEXTURE_2D);
-		glTranslatef(TX, TY, TZ);
-		glColor3f(1f, 1f, 1f);
 	}
 }
