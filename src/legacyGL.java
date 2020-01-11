@@ -18,7 +18,7 @@ public class legacyGL{
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
-	int walkSize = 50;
+	int walkSize = 50, deadSize = 31;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -82,9 +82,9 @@ public class legacyGL{
 		String path1 = "Resource/Models/NMap.obj";
 		objects.add(new MeshObject(path1));
 		display.add(true);
-		String path2 = "Resource/Models/Move";
-		for (int i = 1; i < walkSize; i++){
-			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -2, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+		String path2 = "Resource/Models/Dead";
+		for (int i = 1; i < deadSize; i++){
+			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
 			objects.add(walk.get(i - 1));
 			display.add(i == 1);
 		}
@@ -111,10 +111,10 @@ public class legacyGL{
         for (int i = 0; i < objects.size(); i++) if (display.get(i)) objects.get(i).draw();
 
         //Update the character animation
-        for (int i = 1; i < walkSize; i++){
+        for (int i = 1; i < deadSize; i++){
         	display.set(i, i == index);
-			objects.get(i).translate(new Point3f(0.01f, 0, 0));
+			//objects.get(i).translate(new Point3f(1, 0, 0));
 		}
-        index = index < walkSize - 1 ? index + 1 : 1;
+        index = index < deadSize - 1 ? index + 1 : 1;
 	}
 }
