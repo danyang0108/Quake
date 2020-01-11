@@ -107,13 +107,14 @@ public class legacyGL{
 		TZ += move.z;
 		glTranslatef(TX, TY, TZ);
 
-        for (int i = 0; i < objects.size(); i++){
-        	if (display.get(i)){
-				objects.get(i).draw(); //Draw the objects
-			}
-		}
+		//Draw the objects
+        for (int i = 0; i < objects.size(); i++) if (display.get(i)) objects.get(i).draw();
 
-        for (int i = 1; i < walkSize; i++) display.set(i, i == index);
+        //Update the character animation
+        for (int i = 1; i < walkSize; i++){
+        	display.set(i, i == index);
+			objects.get(i).translate(new Point3f(0.01f, 0, 0));
+		}
         index = index < walkSize - 1 ? index + 1 : 1;
 	}
 }
