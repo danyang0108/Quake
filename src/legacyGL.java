@@ -77,7 +77,10 @@ public class legacyGL{
 		String path1 = "Resource/Models/NMap.obj";
 		objects.add(new MeshObject(path1));
 		String path2 = "Resource/Models/first.obj";
-		objects.add(new MeshObject(path2, new Point3f(0, -2, -2), new Point4f(90, 0, 1, 0), new Point3f(0.75f, 0.75f, 0.75f)));
+		MeshObject enemy = new MeshObject(path2, new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f));
+		objects.add(enemy);
+		MeshObject enemy2 = new MeshObject(path2, new Point3f(2, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f));
+		objects.add(enemy2);
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -97,6 +100,6 @@ public class legacyGL{
 		TZ += move.z;
 		glTranslatef(TX, TY, TZ);
 
-		for (MeshObject object: objects) object.draw(); //Draw the objects
+        for (MeshObject object: objects) object.draw(); //Draw the objects
 	}
 }

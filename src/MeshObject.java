@@ -11,9 +11,9 @@ public class MeshObject{
     private Texture texture;
     private Scanner scanner;
     private String filename;
-    public Point3f trans;
-    public Point4f rotate;
-    public Point3f scale;
+    private Point3f trans;
+    private Point4f rotate;
+    private Point3f scale;
 
     private void init(){
         vertex = new ArrayList<>();
@@ -90,14 +90,27 @@ public class MeshObject{
         scan.close();
     }
 
+    public void translate(Point3f trans){
+        this.trans = trans;
+    }
+
+    public void rotate(Point4f rotate){
+        this.rotate = rotate;
+    }
+
+    public void scale(Point3f scale){
+        this.scale = scale;
+    }
+
     public void draw(){
+        glPushMatrix();
         glTranslatef(trans.x, trans.y, trans.z);
         glRotatef(rotate.rot, rotate.x, rotate.y, rotate.z);
         glScalef(scale.x, scale.y, scale.z);
         if(texture != null){
-            glEnable(GL_TEXTURE_2D);	// enable texture mapping
+            glEnable(GL_TEXTURE_2D); //Enable texture mapping
             texture.bind();
-        }else glDisable(GL_TEXTURE_2D);	// disable texture mapping
+        }else glDisable(GL_TEXTURE_2D);	//Disable texture mapping
         for (Face face: faces){
             glBegin(GL_POLYGON);
             for (int j = 0; j < face.getSize(); j++){
@@ -113,5 +126,6 @@ public class MeshObject{
             }
             glEnd();
         }
+        glPopMatrix();
     }
 }
