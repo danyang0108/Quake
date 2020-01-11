@@ -18,7 +18,7 @@ public class legacyGL{
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
-	int walkSize = 26;
+	int walkSize = 50;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -52,6 +52,7 @@ public class legacyGL{
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		// your code to initialize the scene goes here...
+
 		glfwShowWindow(window);
 		GL.createCapabilities();
 		loop();
@@ -83,7 +84,7 @@ public class legacyGL{
 		display.add(true);
 		String path2 = "Resource/Models/Move";
 		for (int i = 1; i < walkSize; i++){
-			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -2, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
 			objects.add(walk.get(i - 1));
 			display.add(i == 1);
 		}
