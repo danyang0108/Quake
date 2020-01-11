@@ -2,6 +2,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -13,8 +14,10 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
+	private ArrayList<MeshObject> walk = new ArrayList<>();
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
+	int index = 1;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -76,17 +79,23 @@ public class legacyGL{
 
 		String path1 = "Resource/Models/NMap.obj";
 		objects.add(new MeshObject(path1));
-		String path2 = "Resource/Models/first.obj";
-		MeshObject enemy = new MeshObject(path2, new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f));
-		objects.add(enemy);
-		MeshObject enemy2 = new MeshObject(path2, new Point3f(2, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f));
-		objects.add(enemy2);
+		String path2 = "Resource/Models/Move";
+		walk.add(new MeshObject(path2 + 1 + ".obj", new Point3f(0, -2, 0), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+		//objects.add(enemy2);
+
+		double past = System.nanoTime() / 1e9;
 
 		while (!glfwWindowShouldClose(window)){
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			render();
-			glfwSwapBuffers(window);
-			glfwPollEvents();
+			double cur = System.nanoTime() / 1e9;
+			double diff = cur - past;
+			while (diff >= 1f/60f){
+				diff -= 1f/60f;
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				render();
+				glfwSwapBuffers(window);
+				glfwPollEvents();
+			}
+			past = cur;
 		}
 	}
 
@@ -100,6 +109,11 @@ public class legacyGL{
 		TZ += move.z;
 		glTranslatef(TX, TY, TZ);
 
+		objects.add(walk.get(0));
+
         for (MeshObject object: objects) object.draw(); //Draw the objects
+
+		if (index < 9) index++;
+		else index = 0;
 	}
 }
