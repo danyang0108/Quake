@@ -7,10 +7,4 @@ public class Point4f{
         this.y = y;
         this.z = z;
     }
-    public Point4f(double rot, double x, double y, double z){
-        this.rot = (float)rot;
-        this.x = (float)x;
-        this.y = (float)y;
-        this.z = (float)z;
-    }
 }

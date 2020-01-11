@@ -91,9 +91,9 @@ public class legacyGL{
 		glLoadIdentity();
 
 		Point3f move = new Control().movement(window, movement);
-		TX += move.getX();
-		TY += move.getY();
-		TZ += move.getZ();
+		TX += move.x;
+		TY += move.y;
+		TZ += move.z;
 		glTranslatef(TX, TY, TZ);
 
 		for (MeshObject object: objects) object.draw(); //Draw the objects

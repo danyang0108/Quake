@@ -15,12 +15,16 @@ public class MeshObject{
     public Point4f rotate;
     public Point3f scale;
 
-    public MeshObject(String filename) throws Exception{
-        this.filename = filename;
+    private void init(){
         vertex = new ArrayList<>();
         texCoords = new ArrayList<>();
         normals = new ArrayList<>();
         faces = new ArrayList<>();
+    }
+
+    public MeshObject(String filename) throws Exception{
+        init();
+        this.filename = filename;
         this.trans = new Point3f(0, 0, 0);
         this.rotate = new Point4f(0, 0, 0, 0);
         this.scale = new Point3f(1, 1, 1);
@@ -28,11 +32,8 @@ public class MeshObject{
     }
 
     public MeshObject(String filename, Point3f trans, Point4f rotate) throws Exception{
+        init();
         this.filename = filename;
-        vertex = new ArrayList<>();
-        texCoords = new ArrayList<>();
-        normals = new ArrayList<>();
-        faces = new ArrayList<>();
         this.trans = trans;
         this.rotate = rotate;
         this.scale = new Point3f(1, 1, 1);
@@ -40,11 +41,8 @@ public class MeshObject{
     }
 
     public MeshObject(String filename, Point3f trans, Point4f rotate, Point3f scale) throws Exception{
+        init();
         this.filename = filename;
-        vertex = new ArrayList<>();
-        texCoords = new ArrayList<>();
-        normals = new ArrayList<>();
-        faces = new ArrayList<>();
         this.trans = trans;
         this.rotate = rotate;
         this.scale = scale;
@@ -76,7 +74,7 @@ public class MeshObject{
                     attrib[0] = Integer.parseInt(attribString[0]);
                     attrib[1] = Integer.parseInt(attribString[1]);
                     attrib[2] = Integer.parseInt(attribString[2]);
-                    f.setVertex(i-1, attrib);
+                    f.setVertex(i - 1, attrib);
                 }
                 faces.add(f);
             }else if (lineArray[0].equals("mtllib")){
@@ -85,9 +83,7 @@ public class MeshObject{
                 String material = lineArray[1];
                 while (scanner.hasNextLine()){
                     String[] tempLine = scanner.nextLine().split(",");
-                    if (tempLine[0].equals(material)){
-                        texture = new Texture(tempLine[1]);
-                    }
+                    if (tempLine[0].equals(material)) texture = new Texture(tempLine[1]);
                 }
             }
         }
@@ -95,9 +91,9 @@ public class MeshObject{
     }
 
     public void draw(){
-        glTranslatef(trans.getX(), trans.getY(), trans.getZ());
+        glTranslatef(trans.x, trans.y, trans.z);
         glRotatef(rotate.rot, rotate.x, rotate.y, rotate.z);
-        glScalef(scale.getX(), scale.getY(), scale.getZ());
+        glScalef(scale.x, scale.y, scale.z);
         if(texture != null){
             glEnable(GL_TEXTURE_2D);	// enable texture mapping
             texture.bind();
@@ -111,7 +107,7 @@ public class MeshObject{
                 Float[] tex = this.texCoords.get(ti);
                 glTexCoord2f(tex[0], tex[1]);
                 Point3f vertex = this.vertex.get(vi);
-                glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
+                glVertex3f(vertex.x, vertex.y, vertex.z);
                 Vector3f normal = this.normals.get(ni);
                 glNormal3f(normal.getX(), normal.getY(), normal.getZ());
             }

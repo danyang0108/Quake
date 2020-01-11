@@ -6,91 +6,45 @@
 /*Description: This program implements a 3d point object of the form (x,y,z) as well as 
  * operations such as subtracting two points. 
 */
-public class Point3f {
-	
-	private float x;
-	private float y;
-	private float z;
-	private int id;
+public class Point3f{
+	public float x;
+	public float y;
+	public float z;
 	
 	//Constructors for Point3f class
 	public Point3f(){
 		x = 0;
 		y = 0;
 		z = 0;
-		id = 1;
 	}
 	public Point3f(float x, float y, float z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		id = 1;
 	}
 	
 	// Point-point subtraction 
 	public Vector3f subtract(Point3f p){
-		
 		Point3f newPoint = new Point3f();
-		
-		newPoint.setX(p.getX() - x);
-		newPoint.setY(p.getY() - y);
-		newPoint.setZ(p.getZ() - z);
-		
-		Vector3f newVector = new Vector3f(newPoint);
-		return newVector;
-		
+		newPoint.x = p.x - x;
+		newPoint.y = p.y - y;
+		newPoint.z = p.z - z;
+		return new Vector3f(newPoint);
 	}
 	
 	// Point-vector addition
-	public Point3f add(Vector3f v) {
-		
+	public Point3f add(Vector3f v){
 		Point3f velocity = v.getDirection();
 		Point3f newPoint = new Point3f();
-		
-		newPoint.setX(velocity.getX() + x);
-		newPoint.setY(velocity.getY() + y);
-		newPoint.setZ(velocity.getZ() + z);
-		
+		newPoint.x = velocity.x + x;
+		newPoint.y = velocity.y + y;
+		newPoint.z = velocity.z + z;
 		return newPoint;
 	}
 	
 	// Prints the coordinates of the Point3f object
-	public String toString() {
+	public String toString(){
 		String result = "x: "+ x + " y: " + y + " z: " + z;
 		return result;
-	}
-	
-	// getter and setter for the state variables
-	public float getX() {
-		return x;
-	}
-	
-	public float getY() {
-		return y;
-	}
-	
-	public float getZ() {
-		return z;
-	}
-	
-	public int getId() {
-		return id;
-	}
-	public void setX(float x) {
-		this.x = x;
-	}
-	
-	public void setY(float y) {
-		this.y = y;
-	}
-	
-	public void setZ(float z) {
-		this.z = z;
-	}
-	
-	public void set(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
 	}
 }
