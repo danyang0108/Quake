@@ -171,7 +171,7 @@ public class testing {
 	}
 
 	public static void main(String[] args) {
-		new legacyGL().run();
+		new testing().run();
 	}
 
 }
