@@ -60,7 +60,8 @@ public class legacyGL{
 	// sets a perspective projection
 	private static void setPerspective(){
 		float near = 0.01f, far = 2000f;
-		float v = -near * (float)Math.tan(Math.toRadians(20));
+		float v = -near * (float)Math.tan(Math.toRadians(35));
+		//Note: Maximum 45 (Quake Pro), Minimum 20 (Zoomed In), Default 35
 		v *= (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 		glFrustum(v, -v, v, -v, near, far);
 	}
