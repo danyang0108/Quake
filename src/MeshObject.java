@@ -10,12 +10,48 @@ public class MeshObject{
     private ArrayList<Face> faces;
     private Texture texture;
     private Scanner scanner;
+    private String filename;
+    public Point3f trans;
+    public Point4f rotate;
+    public Point3f scale;
 
     public MeshObject(String filename) throws Exception{
+        this.filename = filename;
         vertex = new ArrayList<>();
         texCoords = new ArrayList<>();
         normals = new ArrayList<>();
         faces = new ArrayList<>();
+        this.trans = new Point3f(0, 0, 0);
+        this.rotate = new Point4f(0, 0, 0, 0);
+        this.scale = new Point3f(1, 1, 1);
+        read();
+    }
+
+    public MeshObject(String filename, Point3f trans, Point4f rotate) throws Exception{
+        this.filename = filename;
+        vertex = new ArrayList<>();
+        texCoords = new ArrayList<>();
+        normals = new ArrayList<>();
+        faces = new ArrayList<>();
+        this.trans = trans;
+        this.rotate = rotate;
+        this.scale = new Point3f(1, 1, 1);
+        read();
+    }
+
+    public MeshObject(String filename, Point3f trans, Point4f rotate, Point3f scale) throws Exception{
+        this.filename = filename;
+        vertex = new ArrayList<>();
+        texCoords = new ArrayList<>();
+        normals = new ArrayList<>();
+        faces = new ArrayList<>();
+        this.trans = trans;
+        this.rotate = rotate;
+        this.scale = scale;
+        read();
+    }
+
+    private void read() throws Exception{
         Scanner scan = new Scanner(new File(filename));
         while (scan.hasNextLine()){
             String[] lineArray = scan.nextLine().split(" ");
@@ -59,6 +95,9 @@ public class MeshObject{
     }
 
     public void draw(){
+        glTranslatef(trans.getX(), trans.getY(), trans.getZ());
+        glRotatef(rotate.rot, rotate.x, rotate.y, rotate.z);
+        glScalef(scale.getX(), scale.getY(), scale.getZ());
         if(texture != null){
             glEnable(GL_TEXTURE_2D);	// enable texture mapping
             texture.bind();

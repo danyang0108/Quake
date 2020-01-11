@@ -73,8 +73,10 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
-		objects.add(new MeshObject("Resource/Models/NMap.obj"));
-		objects.add(new MeshObject("Resource/Models/first.obj"));
+		String path1 = "Resource/Models/NMap.obj";
+		objects.add(new MeshObject(path1));
+		String path2 = "Resource/Models/first.obj";
+		objects.add(new MeshObject(path2, new Point3f(0, -2, -2), new Point4f(90, 0, 1, 0), new Point3f(0.75f, 0.75f, 0.75f)));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
