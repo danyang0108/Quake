@@ -156,7 +156,7 @@ public class testing {
 
 			// draw your scene here...
 			tex.bind();
-				
+			Colour c = tex.getPixel(0, 0);
 			glBegin(GL_QUADS);
 			glTexCoord2f(32f/308f,0);
 			glVertex2f(-0.4f, 0.8f);
