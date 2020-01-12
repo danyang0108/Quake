@@ -158,13 +158,13 @@ public class testing {
 			tex.bind();
 				
 			glBegin(GL_QUADS);
-			glTexCoord2f(31.9f/308f,0);
+			glTexCoord2f(32f/308f,0);
 			glVertex2f(-0.4f, 0.8f);
-			glTexCoord2f(35.1f/308f,0);
+			glTexCoord2f(35f/308f,0);
 			glVertex2f(0.4f, 0.8f);
-			glTexCoord2f(35.1f/308f,1f);
+			glTexCoord2f(35f/308f,1f);
 			glVertex2f(0.4f, -0.8f);
-			glTexCoord2f(31.9f/308f,1f);
+			glTexCoord2f(32f/308f,1f);
 			glVertex2f(-0.4f, -0.8f);
 			
 			glEnd();
