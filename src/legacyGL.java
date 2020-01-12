@@ -15,10 +15,11 @@ public class legacyGL{
 	private ArrayList<MeshObject> objects = new ArrayList<>();
 	private ArrayList<Boolean> display = new ArrayList<>();
 	private ArrayList<MeshObject> walk = new ArrayList<>();
+	private ArrayList<MeshObject> dead = new ArrayList<>();
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
-	int walkSize = 50, deadSize = 91;
+	int walkSize = 400;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -82,9 +83,13 @@ public class legacyGL{
 		String path1 = "Resource/Models/NMap.obj";
 		objects.add(new MeshObject(path1));
 		display.add(true);
-		String path2 = "Resource/Models/Dead";
-		for (int i = 1; i < deadSize * 2; i++){
-			walk.add(new MeshObject(path2 + (int)Math.ceil(i/2.0) + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+		String path2 = "Resource/Models/Move_000";
+		for (int i = 1; i < walkSize; i++){
+			String threeDigit = "";
+			if (i < 10) threeDigit = "00" + i;
+			else if (i < 100) threeDigit = "0" + i;
+			else threeDigit = Integer.toString(i);
+			walk.add(new MeshObject(path2 + threeDigit + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
 			objects.add(walk.get(i - 1));
 			display.add(i == 1);
 		}
@@ -97,7 +102,7 @@ public class legacyGL{
 		}
 	}
 
-	private void render(){
+	private void render() throws Exception{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -111,10 +116,10 @@ public class legacyGL{
         for (int i = 0; i < objects.size(); i++) if (display.get(i)) objects.get(i).draw();
 
         //Update the character animation
-        for (int i = 1; i < deadSize * 2; i++){
+        for (int i = 1; i < walkSize; i++){
         	display.set(i, i == index);
 			//objects.get(i).translate(new Point3f(1, 0, 0));
 		}
-        index = index < deadSize * 2 - 1 ? index + 1 : 1;
+        index = index < walkSize - 1 ? index + 1 : 1;
 	}
 }
