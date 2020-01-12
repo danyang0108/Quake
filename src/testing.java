@@ -19,8 +19,11 @@ public class testing {
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
 	double fps = 50;
-
-	public void run() {
+	Texture tex;
+	
+	
+	
+	public void run()  {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 
@@ -32,6 +35,17 @@ public class testing {
 		// bindings available for use.
 		GL.createCapabilities();
 		
+		//TEXTURES
+		
+		try {
+			tex = new Texture("Resource/Images/text.png");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("I want to die");
+			e.printStackTrace();
+		}
+		
+		//
 		 System.out.println("OpenGL version " + glGetString(GL_VERSION));
 		
 		loop();
@@ -113,7 +127,7 @@ public class testing {
 
 		glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
-	    setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
+	    //setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
 		
 		
 		glEnable(GL_TEXTURE_2D);	// enable texture mapping
@@ -141,27 +155,20 @@ public class testing {
 			glLoadIdentity();
 
 			// draw your scene here...
-			// first draw a line with thickness 5
-			glLineWidth(5);
-			glBegin(GL_LINES);
-				glColor3f(1, 0, 0);
-				glVertex3f(0, 0, -5);
-				glColor3f(0, 1, 0);
-				glVertex3f(1, -1, -5);
+			tex.bind();
+				
+			glBegin(GL_QUADS);
+			glTexCoord2f(31.9f/308f,0);
+			glVertex2f(-0.4f, 0.8f);
+			glTexCoord2f(35.1f/308f,0);
+			glVertex2f(0.4f, 0.8f);
+			glTexCoord2f(35.1f/308f,1f);
+			glVertex2f(0.4f, -0.8f);
+			glTexCoord2f(31.9f/308f,1f);
+			glVertex2f(-0.4f, -0.8f);
+			
 			glEnd();
 			
-			// Now draw a triangle with each vertex a different color
-			glLineWidth(1);
-				glBegin(GL_TRIANGLES);
-				glColor3f(0, 1, 0);
-				glVertex3f(-1, 0, -5);
-				glColor3f(0, 0, 1);
-				glVertex3f(0, 1.5f, -5);
-				glColor3f(1, 0, 0);
-				glVertex3f(1, 1, -5);
-				glEnd();
-
-
 			glfwSwapBuffers(window); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
