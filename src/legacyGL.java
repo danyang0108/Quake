@@ -18,7 +18,7 @@ public class legacyGL{
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
-	int walkSize = 50, deadSize = 31;
+	int walkSize = 50, deadSize = 91;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -64,9 +64,9 @@ public class legacyGL{
 
 	// sets a perspective projection
 	private static void setPerspective(){
-		float near = 0.01f, far = 2000f;
-		float v = -near * (float)Math.tan(Math.toRadians(35));
-		//Note: Maximum 45 (Quake Pro), Minimum 20 (Zoomed In), Default 35
+		float near = 0.01f, far = 100f;
+		float v = -near * (float)Math.tan(Math.toRadians(30));
+		//Note: Maximum 45 (Quake Pro), Minimum 20 (Zoomed In), Default 30
 		v *= (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 		glFrustum(v, -v, v, -v, near, far);
 	}
@@ -83,8 +83,8 @@ public class legacyGL{
 		objects.add(new MeshObject(path1));
 		display.add(true);
 		String path2 = "Resource/Models/Dead";
-		for (int i = 1; i < deadSize; i++){
-			walk.add(new MeshObject(path2 + i + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
+		for (int i = 1; i < deadSize * 2; i++){
+			walk.add(new MeshObject(path2 + (int)Math.ceil(i/2.0) + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
 			objects.add(walk.get(i - 1));
 			display.add(i == 1);
 		}
@@ -111,10 +111,10 @@ public class legacyGL{
         for (int i = 0; i < objects.size(); i++) if (display.get(i)) objects.get(i).draw();
 
         //Update the character animation
-        for (int i = 1; i < deadSize; i++){
+        for (int i = 1; i < deadSize * 2; i++){
         	display.set(i, i == index);
 			//objects.get(i).translate(new Point3f(1, 0, 0));
 		}
-        index = index < deadSize - 1 ? index + 1 : 1;
+        index = index < deadSize * 2 - 1 ? index + 1 : 1;
 	}
 }
