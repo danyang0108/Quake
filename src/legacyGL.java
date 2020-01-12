@@ -14,8 +14,6 @@ public class legacyGL{
 	private static final int WINDOW_HEIGHT = 768;
 	private ArrayList<MeshObject> objects = new ArrayList<>();
 	private ArrayList<Boolean> display = new ArrayList<>();
-	private ArrayList<MeshObject> walk = new ArrayList<>();
-	private ArrayList<MeshObject> dead = new ArrayList<>();
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	int index = 1;
@@ -85,12 +83,15 @@ public class legacyGL{
 		display.add(true);
 		String path2 = "Resource/Models/Move_000";
 		for (int i = 1; i < walkSize; i++){
-			String threeDigit = "";
+			String threeDigit;
 			if (i < 10) threeDigit = "00" + i;
 			else if (i < 100) threeDigit = "0" + i;
 			else threeDigit = Integer.toString(i);
-			walk.add(new MeshObject(path2 + threeDigit + ".obj", new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0), new Point3f(0.5f, 0.75f, 0.75f)));
-			objects.add(walk.get(i - 1));
+			MeshObject curWalk = new MeshObject(path2 + threeDigit + ".obj");
+			curWalk.translate(new Point3f(0, -1, -2));
+			curWalk.rotate(new Point4f(90, 0, 1, 0));
+			curWalk.scale(new Point3f(0.5f, 0.75f, 0.75f));
+			objects.add(curWalk);
 			display.add(i == 1);
 		}
 
@@ -102,7 +103,7 @@ public class legacyGL{
 		}
 	}
 
-	private void render() throws Exception{
+	private void render(){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -116,10 +117,9 @@ public class legacyGL{
         for (int i = 0; i < objects.size(); i++) if (display.get(i)) objects.get(i).draw();
 
         //Update the character animation
-        for (int i = 1; i < walkSize; i++){
-        	display.set(i, i == index);
-			//objects.get(i).translate(new Point3f(1, 0, 0));
-		}
-        index = index < walkSize - 1 ? index + 1 : 1;
+		display.set(index, false);
+		display.set(index == walkSize - 1 ? 1 : (index + 1), true);
+        for (int i = 1; i < walkSize; i++) display.set(i, i == index);
+		index = index < walkSize - 1 ? index + 1 : 1;
 	}
 }

@@ -31,24 +31,6 @@ public class MeshObject{
         read();
     }
 
-    public MeshObject(String filename, Point3f trans, Point4f rotate) throws Exception{
-        init();
-        this.filename = filename;
-        this.trans = trans;
-        this.rotate = rotate;
-        this.scale = new Point3f(1, 1, 1);
-        read();
-    }
-
-    public MeshObject(String filename, Point3f trans, Point4f rotate, Point3f scale) throws Exception{
-        init();
-        this.filename = filename;
-        this.trans = trans;
-        this.rotate = rotate;
-        this.scale = scale;
-        read();
-    }
-
     private void read() throws Exception{
         Scanner scan = new Scanner(new File(filename));
         while (scan.hasNextLine()){
