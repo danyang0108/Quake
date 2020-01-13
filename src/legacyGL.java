@@ -1,7 +1,9 @@
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -13,13 +15,13 @@ public class legacyGL{
 	private static final int WINDOW_WIDTH = 1366;
 	private static final int WINDOW_HEIGHT = 768;
 	private MeshObject MAP;
-	private ArrayList<MeshObject> objects = new ArrayList<>();
-	private ArrayList<Boolean> display = new ArrayList<>();
-	private float TX = 0, TY = 0, TZ = 0; //For actual translations
+	private Boolean[][] vis = new Boolean[24][21];
+	private ArrayList<MeshObject> enemy = new ArrayList<>();
+	private float TX = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
 	private ArrayList<Integer> enemyIndex = new ArrayList<>();
 	private ArrayList<Point3f> enemyMove = new ArrayList<>();
-	int index = 1;
+	private ArrayList<Point4f> enemyRotate = new ArrayList<>();
 	int walkSize = 100;
 
 	public static void main(String[] args) throws Exception{
@@ -82,20 +84,31 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
+		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
+		int counter = 0;
+		while (maze.hasNextLine()){
+			String[] line = maze.nextLine().split(" ");
+			for (int i = 0; i < line.length; i++) vis[counter][i] = Integer.parseInt(line[i]) == 1;
+			counter++;
+		}
+
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		String path2 = "Resource/Models/Move_000";
-		for (int i = 1; i < walkSize; i++){
+		for (int i = 1; i <= walkSize; i++){
 			String threeDigit;
 			if (i < 10) threeDigit = "00" + i;
 			else if (i < 100) threeDigit = "0" + i;
 			else threeDigit = Integer.toString(i);
-			MeshObject curWalk = new MeshObject(path2 + threeDigit + ".obj");
-			curWalk.translate(new Point3f(0, -1, 0));
-			curWalk.rotate(new Point4f(90, 0, 1, 0));
-			curWalk.scale(new Point3f(0.35f, 0.5f, 0.5f));
-			objects.add(curWalk);
-			display.add(i == 1);
+			MeshObject animation = new MeshObject(path2 + threeDigit + ".obj");
+			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
+			enemy.add(animation);
 		}
+		enemyIndex.add(1);
+		enemyMove.add(new Point3f(0, -1, -2));
+		enemyRotate.add(new Point4f(90, 0, 1, 0));
+		enemyIndex.add(70);
+		enemyMove.add(new Point3f(0, -1, 0));
+		enemyRotate.add(new Point4f(0, 0, 0, 0));
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -110,18 +123,22 @@ public class legacyGL{
 		glLoadIdentity();
 
 		Point3f move = new Control().movement(window, movement);
-		TX += move.x;
-		TY += move.y;
-		TZ += move.z;
-		glTranslatef(TX, TY, TZ);
+		int zed = Math.round(TZ + move.z) + 11;
+		int ex = Math.round(-TX - move.x) + 10;
+		if (vis[ex][zed]){
+			TX += move.x;
+			TZ += move.z;
+		}
+		//(10, 12) -> (-10, -11)
+		glTranslatef(TX, 0, TZ);
 
 		//Draw the objects
 		MAP.draw();
-        for (int i = 0; i < objects.size(); i++){
-			if (i != 0) objects.get(i).translate(new Point3f(0.01f, 0f, 0f));
-        	if (display.get(i)){
-        		objects.get(i).draw();
-			}
+		for (int i = 0; i < enemyIndex.size(); i++){
+			MeshObject temp = enemy.get(enemyIndex.get(i));
+			temp.translate(enemyMove.get(i));
+			temp.rotate(enemyRotate.get(i));
+			enemy.get(enemyIndex.get(i)).draw();
 		}
 
         //Update the character animation
@@ -129,9 +146,5 @@ public class legacyGL{
 			int index = enemyIndex.get(i);
 			enemyIndex.set(i, index == (walkSize - 1) ? 1 : (index + 1));
 		}
-		display.set(index, false);
-		display.set(index == walkSize - 2 ? 0 : (index + 1), true);
-        for (int i = 0; i < walkSize - 1; i++) display.set(i, i == index);
-		index = index < walkSize - 2 ? index + 1 : 1;
 	}
 }

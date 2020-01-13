@@ -73,22 +73,22 @@ public class MeshObject{
     }
 
     public void translate(Point3f trans){
-        this.trans.x += trans.x;
-        this.trans.y += trans.y;
-        this.trans.z += trans.z;
+        this.trans.x = trans.x;
+        this.trans.y = trans.y;
+        this.trans.z = trans.z;
     }
 
     public void rotate(Point4f rotate){
-        this.rotate.rot += rotate.rot;
-        this.rotate.x += rotate.x;
-        this.rotate.y += rotate.y;
-        this.rotate.z += rotate.z;
+        this.rotate.rot = rotate.rot;
+        this.rotate.x = rotate.x;
+        this.rotate.y = rotate.y;
+        this.rotate.z = rotate.z;
     }
 
     public void scale(Point3f scale){
-        this.scale.x *= scale.x;
-        this.scale.y *= scale.y;
-        this.scale.z *= scale.z;
+        this.scale.x = scale.x;
+        this.scale.y = scale.y;
+        this.scale.z = scale.z;
     }
 
     public void draw(){
