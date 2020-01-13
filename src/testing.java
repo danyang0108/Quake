@@ -20,7 +20,7 @@ public class testing {
 	private static final int WINDOW_HEIGHT = 800;
 	double fps = 50;
 	Texture tex;
-	
+	int charCnt = 0;
 	
 	
 	public void run()  {
@@ -158,10 +158,16 @@ public class testing {
 			tex.bind();
 			Colour c;
 			try {
-				c = tex.getPixel("Resource/Images/text.png",0, 0);
-				System.out.println(c.getR());
-				System.out.println(c.getG());
-				System.out.println(c.getB());
+				for (int i = 0; i < 308; i++) {
+					c = tex.getPixel("Resource/Images/text.png",i, 0);
+					if (c.getR() == 255f/256f) {
+						charCnt++;
+					}
+					//System.out.println(c.getR());
+					//System.out.println(c.getG());
+					//System.out.println(c.getB());
+				}
+				System.out.println(charCnt);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
