@@ -21,8 +21,8 @@ public class testing {
 	double fps = 50;
 	Texture tex;
 	int charCnt = 0;
-	
-	
+	Colour yellow = new Colour(255,255,0);
+	Colour blue = new Colour(0,0,255);
 	public void run()  {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
@@ -160,8 +160,11 @@ public class testing {
 			try {
 				for (int i = 0; i < 308; i++) {
 					c = tex.getPixel("Resource/Images/text.png",i, 0);
-					if (c.getR() == 255f/256f) {
+					if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
 						charCnt++;
+					}
+					if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
+						System.out.println("blue");
 					}
 					//System.out.println(c.getR());
 					//System.out.println(c.getG());
