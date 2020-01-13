@@ -16,6 +16,7 @@ public class legacyGL{
 	private ArrayList<Boolean> display = new ArrayList<>();
 	private float TX = 0, TY = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
+	private ArrayList<Integer> enemyIndex = new ArrayList<>();
 	int index = 1;
 	int walkSize = 2;
 
@@ -79,7 +80,7 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
-		String path1 = "Resource/Models/NMap.obj";
+		String path1 = "Resource/Models/Map.obj";
 		objects.add(new MeshObject(path1));
 		display.add(true);
 		String path2 = "Resource/Models/Move_000";
