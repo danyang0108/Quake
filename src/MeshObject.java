@@ -86,9 +86,9 @@ public class MeshObject{
     }
 
     public void scale(Point3f scale){
-        this.scale.x += scale.x;
-        this.scale.y += scale.y;
-        this.scale.z += scale.z;
+        this.scale.x *= scale.x;
+        this.scale.y *= scale.y;
+        this.scale.z *= scale.z;
     }
 
     public void draw(){

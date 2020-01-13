@@ -7,15 +7,13 @@ import org.lwjgl.BufferUtils;
 
 public class Texture{
     private int id;
-    private int[] pixels_raw;
-    private BufferedImage bi;
-    
+
     public Texture(String filename) throws Exception{
-        bi = ImageIO.read(new File(filename));
+        BufferedImage bi = ImageIO.read(new File(filename));
         int width = bi.getWidth();
         int height = bi.getHeight();
-        pixels_raw = bi.getRGB(0, 0, width, height, null, 0, width);
-        ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
+        int[] pixels_raw = bi.getRGB(0, 0, width, height, null, 0, width);
+        ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
         for (int i = 0; i < width; i++){
             for (int j = 0; j < height; j++){
                 if (i * height + j < pixels_raw.length){
@@ -38,7 +36,9 @@ public class Texture{
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, id);
     }
-    
+
+    /*
+    YOU REACH I TEACH
     public Colour getPixel(int x, int y) {
         ByteBuffer buffer = BufferUtils.createByteBuffer(bi.getWidth() *
           bi.getHeight() * 4); //4 for RGBA, 3 for RGB
@@ -54,4 +54,5 @@ public class Texture{
           return new Colour(0,0,0);
         }
     }
+     */
 }
