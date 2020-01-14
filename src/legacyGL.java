@@ -123,13 +123,12 @@ public class legacyGL{
 		glLoadIdentity();
 
 		Point3f move = new Control().movement(window, movement);
-		int zed = Math.round(TZ + move.z) + 11;
+		int zed = Math.round(-TZ - move.z) + 12;
 		int ex = Math.round(-TX - move.x) + 10;
-		if (vis[ex][zed]){
+		if (vis[zed][ex]){
 			TX += move.x;
 			TZ += move.z;
 		}
-		//(10, 12) -> (-10, -11)
 		glTranslatef(TX, 0, TZ);
 
 		//Draw the objects
