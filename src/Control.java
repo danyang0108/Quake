@@ -13,11 +13,11 @@ public class Control{
         return posX.get(0);
     }
 
-    public Point3f movement(long window, boolean[] movement){
+    public Point4f movement(long window, boolean[] movement){
         //Finds the x-value of the current position of the cursor on the screen.
         double WINDOW_WIDTH = 1366;
         double cycle = 360;
-        float tx = 0, ty = 0, tz = 0;
+        float tx = 0, tz = 0;
         float SEN = 0.05f, SED = SEN/(float)Math.sqrt(2);
         double dx = getCursorX(window) - WINDOW_WIDTH / 2;
         boolean FB = movement[0] || movement[1];
@@ -30,6 +30,7 @@ public class Control{
         double X2 = (FB ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
         double Z2 = (FB ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
         if (movement[4] && movement[5]){
+            //To disable sprint and crouch at the same time
             X1 *= slow;
             Z1 *= slow;
             X2 *= slow;
@@ -63,6 +64,6 @@ public class Control{
             tx -= X2;
             tz -= Z2;
         }
-        return new Point3f(tx, ty, tz);
+        return new Point4f((float)degreeX, tx, 0, tz);
     }
 }

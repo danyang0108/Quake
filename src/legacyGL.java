@@ -16,7 +16,7 @@ public class legacyGL{
 	private final int WINDOW_HEIGHT = 768;
 	private float lower = 0.15f;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP;
+	private MeshObject MAP, AMMO;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> enemy = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -99,6 +99,8 @@ public class legacyGL{
 		}
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
+		AMMO = new MeshObject("Resource/Models/M9A1.obj");
+		AMMO.scale(new Point3f(0.1f, 0.1f, 0.1f));
 		String path2 = "Resource/Models/Move_000";
 		for (int i = 180; i <= 180 + walkSize; i++){
 			String threeDigit;
@@ -112,9 +114,11 @@ public class legacyGL{
 		enemyIndex.add(0);
 		enemyMove.add(new Point3f(0, -1, -2));
 		enemyRotate.add(new Point4f(90, 0, 1, 0));
+		/*
 		enemyIndex.add(0);
 		enemyMove.add(new Point3f(0, -1, 0));
 		enemyRotate.add(new Point4f(0, 0, 0, 0));
+		 */
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -128,7 +132,7 @@ public class legacyGL{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		Point3f move = new Control().movement(window, movement);
+		Point4f move = new Control().movement(window, movement);
 		int Z = Math.round(-TZ - move.z) + fixZ;
 		int X = Math.round(-TX - move.x) + fixX;
 		if (vis[Z][X]){
@@ -142,11 +146,13 @@ public class legacyGL{
 				if (vis[Z][X]) TZ += move.z;
 			}
 		}
-		if (!movement[5]) glTranslatef(TX, 0, TZ);
-		else glTranslatef(TX, lower, TZ);
+		glTranslatef(TX, movement[5] ? lower : 0, TZ);
 
 		//Draw the objects
 		MAP.draw();
+		AMMO.translate(new Point3f(-TX-0.3f, -0.5f, -TZ-0.3f));
+		AMMO.rotate(new Point4f(-move.rot, 0, 1, 0));
+		AMMO.draw();
 		for (int i = 0; i < enemyIndex.size(); i++){
 			MeshObject temp = enemy.get(enemyIndex.get(i));
 			temp.translate(enemyMove.get(i));
