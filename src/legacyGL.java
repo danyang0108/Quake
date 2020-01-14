@@ -100,7 +100,7 @@ public class legacyGL{
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		AMMO = new MeshObject("Resource/Models/M9A1.obj");
-		AMMO.scale(new Point3f(0.1f, 0.1f, 0.1f));
+		AMMO.scale(new Point3f(0.09f, 0.09f, 0.09f));
 		String path2 = "Resource/Models/Move_000";
 		for (int i = 180; i <= 180 + walkSize; i++){
 			String threeDigit;
@@ -150,8 +150,8 @@ public class legacyGL{
 
 		//Draw the objects
 		MAP.draw();
-		AMMO.translate(new Point3f(-TX-0.3f, -0.5f, -TZ-0.3f));
-		AMMO.rotate(new Point4f(-move.rot, 0, 1, 0));
+		AMMO.rotate(new Point4f(-90-move.rot, 0, 1, 0));
+		AMMO.translate(new Point3f(-TX, -0.5f, -TZ));
 		AMMO.draw();
 		for (int i = 0; i < enemyIndex.size(); i++){
 			MeshObject temp = enemy.get(enemyIndex.get(i));
