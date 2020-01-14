@@ -128,6 +128,13 @@ public class legacyGL{
 		if (vis[zed][ex]){
 			TX += move.x;
 			TZ += move.z;
+		}else{
+			zed = Math.round(-TZ) + 12;
+			if (vis[zed][ex]) TX += move.x;
+			else{
+				ex = Math.round(-TX) + 10;
+				if (vis[zed][ex]) TZ += move.z;
+			}
 		}
 		glTranslatef(TX, 0, TZ);
 
