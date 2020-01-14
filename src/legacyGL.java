@@ -12,17 +12,19 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
 	private long window;
-	private static final int WINDOW_WIDTH = 1366;
-	private static final int WINDOW_HEIGHT = 768;
+	private final int WINDOW_WIDTH = 1366;
+	private final int WINDOW_HEIGHT = 768;
+	private float lower = 0.15f;
+	private int fixX = 10, fixZ = 12;
 	private MeshObject MAP;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> enemy = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
-	private boolean[] movement = new boolean[4]; //For keyboard controls (W, S, A, D)
+	private boolean[] movement = new boolean[6]; //For keyboard controls (W, S, A, D, SHIFT, CTRL)
 	private ArrayList<Integer> enemyIndex = new ArrayList<>();
 	private ArrayList<Point3f> enemyMove = new ArrayList<>();
 	private ArrayList<Point4f> enemyRotate = new ArrayList<>();
-	int walkSize = 100;
+	int walkSize = 2;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -43,12 +45,16 @@ public class legacyGL{
 				if (key == GLFW_KEY_S) movement[1] = true;
 				if (key == GLFW_KEY_A) movement[2] = true;
 				if (key == GLFW_KEY_D) movement[3] = true;
+				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = true;
+				if (key == GLFW_KEY_LEFT_CONTROL) movement[5] = true;
 			}else if (action == GLFW_RELEASE){
 				//A key is released
 				if (key == GLFW_KEY_W) movement[0] = false;
 				if (key == GLFW_KEY_S) movement[1] = false;
 				if (key == GLFW_KEY_A) movement[2] = false;
 				if (key == GLFW_KEY_D) movement[3] = false;
+				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = false;
+				if (key == GLFW_KEY_LEFT_CONTROL) movement[5] = false;
 			}
 		});
 		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
@@ -68,9 +74,9 @@ public class legacyGL{
 	}
 
 	// sets a perspective projection
-	private static void setPerspective(){
-		float near = 0.01f, far = 100f;
-		float v = -near * (float)Math.tan(Math.toRadians(30));
+	private void setPerspective(){
+		float near = 0.01f, far = 100f, perspective = 30;
+		float v = -near * (float)Math.tan(Math.toRadians(perspective));
 		//Note: Maximum 45 (Quake Pro), Minimum 20 (Zoomed In), Default 30
 		v *= (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 		glFrustum(v, -v, v, -v, near, far);
@@ -94,7 +100,7 @@ public class legacyGL{
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		String path2 = "Resource/Models/Move_000";
-		for (int i = 1; i <= walkSize; i++){
+		for (int i = 180; i <= 180 + walkSize; i++){
 			String threeDigit;
 			if (i < 10) threeDigit = "00" + i;
 			else if (i < 100) threeDigit = "0" + i;
@@ -103,10 +109,10 @@ public class legacyGL{
 			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
 			enemy.add(animation);
 		}
-		enemyIndex.add(1);
+		enemyIndex.add(0);
 		enemyMove.add(new Point3f(0, -1, -2));
 		enemyRotate.add(new Point4f(90, 0, 1, 0));
-		enemyIndex.add(70);
+		enemyIndex.add(0);
 		enemyMove.add(new Point3f(0, -1, 0));
 		enemyRotate.add(new Point4f(0, 0, 0, 0));
 
@@ -123,20 +129,21 @@ public class legacyGL{
 		glLoadIdentity();
 
 		Point3f move = new Control().movement(window, movement);
-		int zed = Math.round(-TZ - move.z) + 12;
-		int ex = Math.round(-TX - move.x) + 10;
-		if (vis[zed][ex]){
+		int Z = Math.round(-TZ - move.z) + fixZ;
+		int X = Math.round(-TX - move.x) + fixX;
+		if (vis[Z][X]){
 			TX += move.x;
 			TZ += move.z;
 		}else{
-			zed = Math.round(-TZ) + 12;
-			if (vis[zed][ex]) TX += move.x;
+			Z = Math.round(-TZ) + fixZ;
+			if (vis[Z][X]) TX += move.x;
 			else{
-				ex = Math.round(-TX) + 10;
-				if (vis[zed][ex]) TZ += move.z;
+				X = Math.round(-TX) + fixX;
+				if (vis[Z][X]) TZ += move.z;
 			}
 		}
-		glTranslatef(TX, 0, TZ);
+		if (!movement[5]) glTranslatef(TX, 0, TZ);
+		else glTranslatef(TX, lower, TZ);
 
 		//Draw the objects
 		MAP.draw();
@@ -150,7 +157,7 @@ public class legacyGL{
         //Update the character animation
 		for (int i = 0; i < enemyIndex.size(); i++){
 			int index = enemyIndex.get(i);
-			enemyIndex.set(i, index == (walkSize - 1) ? 1 : (index + 1));
+			enemyIndex.set(i, index == (walkSize - 1) ? 0 : (index + 1));
 		}
 	}
 }
