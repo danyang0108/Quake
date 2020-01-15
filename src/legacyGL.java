@@ -25,7 +25,16 @@ public class legacyGL{
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	int walkSize = 100;
 
+	Texture tex;
+	int charCnt = 0;
+	Colour yellow = new Colour(255,255,0);
+	Colour blue = new Colour(0,0,255);
+	int start = 0;
+	int end = 0;
+	
+	
 	public static void main(String[] args) throws Exception{
+		
 		new legacyGL().run();
 	}
 
@@ -175,5 +184,60 @@ public class legacyGL{
 
 		long after = System.nanoTime();
 		//System.out.println((double)(after-before)/1e9d);
+	}
+	public void drawText(String text, float x, float y, int fontSize) {
+		text = text.toUpperCase();
+		float startX = x, startY = y;
+		for (int i = 0; i < text.length(); i++) {
+			
+			
+			int ascii = (int)(text.charAt(i));
+			ascii -= 32;
+			charCnt = 0;
+			for (int j = 0; j < 308; j++) {
+				Colour c;
+				try {
+					c = tex.getPixel("Resource/Images/text.png",j, 0);
+					if (charCnt > ascii) break;
+					if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
+						charCnt++;
+						end = j;
+					}
+					if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
+						start = j+1;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			int x_length = end - start;
+			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
+			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
+			//System.out.println(startX + " " + startY + " " + endX + " " + endY);
+			//System.out.println(start + " " + end);
+			glBegin(GL_QUADS);
+			glTexCoord2f(start/308f,0);
+			glVertex3f(startX, startY, -2);
+			glTexCoord2f(end/308f,0);
+			glVertex3f(endX, startY, -2);
+			glTexCoord2f(end/308f,1f);
+			glVertex3f(endX, endY, -2);
+			glTexCoord2f(start/308f,1f);
+			glVertex3f(startX, endY, -2);
+			glEnd();
+			startX = endX;
+			//startY = endY;
+			/*glBegin(GL_QUADS);
+			glTexCoord2f(start/308f,0);
+			glVertex2f(startX, startY);
+			glTexCoord2f(end/308f,0);
+			glVertex2f(startX+0.04f, startY);
+			glTexCoord2f(end/308f,1f);
+			glVertex2f(startX+0.04f, 1f);
+			glTexCoord2f(start/308f,1f);
+			glVertex2f(startX, 1f);
+			glEnd();*/
+		}
 	}
 }

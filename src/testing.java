@@ -25,7 +25,7 @@ public class testing {
 	Colour blue = new Colour(0,0,255);
 	int start = 0;
 	int end = 0;
-	
+	int cnt = 0;
 	public void run()  {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
@@ -131,15 +131,15 @@ public class testing {
 		glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
 	    //setPerspective((float)(Math.toRadians(40)), WINDOW_WIDTH/WINDOW_HEIGHT, 0.01f, 100f);
-		
+	    setPerspective();
 		
 		glEnable(GL_TEXTURE_2D);	// enable texture mapping
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 		
 		// Load our textures
-
-
+		tex.bind();
+		
 		// Set the clear color
 		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
@@ -152,13 +152,15 @@ public class testing {
 			{
 				glfwSetWindowShouldClose(window, true);
 			}
+			
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
-
+			
+			
 			// draw your scene here...
-			tex.bind();
+			drawText(" h e l l o ",-0.8f,0,20);
 			/*Colour c;
 			try {
 				for (int i = 0; i < 308; i++) {
@@ -178,7 +180,7 @@ public class testing {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
-			drawText(" h e l l o  b o o m e r ! ",-0.75f,-0.5f);
+			
 			/*glBegin(GL_QUADS);
 			glTexCoord2f(32f/308f,0);
 			glVertex2f(-0.4f, 0.8f);
@@ -204,7 +206,7 @@ public class testing {
 	}
 
 										//-0.75,-0.5 
-	public void drawText(String text, float x, float y) {
+	public void drawText(String text, float x, float y, int fontSize) {
 		text = text.toUpperCase();
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++) {
@@ -231,19 +233,19 @@ public class testing {
 				}
 			}
 			int x_length = end - start;
-			float endX = (startX * WINDOW_WIDTH + x_length*20) / WINDOW_WIDTH;
-			float endY = (startY * WINDOW_HEIGHT - 6*20) / WINDOW_HEIGHT;
-			System.out.println(startX + " " + startY + " " + endX + " " + endY);
+			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
+			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
+			//System.out.println(startX + " " + startY + " " + endX + " " + endY);
 			//System.out.println(start + " " + end);
 			glBegin(GL_QUADS);
 			glTexCoord2f(start/308f,0);
-			glVertex2f(startX, startY);
+			glVertex3f(startX, startY, -2);
 			glTexCoord2f(end/308f,0);
-			glVertex2f(endX, startY);
+			glVertex3f(endX, startY, -2);
 			glTexCoord2f(end/308f,1f);
-			glVertex2f(endX, endY);
+			glVertex3f(endX, endY, -2);
 			glTexCoord2f(start/308f,1f);
-			glVertex2f(startX, endY);
+			glVertex3f(startX, endY, -2);
 			glEnd();
 			startX = endX;
 			//startY = endY;
@@ -259,4 +261,12 @@ public class testing {
 			glEnd();*/
 		}
 	}
+	private void setPerspective(){
+		float near = 0.01f, far = 100f, perspective = 30;
+		float v = -near * (float)Math.tan(Math.toRadians(perspective));
+		//Note: Maximum 45 (Quake Pro), Minimum 20 (Zoomed In), Default 30
+		v *= (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
+		glFrustum(v, -v, v, -v, near, far);
+	}
+
 }
