@@ -23,6 +23,9 @@ public class testing {
 	int charCnt = 0;
 	Colour yellow = new Colour(255,255,0);
 	Colour blue = new Colour(0,0,255);
+	int start = 0;
+	int end = 0;
+	
 	public void run()  {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
@@ -156,7 +159,7 @@ public class testing {
 
 			// draw your scene here...
 			tex.bind();
-			Colour c;
+			/*Colour c;
 			try {
 				for (int i = 0; i < 308; i++) {
 					c = tex.getPixel("Resource/Images/text.png",i, 0);
@@ -174,9 +177,9 @@ public class testing {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			
-			glBegin(GL_QUADS);
+			}*/
+			drawText(" h e l l o  b o o m e r ! ",-0.75f,-0.5f);
+			/*glBegin(GL_QUADS);
 			glTexCoord2f(32f/308f,0);
 			glVertex2f(-0.4f, 0.8f);
 			glTexCoord2f(35f/308f,0);
@@ -186,7 +189,7 @@ public class testing {
 			glTexCoord2f(32f/308f,1f);
 			glVertex2f(-0.4f, -0.8f);
 			
-			glEnd();
+			glEnd();*/
 			
 			glfwSwapBuffers(window); // swap the color buffers
 
@@ -200,4 +203,60 @@ public class testing {
 		new testing().run();
 	}
 
+										//-0.75,-0.5 
+	public void drawText(String text, float x, float y) {
+		text = text.toUpperCase();
+		float startX = x, startY = y;
+		for (int i = 0; i < text.length(); i++) {
+			
+			
+			int ascii = (int)(text.charAt(i));
+			ascii -= 32;
+			charCnt = 0;
+			for (int j = 0; j < 308; j++) {
+				Colour c;
+				try {
+					c = tex.getPixel("Resource/Images/text.png",j, 0);
+					if (charCnt > ascii) break;
+					if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
+						charCnt++;
+						end = j;
+					}
+					if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
+						start = j+1;
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			int x_length = end - start;
+			float endX = (startX * WINDOW_WIDTH + x_length*20) / WINDOW_WIDTH;
+			float endY = (startY * WINDOW_HEIGHT - 6*20) / WINDOW_HEIGHT;
+			System.out.println(startX + " " + startY + " " + endX + " " + endY);
+			//System.out.println(start + " " + end);
+			glBegin(GL_QUADS);
+			glTexCoord2f(start/308f,0);
+			glVertex2f(startX, startY);
+			glTexCoord2f(end/308f,0);
+			glVertex2f(endX, startY);
+			glTexCoord2f(end/308f,1f);
+			glVertex2f(endX, endY);
+			glTexCoord2f(start/308f,1f);
+			glVertex2f(startX, endY);
+			glEnd();
+			startX = endX;
+			//startY = endY;
+			/*glBegin(GL_QUADS);
+			glTexCoord2f(start/308f,0);
+			glVertex2f(startX, startY);
+			glTexCoord2f(end/308f,0);
+			glVertex2f(startX+0.04f, startY);
+			glTexCoord2f(end/308f,1f);
+			glVertex2f(startX+0.04f, 1f);
+			glTexCoord2f(start/308f,1f);
+			glVertex2f(startX, 1f);
+			glEnd();*/
+		}
+	}
 }
