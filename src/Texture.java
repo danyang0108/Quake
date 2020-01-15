@@ -1,4 +1,6 @@
 import static org.lwjgl.opengl.GL11.*;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +20,11 @@ public class Texture{
         for (int i = 0; i < width; i++){
             for (int j = 0; j < height; j++){
                 if (i * height + j < pixels_raw.length){
-                    int pixel = pixels_raw[i * height + j];
-                    pixels.put((byte)((pixel >> 16) & 0xFF));		// RED
-                    pixels.put((byte)((pixel >> 8) & 0xFF));		// GREEN
-                    pixels.put((byte)(pixel & 0xFF));				// BLUE
-                    pixels.put((byte)((pixel >> 24) & 0xFF));		// ALPHA
+                    Color temp = new Color(pixels_raw[i * height + j]);
+                    pixels.put((byte)temp.getRed());
+                    pixels.put((byte)temp.getGreen());
+                    pixels.put((byte)temp.getBlue());
+                    pixels.put((byte)temp.getAlpha());
                 }
             }
         }

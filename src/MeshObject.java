@@ -1,4 +1,10 @@
+import org.lwjgl.BufferUtils;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Scanner;
 import static org.lwjgl.opengl.GL11.*;
@@ -116,5 +122,44 @@ public class MeshObject{
             glEnd();
         }
         glPopMatrix();
+    }
+
+    public void showImage(){
+        BufferedImage test = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = test.createGraphics();
+        g2d.setColor(new Color(1f, 1f, 1f, 0.5f));
+        g2d.fillRect(0, 0, 128, 128);
+        g2d.setColor(Color.RED);
+        g2d.drawRect(0, 0, 127, 127);
+        g2d.fillRect(10, 10, 10, 10);
+        g2d.setColor(Color.BLUE);
+        g2d.drawString("PLEASE WORK", 10, 64);
+        int textureID = loadTexture(test);
+
+    }
+
+    public int loadTexture(BufferedImage image){
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[] pixels_raw = image.getRGB(0, 0, width, height, null, 0, width);
+        ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < height; j++){
+                if (i * height + j < pixels_raw.length){
+                    Color temp = new Color(pixels_raw[i * height + j]);
+                    pixels.put((byte)temp.getRed());
+                    pixels.put((byte)temp.getGreen());
+                    pixels.put((byte)temp.getBlue());
+                    pixels.put((byte)temp.getAlpha());
+                }
+            }
+        }
+        pixels.flip();
+        int id = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, id);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        return id;
     }
 }

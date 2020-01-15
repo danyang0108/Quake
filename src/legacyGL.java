@@ -21,8 +21,9 @@ public class legacyGL{
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[6]; //For keyboard controls (W, S, A, D, SHIFT, CTRL)
+	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
-	int walkSize = 2;
+	int walkSize = 100;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -31,6 +32,7 @@ public class legacyGL{
 	private void run() throws Exception{
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwInit();
+
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
 		//Called when there's keyboard activity
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -53,6 +55,18 @@ public class legacyGL{
 				if (key == GLFW_KEY_D) movement[3] = false;
 				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = false;
 				if (key == GLFW_KEY_LEFT_CONTROL) movement[5] = false;
+			}
+		});
+
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+			if (action == GLFW_PRESS || action == GLFW_REPEAT){
+				if (button == GLFW_MOUSE_BUTTON_LEFT){
+					mouse = true;
+				}
+			}else if (action == GLFW_RELEASE){
+				if (button == GLFW_MOUSE_BUTTON_LEFT){
+					mouse = false;
+				}
 			}
 		});
 		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
@@ -100,7 +114,7 @@ public class legacyGL{
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 		String path2 = "Resource/Models/Move_000";
-		for (int i = 180; i <= 180 + walkSize; i++){
+		for (int i = 1; i <= walkSize; i++){
 			String threeDigit;
 			if (i < 10) threeDigit = "00" + i;
 			else if (i < 100) threeDigit = "0" + i;
@@ -111,8 +125,6 @@ public class legacyGL{
 		}
 		Enemy first = new Enemy();
 		enemies.add(first);
-		Enemy second = new Enemy(new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0));
-		enemies.add(second);
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -123,6 +135,7 @@ public class legacyGL{
 	}
 
 	private void render(){
+		long before = System.nanoTime();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -142,10 +155,14 @@ public class legacyGL{
 		}
 		glTranslatef(TX, movement[5] ? lower : 0, TZ);
 
+		if (mouse){
+			System.out.println(move.rot); //Clockwise rotation
+		}
+
 		//Draw the objects
 		MAP.draw();
-		GUN.rotate(new Point4f(-90-move.rot, 0, 1, 0));
-		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
+		GUN.translate(new Point3f(-TX + 0.5f*(float)Math.sin(Math.toRadians(move.rot)), -0.5f, -TZ - 0.5f*(float)Math.cos(Math.toRadians(move.rot))));
+		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
 
 		for (Enemy E: enemies){
@@ -155,5 +172,8 @@ public class legacyGL{
 			temp.draw();
 			E.updateFrame(walkSize);
 		}
+
+		long after = System.nanoTime();
+		//System.out.println((double)(after-before)/1e9d);
 	}
 }
