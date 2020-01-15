@@ -25,4 +25,11 @@ public class Enemy{
 	public void findUser(double x, double y){
 		//Graph Theory Part
 	}
+
+	public boolean hit(double x, double y){
+		//(x, y) is the center point
+		//Hit range: circle of radius 0.2
+		//Equation: (x-shift.x)^2+(y-shift.z)^2<=0.2^2
+		return ((x - shift.x) * (x - shift.x) + (y - shift.z) * (y - shift.z) <= 0.04);
+	}
 }

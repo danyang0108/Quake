@@ -19,6 +19,7 @@ public class legacyGL{
 	private MeshObject MAP, GUN;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
+	private Scanner maze;
 	private float TX = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[6]; //For keyboard controls (W, S, A, D, SHIFT, CTRL)
 	private boolean mouse = false;
@@ -111,7 +112,7 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
-		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
+		maze = new Scanner(new File("Resource/Models/Map.txt"));
 		int counter = 0;
 		while (maze.hasNextLine()){
 			String[] line = maze.nextLine().split(" ");
@@ -165,11 +166,24 @@ public class legacyGL{
 		glTranslatef(TX, movement[5] ? lower : 0, TZ);
 
 		if (mouse){
-			System.out.println(move.rot); //Clockwise rotation
+			double faceX = 0.1 * Math.sin(Math.toRadians(-move.rot));
+			double faceY = 0.1 * Math.cos(Math.toRadians(-move.rot));
+			double curX = TX + faceX, curY = TZ + faceY;
+			System.err.println(curX + " " + faceX + " " + curY + " " + faceY);
+			while (inMap(curX, curY, faceX >= 0, faceY >= 0)){
+				for (Enemy E: enemies){
+					boolean check = E.hit(curX, curY);
+					if (check){
+						MAP.draw();
+					}
+				}
+				curX += faceX;
+				curY += faceY;
+			}
 		}
 
 		//Draw the objects
-		MAP.draw();
+		//MAP.draw();
 		GUN.translate(new Point3f(-TX + 0.5f*(float)Math.sin(Math.toRadians(move.rot)), -0.5f, -TZ - 0.5f*(float)Math.cos(Math.toRadians(move.rot))));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
@@ -239,5 +253,11 @@ public class legacyGL{
 			glVertex2f(startX, 1f);
 			glEnd();*/
 		}
+	}
+
+	public boolean inMap(double x, double y, boolean up, boolean left){
+		//Add: Wall Detection
+
+		return x >= -10 && x <= 10 && y >= -11 && y <= 12;
 	}
 }
