@@ -24,7 +24,16 @@ public class legacyGL{
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	int walkSize = 2;
 
+	Texture tex;
+	int charCnt = 0;
+	Colour yellow = new Colour(255,255,0);
+	Colour blue = new Colour(0,0,255);
+	int start = 0;
+	int end = 0;
+	
+	
 	public static void main(String[] args) throws Exception{
+		
 		new legacyGL().run();
 	}
 
@@ -156,7 +165,7 @@ public class legacyGL{
 			E.updateFrame(walkSize);
 		}
 	}
-		public void drawText(String text, float x, float y, int fontSize) {
+	public void drawText(String text, float x, float y, int fontSize) {
 		text = text.toUpperCase();
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++) {
