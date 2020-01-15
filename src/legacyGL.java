@@ -16,14 +16,12 @@ public class legacyGL{
 	private final int WINDOW_HEIGHT = 768;
 	private float lower = 0.15f;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP, AMMO;
+	private MeshObject MAP, GUN;
 	private Boolean[][] vis = new Boolean[24][21];
-	private ArrayList<MeshObject> enemy = new ArrayList<>();
+	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
 	private boolean[] movement = new boolean[6]; //For keyboard controls (W, S, A, D, SHIFT, CTRL)
-	private ArrayList<Integer> enemyIndex = new ArrayList<>();
-	private ArrayList<Point3f> enemyMove = new ArrayList<>();
-	private ArrayList<Point4f> enemyRotate = new ArrayList<>();
+	private ArrayList<Enemy> enemies = new ArrayList<>();
 	int walkSize = 2;
 
 	public static void main(String[] args) throws Exception{
@@ -99,8 +97,8 @@ public class legacyGL{
 		}
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
-		AMMO = new MeshObject("Resource/Models/M9A1.obj");
-		AMMO.scale(new Point3f(0.09f, 0.09f, 0.09f));
+		GUN = new MeshObject("Resource/Models/M9A1.obj");
+		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 		String path2 = "Resource/Models/Move_000";
 		for (int i = 180; i <= 180 + walkSize; i++){
 			String threeDigit;
@@ -109,16 +107,12 @@ public class legacyGL{
 			else threeDigit = Integer.toString(i);
 			MeshObject animation = new MeshObject(path2 + threeDigit + ".obj");
 			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
-			enemy.add(animation);
+			keyframes.add(animation);
 		}
-		enemyIndex.add(0);
-		enemyMove.add(new Point3f(0, -1, -2));
-		enemyRotate.add(new Point4f(90, 0, 1, 0));
-		/*
-		enemyIndex.add(0);
-		enemyMove.add(new Point3f(0, -1, 0));
-		enemyRotate.add(new Point4f(0, 0, 0, 0));
-		 */
+		Enemy first = new Enemy();
+		enemies.add(first);
+		Enemy second = new Enemy(new Point3f(0, -1, -2), new Point4f(90, 0, 1, 0));
+		enemies.add(second);
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -150,20 +144,16 @@ public class legacyGL{
 
 		//Draw the objects
 		MAP.draw();
-		AMMO.rotate(new Point4f(-90-move.rot, 0, 1, 0));
-		AMMO.translate(new Point3f(-TX, -0.5f, -TZ));
-		AMMO.draw();
-		for (int i = 0; i < enemyIndex.size(); i++){
-			MeshObject temp = enemy.get(enemyIndex.get(i));
-			temp.translate(enemyMove.get(i));
-			temp.rotate(enemyRotate.get(i));
-			enemy.get(enemyIndex.get(i)).draw();
-		}
+		GUN.rotate(new Point4f(-90-move.rot, 0, 1, 0));
+		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
+		GUN.draw();
 
-        //Update the character animation
-		for (int i = 0; i < enemyIndex.size(); i++){
-			int index = enemyIndex.get(i);
-			enemyIndex.set(i, index == (walkSize - 1) ? 0 : (index + 1));
+		for (Enemy E: enemies){
+			MeshObject temp = keyframes.get(E.frame);
+			temp.translate(E.shift);
+			temp.rotate(E.rotate);
+			temp.draw();
+			E.updateFrame(walkSize);
 		}
 	}
 }
