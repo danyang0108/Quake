@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class BFS {
-	
+	/*
 	static boolean[][] vis = new boolean[21][24];
 	static int[][] dis = new int[21][24];
 	static int d[][] = {{1,0},{-1,0},{0,-1},{0,1}};
@@ -75,5 +75,7 @@ public class BFS {
 		bfs(a,b);
 	}
 	
-	
+
+
+	 */
 }

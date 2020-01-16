@@ -75,6 +75,7 @@ public class legacyGL{
 		// your code to initialize the scene goes here...
 
 		GL.createCapabilities();
+		//tex = new Texture("Resource/Images/text.png");
 
 		glfwShowWindow(window);
 		loop();
@@ -126,15 +127,21 @@ public class legacyGL{
 		Enemy first = new Enemy();
 		enemies.add(first);
 
+		//tex.bind();
+
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
+			long before = System.nanoTime();
+			//drawText("W H A T", 0, 0, 100);
+			long after = System.nanoTime();
+			//System.out.println((after - before)/1e9d);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
 	}
 
-	private void render(){
+	private void render() throws Exception{
 		long before = System.nanoTime();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -216,7 +223,7 @@ public class legacyGL{
 			charCnt = 0;
 			for (int j = 0; j < 308; j++){
 				Colour c;
-				c = tex.getPixel("Resource/Images/text.png",j, 0);
+				c = tex.getPixel("Resource/Images/text.png", j, 0);
 				if (charCnt > ascii) break;
 				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
 					charCnt++;

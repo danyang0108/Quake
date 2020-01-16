@@ -10,7 +10,7 @@ import org.lwjgl.BufferUtils;
 
 public class Texture{
     private int id;
-    
+
     public Texture(String filename) throws Exception{
         BufferedImage bi = ImageIO.read(new File(filename));
         int width = bi.getWidth();
@@ -40,7 +40,7 @@ public class Texture{
         glBindTexture(GL_TEXTURE_2D, id);
     }
     
-    public Colour getPixel(String filename, int x, int y) throws Exception {
+    public Colour getPixel(String filename, int x, int y) throws Exception{
     	BufferedImage bi = ImageIO.read(new File(filename));
         ByteBuffer buffer = BufferUtils.createByteBuffer(bi.getWidth() *
           bi.getHeight() * 4); //4 for RGBA, 3 for RGB
