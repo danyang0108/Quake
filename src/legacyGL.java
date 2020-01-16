@@ -169,12 +169,12 @@ public class legacyGL{
 			double faceX = 0.1 * Math.sin(Math.toRadians(-move.rot));
 			double faceY = 0.1 * Math.cos(Math.toRadians(-move.rot));
 			double curX = TX + faceX, curY = TZ + faceY;
-			System.err.println(curX + " " + faceX + " " + curY + " " + faceY);
-			while (inMap(curX, curY, faceX >= 0, faceY >= 0)){
+			boolean cont = true;
+			while (inMap(curX, curY) && cont){
 				for (Enemy E: enemies){
-					boolean check = E.hit(curX, curY);
-					if (check){
+					if (E.hit(curX, curY)){
 						MAP.draw();
+						cont = false;
 					}
 				}
 				curX += faceX;
@@ -255,9 +255,8 @@ public class legacyGL{
 		}
 	}
 
-	public boolean inMap(double x, double y, boolean up, boolean left){
+	public boolean inMap(double x, double y){
 		//Add: Wall Detection
-
-		return x >= -10 && x <= 10 && y >= -11 && y <= 12;
+		return vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX] && x >= -10 && x <= 10 && y >= -11 && y <= 12;
 	}
 }
