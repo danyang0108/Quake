@@ -174,7 +174,9 @@ public class legacyGL{
 
 		//Draw the objects
 		MAP.draw();
-		GUN.translate(new Point3f(-TX + 0.5f*(float)Math.sin(Math.toRadians(move.rot)), -0.5f, -TZ - 0.5f*(float)Math.cos(Math.toRadians(move.rot))));
+		// + 0.5f*(float)Math.sin(Math.toRadians(move.rot))
+		// - 0.5f*(float)Math.cos(Math.toRadians(move.rot))
+		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
 
@@ -253,8 +255,10 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		boolean wall = vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX];
-		return wall && x >= -fixX && x <= fixX && y >= 1-fixZ && y <= fixZ;
+		if (x >= -fixX && x <= fixX && y >= 1-fixZ && y <= fixZ){
+			return vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX];
+		}
+		return false;
 	}
 
 	public boolean nearUser(double x, double y){
