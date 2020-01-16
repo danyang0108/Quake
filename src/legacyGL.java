@@ -173,7 +173,7 @@ public class legacyGL{
 			while (inMap(curX, curY) && cont){
 				for (Enemy E: enemies){
 					if (E.hit(curX, curY)){
-						MAP.draw();
+						E.health--;
 						cont = false;
 					}
 				}
@@ -183,12 +183,13 @@ public class legacyGL{
 		}
 
 		//Draw the objects
-		//MAP.draw();
+		MAP.draw();
 		GUN.translate(new Point3f(-TX + 0.5f*(float)Math.sin(Math.toRadians(move.rot)), -0.5f, -TZ - 0.5f*(float)Math.cos(Math.toRadians(move.rot))));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
 
 		for (Enemy E: enemies){
+			if (E.health <= 0) continue;
 			MeshObject temp = keyframes.get(E.frame);
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
