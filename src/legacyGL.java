@@ -253,8 +253,8 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		int FX = (int)Math.round(x);
-		int FY = (int)Math.round(y);
+		int FX = (int)Math.round(y);
+		int FY = (int)Math.round(x);
 		if (FX > -fixX && FX < fixX && FY > 1-fixZ && FY < fixZ){
 			return vis[FX + fixZ][FY + fixX];
 		}
