@@ -136,10 +136,7 @@ public class legacyGL{
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
-			long start = System.nanoTime();
 			drawText(" h o a n g ", 0, 0, 20);
-			long end = System.nanoTime();
-			System.err.println((end - start)/1e9d);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -256,10 +253,10 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		if (x > -fixX && x < fixX && y > 1-fixZ && y < fixZ) {
-			//System.out.print(((int)Math.ceil(y) + fixZ) + " ");
-			//System.out.println((int)Math.ceil(x) + fixX);
-			return vis[(int)Math.round(y) + fixZ][(int)Math.round(x) + fixX];
+		int FX = (int)Math.round(x);
+		int FY = (int)Math.round(y);
+		if (FX > -fixX && FX < fixX && FY > 1-fixZ && FY < fixZ){
+			return vis[FX + fixZ][FY + fixX];
 		}
 		return false;
 	}
