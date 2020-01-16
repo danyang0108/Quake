@@ -12,19 +12,15 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
 	private long window;
-	private final int WINDOW_WIDTH = 1366;
-	private final int WINDOW_HEIGHT = 768;
-	private float lower = 0.15f;
+	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
 	private MeshObject MAP, GUN;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
-	private Scanner maze;
 	private float TX = 0, TZ = 0; //For actual translations
-	private boolean[] movement = new boolean[6]; //For keyboard controls (W, S, A, D, SHIFT, CTRL)
+	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
-	int walkSize = 100;
 
 	Texture tex;
 	int charCnt = 0;
@@ -32,10 +28,8 @@ public class legacyGL{
 	Colour blue = new Colour(0,0,255);
 	int start = 0;
 	int end = 0;
-	
-	
+
 	public static void main(String[] args) throws Exception{
-		
 		new legacyGL().run();
 	}
 
@@ -56,7 +50,7 @@ public class legacyGL{
 				if (key == GLFW_KEY_A) movement[2] = true;
 				if (key == GLFW_KEY_D) movement[3] = true;
 				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = true;
-				if (key == GLFW_KEY_LEFT_CONTROL) movement[5] = true;
+				if (key == GLFW_KEY_LEFT_CONTROL) movement[4] = true;
 			}else if (action == GLFW_RELEASE){
 				//A key is released
 				if (key == GLFW_KEY_W) movement[0] = false;
@@ -64,7 +58,7 @@ public class legacyGL{
 				if (key == GLFW_KEY_A) movement[2] = false;
 				if (key == GLFW_KEY_D) movement[3] = false;
 				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = false;
-				if (key == GLFW_KEY_LEFT_CONTROL) movement[5] = false;
+				if (key == GLFW_KEY_LEFT_CONTROL) movement[4] = false;
 			}
 		});
 
@@ -112,7 +106,7 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
-		maze = new Scanner(new File("Resource/Models/Map.txt"));
+		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
 		int counter = 0;
 		while (maze.hasNextLine()){
 			String[] line = maze.nextLine().split(" ");
@@ -124,7 +118,8 @@ public class legacyGL{
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 		String path2 = "Resource/Models/Move_000";
-		for (int i = 1; i <= walkSize; i++){
+		int frames = 360; //There are 360 frames in total for enemy animation.
+		for (int i = 1; i <= frames; i++){
 			String threeDigit;
 			if (i < 10) threeDigit = "00" + i;
 			else if (i < 100) threeDigit = "0" + i;
@@ -163,7 +158,7 @@ public class legacyGL{
 				if (vis[Z][X]) TZ += move.z;
 			}
 		}
-		glTranslatef(TX, movement[5] ? lower : 0, TZ);
+		glTranslatef(TX, 0, TZ);
 
 		if (mouse){
 			double faceX = 0.1 * Math.sin(Math.toRadians(-move.rot));
@@ -188,49 +183,57 @@ public class legacyGL{
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
 
-		for (Enemy E: enemies){
-			if (E.health <= 0) continue;
-			MeshObject temp = keyframes.get(E.frame);
+		ArrayList<Integer> remove = new ArrayList<>();
+
+		for (int i = 0; i < enemies.size(); i++){
+			Enemy E = enemies.get(i);
+			if (E.health <= 0 && !E.dead){
+				//One time only
+				E.setChoice(2);
+				E.dead = true;
+			}
+			int choice = E.choice; //Which animation it's in
+			MeshObject temp;
+			if (choice == 0) temp = keyframes.get(E.WF);
+			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
+			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
-			E.updateFrame(walkSize);
+			//Display health bar
+
+			if (E.updateFrame()){
+				//The enemy is dead
+				remove.add(i);
+			}
 		}
+		for (int i: remove) enemies.remove(i);
 
 		long after = System.nanoTime();
-		//System.out.println((double)(after-before)/1e9d);
+		//System.err.println((double)(after-before)/1e9d);
 	}
-	public void drawText(String text, float x, float y, int fontSize) {
+
+	public void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
 		float startX = x, startY = y;
-		for (int i = 0; i < text.length(); i++) {
-			
-			
-			int ascii = (int)(text.charAt(i));
-			ascii -= 32;
+		for (int i = 0; i < text.length(); i++){
+			int ascii = text.charAt(i) - 32;
 			charCnt = 0;
-			for (int j = 0; j < 308; j++) {
+			for (int j = 0; j < 308; j++){
 				Colour c;
-				try {
-					c = tex.getPixel("Resource/Images/text.png",j, 0);
-					if (charCnt > ascii) break;
-					if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
-						charCnt++;
-						end = j;
-					}
-					if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
-						start = j+1;
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				c = tex.getPixel("Resource/Images/text.png",j, 0);
+				if (charCnt > ascii) break;
+				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
+					charCnt++;
+					end = j;
+				}
+				if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()){
+					start = j+1;
 				}
 			}
 			int x_length = end - start;
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
 			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
-			//System.out.println(startX + " " + startY + " " + endX + " " + endY);
-			//System.out.println(start + " " + end);
 			glBegin(GL_QUADS);
 			glTexCoord2f(start/308f,0);
 			glVertex3f(startX, startY, -2);
@@ -259,5 +262,9 @@ public class legacyGL{
 	public boolean inMap(double x, double y){
 		//Add: Wall Detection
 		return vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX] && x >= -10 && x <= 10 && y >= -11 && y <= 12;
+	}
+
+	public boolean nearUser(double x, double y){
+		return false;
 	}
 }

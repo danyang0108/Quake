@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 
 public class Control{
     private double fast = 1.5;
-    private double slow = 0.25;
 
     public double getCursorX(long window){
         DoubleBuffer posX = BufferUtils.createDoubleBuffer(1);
@@ -29,24 +28,12 @@ public class Control{
         double Z1 = (LR ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
         double X2 = (FB ? SED : SEN) * Math.cos(Math.toRadians(degreeX));
         double Z2 = (FB ? SED : SEN) * Math.sin(Math.toRadians(degreeX));
-        if (movement[4] && movement[5]){
+        if (movement[4]){
             //To disable sprint and crouch at the same time
-            X1 *= slow;
-            Z1 *= slow;
-            X2 *= slow;
-            Z2 *= slow;
-        }else if (movement[4]){
-            //Speed up
             X1 *= fast;
             Z1 *= fast;
             X2 *= fast;
             Z2 *= fast;
-        }else if (movement[5]){
-            //Crouch
-            X1 *= slow;
-            Z1 *= slow;
-            X2 *= slow;
-            Z2 *= slow;
         }
         if (movement[0]){
             tx -= X1;
