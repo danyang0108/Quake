@@ -1,5 +1,6 @@
 public class Enemy{
 	public final int WS = 100, PS = 80, DS = 180;
+	public boolean punch = false;
 	public boolean dead = false;
 	public int WF, PF, DF; //KeyFrame for walk, punch, despawn
 	public int choice; //Walk, Punch, Despawn
@@ -31,13 +32,17 @@ public class Enemy{
 	public boolean updateFrame(){
 		//0 is walk, 1 is punch, 2 is despawn
 		if (choice == 0) WF = (WF == WS - 1) ? 1 : (WF + 1);
-		if (choice == 1) PF = (PF == PS - 1) ? 1 : (PF + 1);
+		if (choice == 1){
+			if (PF == PS - 1){
+				//Punching is done; change to move first
+				//The main file would determine if the enemy should continue punching
+				setChoice(0);
+				punch = false;
+			}else PF++;
+			PF = (PF == PS - 1) ? 1 : (PF + 1);
+		}
 		if (choice == 2){
-			System.out.println("FRAME " + DF);
-			if (DF == DS - 1){
-				//Finished dying
-				return true;
-			}
+			if (DF == DS - 1) return true; //Finished dying
 			DF++;
 		}
 		return false;

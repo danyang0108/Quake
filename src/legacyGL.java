@@ -36,7 +36,6 @@ public class legacyGL{
 	private void run() throws Exception{
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwInit();
-
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);
 		//Called when there's keyboard activity
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
@@ -64,13 +63,9 @@ public class legacyGL{
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS || action == GLFW_REPEAT){
-				if (button == GLFW_MOUSE_BUTTON_LEFT){
-					mouse = true;
-				}
+				if (button == GLFW_MOUSE_BUTTON_LEFT) mouse = true;
 			}else if (action == GLFW_RELEASE){
-				if (button == GLFW_MOUSE_BUTTON_LEFT){
-					mouse = false;
-				}
+				if (button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
 			}
 		});
 		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
@@ -184,14 +179,16 @@ public class legacyGL{
 		GUN.draw();
 
 		ArrayList<Integer> remove = new ArrayList<>();
-
 		for (int i = 0; i < enemies.size(); i++){
 			Enemy E = enemies.get(i);
 			if (E.health <= 0 && !E.dead){
 				//One time only
 				E.setChoice(2);
 				E.dead = true;
-			}
+			}else if (nearUser(E.shift.x, E.shift.z) && !E.punch){
+				E.setChoice(1);
+				E.punch = true;
+			};
 			int choice = E.choice; //Which animation it's in
 			MeshObject temp;
 			if (choice == 0) temp = keyframes.get(E.WF);
@@ -201,11 +198,7 @@ public class legacyGL{
 			temp.rotate(E.rotate);
 			temp.draw();
 			//Display health bar
-
-			if (E.updateFrame()){
-				//The enemy is dead
-				remove.add(i);
-			}
+			if (E.updateFrame()) remove.add(i); //The enemy is dead
 		}
 		for (int i: remove) enemies.remove(i);
 
@@ -260,11 +253,12 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		//Add: Wall Detection
-		return vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX] && x >= -10 && x <= 10 && y >= -11 && y <= 12;
+		boolean wall = vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX];
+		return wall && x >= -fixX && x <= fixX && y >= 1-fixZ && y <= fixZ;
 	}
 
 	public boolean nearUser(double x, double y){
-		return false;
+		double enemyReach = 1.75;
+		return (x - TX) * (x - TX) + (y - TZ) * (y - TZ) <= enemyReach;
 	}
 }
