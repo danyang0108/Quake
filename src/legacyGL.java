@@ -255,14 +255,16 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		if (x >= -fixX && x <= fixX && y >= 1-fixZ && y <= fixZ){
-			return vis[(int)Math.ceil(y) + fixZ][(int)Math.ceil(x) + fixX];
+		int mapX = (int)Math.round(y);
+		int mapY = (int)Math.round(x);
+		if (mapX > -fixX && mapX < fixX && mapY > 1-fixZ && mapY < fixZ){
+			return vis[mapX + fixZ][mapY + fixX];
 		}
 		return false;
 	}
 
 	public boolean nearUser(double x, double y){
-		double enemyReach = 1.75;
+		double enemyReach = 1.75; //How far the enemy can reach
 		return (x - TX) * (x - TX) + (y - TZ) * (y - TZ) <= enemyReach;
 	}
 }
