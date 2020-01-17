@@ -42,8 +42,6 @@ public class TextureV2{
     }
     
     public Colour getPixel(int x, int y) throws Exception {
-        int width = bi.getWidth();
-        int height = bi.getHeight();
         if (y <= bi.getHeight() && x <= bi.getWidth()){
           int pixel = pixels_raw[y * bi.getWidth() + x];
           int r=(pixel >> 16) & 0xFF;     // Red 
@@ -54,5 +52,36 @@ public class TextureV2{
         else{
           return new Colour(0,0,0);
         }
+    }
+    
+    public void setPixel(int col) throws Exception {
+    	int width = bi.getWidth();
+    	int height = bi.getHeight();
+    	for (int i = 0; i < width; i++) {
+    		for (int j = 0; j < height; j++) {
+    			Colour c = getPixel(i,j);
+    			if (c.getR() == 255.0/256 && c.getG() == 0 && c.getR() == 255.0/256) {
+    				pixels_raw[j * bi.getWidth() + i] = col;
+    			}
+    		}
+    	}
+    	ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < height; j++){
+                if (i * height + j < pixels_raw.length){
+                    Color temp = new Color(pixels_raw[i * height + j]);
+                    pixels.put((byte)temp.getRed());
+                    pixels.put((byte)temp.getGreen());
+                    pixels.put((byte)temp.getBlue());
+                    pixels.put((byte)temp.getAlpha());
+                }
+            }
+        }
+        pixels.flip();
+        id = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, id);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
 }

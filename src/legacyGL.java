@@ -72,7 +72,7 @@ public class legacyGL{
 
 		GL.createCapabilities();
 		tex = new TextureV2("Resource/Images/text.png");
-		
+		tex.setPixel(0);
 		glfwShowWindow(window);
 		loop();
 		glfwFreeCallbacks(window);

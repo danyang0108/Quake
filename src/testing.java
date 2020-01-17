@@ -19,7 +19,7 @@ public class testing {
 	private static final int WINDOW_WIDTH = 800;
 	private static final int WINDOW_HEIGHT = 800;
 	double fps = 50;
-	Texture tex;
+	TextureV2 tex;
 	int charCnt = 0;
 	Colour yellow = new Colour(255,255,0);
 	Colour blue = new Colour(0,0,255);
@@ -41,7 +41,8 @@ public class testing {
 		//TEXTURES
 		
 		try {
-			tex = new Texture("Resource/Images/text.png");
+			tex = new TextureV2("Resource/Images/text.png");
+			tex.setPixel(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("I want to die");
@@ -160,6 +161,7 @@ public class testing {
 			
 			
 			// draw your scene here...
+			
 			drawText(" h e l l o ",-0.8f,0,20);
 			/*Colour c;
 			try {
@@ -218,7 +220,7 @@ public class testing {
 			for (int j = 0; j < 308; j++) {
 				Colour c;
 				try {
-					c = tex.getPixel("Resource/Images/text.png",j, 0);
+					c = tex.getPixel(j, 0);
 					if (charCnt > ascii) break;
 					if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
 						charCnt++;
@@ -226,6 +228,9 @@ public class testing {
 					}
 					if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
 						start = j+1;
+					}
+					if (j == 2) {
+						System.out.println(c.getR() + " " + c.getG() + " " + c.getB());
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
