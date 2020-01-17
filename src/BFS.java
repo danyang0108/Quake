@@ -7,28 +7,26 @@ public class BFS{
 	private boolean[][] vis = new boolean[21][24];
 	private int[][] dis = new int[21][24];
 	private int[][] d = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
-	private MyArrayQueue<MyNode<Point2f>> q = new MyArrayQueue<>();
+	private Queue<Point2f> q = new Queue<>();
 	private boolean[][] adj_matrix = new boolean[21][24];
 	
 	public void bfs(Point2f start, Point2f end){
-		q.enqueue(new MyNode(start));
+		q.enqueue(start);
 		vis[start.x][start.y] = true;
 		dis[start.x][start.y] = 0;
 		while (!q.isEmpty()){
-			Node<MyNode<Point2f>> cur = q.dequeue();
-			Point2f p = cur.getValue().getValue();
-
+			Point2f cur = q.dequeue();
 		    for (int i = 0; i < 4; i++){
-		      int nx = p.x + d[i][0];
-		      int ny = p.y + d[i][1];
+		      int nx = cur.x + d[i][0];
+		      int ny = cur.y + d[i][1];
 		      if (nx >= 0 && nx < 21 && ny >= 0 && ny < 24 && !vis[nx][ny] && adj_matrix[nx][ny]){
 		        Point2f nextp = new Point2f(nx, ny);
-		    	q.enqueue(new MyNode(nextp));
+		    	q.enqueue(nextp);
 		        vis[nx][ny] = true;
-		        dis[nx][ny] = dis[p.x][p.y] + 1;
+		        dis[nx][ny] = dis[cur.x][cur.y] + 1;
 		      }
 		    }
-			if (p == end) {
+			if (cur == end) {
 				
 			}
 		}

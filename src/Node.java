@@ -1,29 +1,13 @@
-public interface Node<T> {
+public class Node<T>{
+    private T data; //Make the data any type, so the node can contain any data
 
-    public T getValue();
+    public Node(T n){
+        //Assigns the value of the node
+        data = n;
+    }
 
-    public void setValue(T n);
-
-    /*
-     * Sets the next node reference
-     */
-    public void setNext(Node<T> n);
-
-    /*
-     * Sets the previous node reference
-     */
-    public void setPrev(Node<T> n);
-
-    /*
-     * Returns a reference to the next node
-     */
-    public Node<T> getNext();
-
-    /*
-     * Returns a reference to the previous node
-     */
-    public Node<T> getPrev();
-
-    public String toString();
-
+    public T getValue(){
+        //Returns the value of the node, in type T
+        return data;
+    }
 }

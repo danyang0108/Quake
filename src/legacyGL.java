@@ -2,8 +2,8 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -168,7 +168,8 @@ public class legacyGL{
 			double curX = TX + faceX, curY = TZ + faceY;
 			boolean cont = true;
 			while (inMap(curX, curY) && cont){
-				for (Enemy E: enemies){
+				for (int i = 0; i < enemies.size(); i++){
+					Enemy E = enemies.get(i);
 					if (E.hit(curX, curY)){
 						E.health--;
 						cont = false;
@@ -210,7 +211,7 @@ public class legacyGL{
 			//Display health bar
 			if (E.updateFrame()) remove.add(i); //The enemy is dead
 		}
-		for (int i: remove) enemies.remove(i);
+		for (int i: remove) enemies.remove(i); //Remove dead enemies
 	}
 
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
