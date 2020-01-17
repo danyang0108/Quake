@@ -132,10 +132,12 @@ public class legacyGL{
 		}
 		Enemy first = new Enemy();
 		enemies.add(first);
-		tex.bind();
+		
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
 			render();
+			tex.bind();
 			drawText(" h o a n g ", 0, 0, 20);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
