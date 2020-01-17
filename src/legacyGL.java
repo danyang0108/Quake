@@ -108,7 +108,7 @@ public class legacyGL{
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
-		KIT = new MeshObject("Resource/Models/Ammo.obj");
+		KIT = new MeshObject("Resource/Models/MedKit.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 
 		long START = System.nanoTime();
@@ -129,7 +129,7 @@ public class legacyGL{
 		System.out.println("TIME: " + (END - START) / 1e9d);
 
 		Enemy first = new Enemy();
-		enemies.add(first);
+		//enemies.add(first);
 		Enemy second = new Enemy(new Point3f(1, -1, 5), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
 		
@@ -153,12 +153,35 @@ public class legacyGL{
 		if (vis[Z][X]){
 			TX += move.x;
 			TZ += move.z;
+			for (Enemy E: enemies){
+				if (nearEnemy(E.shift.x, E.shift.z)){
+					TX -= move.x;
+					TZ -= move.z;
+					break;
+				}
+			}
 		}else{
 			Z = Math.round(-TZ) + fixZ;
-			if (vis[Z][X]) TX += move.x;
+			if (vis[Z][X]){
+				TX += move.x;
+				for (Enemy E: enemies){
+					if (nearEnemy(E.shift.x, E.shift.z)){
+						TX -= move.x;
+						break;
+					}
+				}
+			}
 			else{
 				X = Math.round(-TX) + fixX;
-				if (vis[Z][X]) TZ += move.z;
+				if (vis[Z][X]){
+					TZ += move.z;
+					for (Enemy E: enemies){
+						if (nearEnemy(E.shift.x, E.shift.z)){
+							TZ -= move.z;
+							break;
+						}
+					}
+				}
 			}
 		}
 		glTranslatef(TX, 0, TZ);
@@ -257,7 +280,12 @@ public class legacyGL{
 	}
 
 	public boolean nearUser(double x, double y){
-		double enemyReach = 1.75;
-		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= enemyReach;
+		double enemyReach = 1.5;
+		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= enemyReach * enemyReach;
+	}
+
+	public boolean nearEnemy(double x, double y){
+		double userReach = 1.0;
+		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= userReach * userReach;
 	}
 }
