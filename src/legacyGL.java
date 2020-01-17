@@ -258,6 +258,6 @@ public class legacyGL{
 
 	public boolean nearUser(double x, double y){
 		double enemyReach = 1.75;
-		return (x - TX) * (x - TX) + (y - TZ) * (y - TZ) <= enemyReach;
+		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= enemyReach;
 	}
 }
