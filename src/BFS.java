@@ -8,6 +8,7 @@ public class BFS{
 
 	private boolean[][] vis = new boolean[HEIGHT][WIDTH];
 	private int[][] dis = new int[HEIGHT][WIDTH];
+	private Point2f[][] prev = new Point2f[HEIGHT][WIDTH];
 	private int[][] d = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 	private Queue<Point2f> q = new Queue<>();
 	private boolean[][] wall = new boolean[HEIGHT][WIDTH];
@@ -18,7 +19,15 @@ public class BFS{
 		dis[start.x][start.y] = 0;
 		while (!q.isEmpty()){
 			Point2f cur = q.dequeue();
-			if (cur.x == end.x && cur.y == end.y) return dis[end.x][end.y];
+			if (cur.x == end.x && cur.y == end.y){
+				//Backtrack to the original point
+				Point2f backtrack = new Point2f(end.x, end.y);
+				while (prev[backtrack.x][backtrack.y].x != start.x || prev[backtrack.x][backtrack.y].y != start.y){
+					backtrack = prev[backtrack.x][backtrack.y];
+				}
+				System.out.println(backtrack.x + " " + backtrack.y);
+				return dis[end.x][end.y];
+			}
 		    for (int i = 0; i < 4; i++){
 		      int nx = cur.x + d[i][0];
 		      int ny = cur.y + d[i][1];
@@ -28,6 +37,7 @@ public class BFS{
 		    	q.enqueue(new Point2f(nx, ny));
 		        vis[nx][ny] = true;
 		        dis[nx][ny] = dis[cur.x][cur.y] + 1;
+		        prev[nx][ny] = cur;
 		      }
 		    }
 		}
