@@ -14,7 +14,7 @@ public class legacyGL{
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP, GUN;
+	private MeshObject MAP, GUN, KIT;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -108,6 +108,7 @@ public class legacyGL{
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
+		KIT = new MeshObject("Resource/Models/Ammo.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 
 		long START = System.nanoTime();
@@ -125,10 +126,10 @@ public class legacyGL{
 		}
 
 		long END = System.nanoTime();
-		System.err.println((END - START) / 1e9d);
+		System.out.println("TIME: " + (END - START) / 1e9d);
 
-		//Enemy first = new Enemy();
-		//enemies.add(first);
+		Enemy first = new Enemy();
+		enemies.add(first);
 		Enemy second = new Enemy(new Point3f(1, -1, 5), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
 		
@@ -185,6 +186,7 @@ public class legacyGL{
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
+		KIT.draw();
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
@@ -246,8 +248,8 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double y){
-		int FX = (int)Math.round(y);
-		int FY = (int)Math.round(x);
+		int FX = -(int)Math.round(y);
+		int FY = -(int)Math.round(x);
 		if (FX > -fixX && FX < fixX && FY > 1-fixZ && FY < fixZ){
 			return vis[FX + fixZ][FY + fixX];
 		}
