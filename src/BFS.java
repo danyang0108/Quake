@@ -10,7 +10,7 @@ public class BFS{
 	private int[][] dis = new int[HEIGHT][WIDTH];
 	private int[][] d = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 	private Queue<Point2f> q = new Queue<>();
-	private boolean[][] adj_matrix = new boolean[HEIGHT][WIDTH];
+	private boolean[][] wall = new boolean[HEIGHT][WIDTH];
 	
 	public int bfs(Point2f start, Point2f end){
 		q.enqueue(start);
@@ -24,7 +24,7 @@ public class BFS{
 		      int ny = cur.y + d[i][1];
 		      if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT){
 		      	if (vis[nx][ny]) continue; //Already visited
-		      	if (!adj_matrix[nx][ny]) continue; //Wall
+		      	if (!wall[nx][ny]) continue; //Wall
 		    	q.enqueue(new Point2f(nx, ny));
 		        vis[nx][ny] = true;
 		        dis[nx][ny] = dis[cur.x][cur.y] + 1;
@@ -41,7 +41,7 @@ public class BFS{
         while (scan.hasNextLine()){
             String[] line = scan.nextLine().split(" ");
             for (int i = 0; i < line.length; i++){
-                adj_matrix[j][i] = Integer.parseInt(line[i]) == 1;
+                wall[j][i] = Integer.parseInt(line[i]) == 1;
             }
             j++;
        }
