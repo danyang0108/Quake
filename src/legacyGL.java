@@ -189,9 +189,6 @@ public class legacyGL{
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
 			Enemy E = enemies.get(i);
-			Point3f enemyPos = E.shift;
-			if (E.health > 0) enemyPos.z += 0.01;
-			E.shift = enemyPos;
 			if (E.health <= 0 && !E.dead){
 				//One time only
 				E.setChoice(2);
