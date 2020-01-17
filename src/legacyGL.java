@@ -24,10 +24,9 @@ public class legacyGL{
 
 	TextureV2 tex;
 	int charCnt = 0;
-	Colour yellow = new Colour(255,255,0);
-	Colour blue = new Colour(0,0,255);
-	int start = 0;
-	int end = 0;
+	Colour yellow = new Colour(255, 255, 0);
+	Colour blue = new Colour(0, 0, 255);
+	int start = 0, end = 0;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -48,7 +47,6 @@ public class legacyGL{
 				if (key == GLFW_KEY_S) movement[1] = true;
 				if (key == GLFW_KEY_A) movement[2] = true;
 				if (key == GLFW_KEY_D) movement[3] = true;
-				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = true;
 				if (key == GLFW_KEY_LEFT_CONTROL) movement[4] = true;
 			}else if (action == GLFW_RELEASE){
 				//A key is released
@@ -56,7 +54,6 @@ public class legacyGL{
 				if (key == GLFW_KEY_S) movement[1] = false;
 				if (key == GLFW_KEY_A) movement[2] = false;
 				if (key == GLFW_KEY_D) movement[3] = false;
-				if (key == GLFW_KEY_LEFT_SHIFT) movement[4] = false;
 				if (key == GLFW_KEY_LEFT_CONTROL) movement[4] = false;
 			}
 		});
@@ -72,16 +69,9 @@ public class legacyGL{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
-		// your code to initialize the scene goes here...
 
 		GL.createCapabilities();
-		try {
-			tex = new TextureV2("Resource/Images/text.png");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			System.out.println("I want to die");
-			e.printStackTrace();
-		}
+		tex = new TextureV2("Resource/Images/text.png");
 		
 		glfwShowWindow(window);
 		loop();
@@ -119,6 +109,9 @@ public class legacyGL{
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
+
+		long START = System.nanoTime();
+
 		String path2 = "Resource/Models/Move_000";
 		int frames = 360; //There are 360 frames in total for enemy animation.
 		for (int i = 1; i <= frames; i++){
@@ -130,12 +123,17 @@ public class legacyGL{
 			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
 			keyframes.add(animation);
 		}
+
+		long END = System.nanoTime();
+		System.err.println((END - START) / 1e9d);
+
 		Enemy first = new Enemy();
 		enemies.add(first);
+		Enemy second = new Enemy(new Point3f(0, -1, -2), new Point4f(0, 0, 0, 0));
+		enemies.add(second);
 		
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
 			render();
 			tex.bind();
 			drawText(" h o a n g ", 0, 0, 20);
@@ -145,7 +143,6 @@ public class legacyGL{
 	}
 
 	private void render(){
-		long before = System.nanoTime();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -184,8 +181,6 @@ public class legacyGL{
 
 		//Draw the objects
 		MAP.draw();
-		// + 0.5f*(float)Math.sin(Math.toRadians(move.rot))
-		// - 0.5f*(float)Math.cos(Math.toRadians(move.rot))
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
@@ -213,9 +208,6 @@ public class legacyGL{
 			if (E.updateFrame()) remove.add(i); //The enemy is dead
 		}
 		for (int i: remove) enemies.remove(i);
-
-		long after = System.nanoTime();
-		//System.err.println((double)(after-before)/1e9d);
 	}
 
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
@@ -225,8 +217,7 @@ public class legacyGL{
 			int ascii = text.charAt(i) - 32;
 			charCnt = 0;
 			for (int j = 0; j < 308; j++){
-				Colour c;
-				c = tex.getPixel(j, 0);
+				Colour c = tex.getPixel(j, 0);
 				if (charCnt > ascii) break;
 				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
 					charCnt++;
@@ -250,7 +241,6 @@ public class legacyGL{
 			glVertex3f(startX, endY, -2);
 			glEnd();
 			startX = endX;
-		
 		}
 	}
 
