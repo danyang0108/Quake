@@ -127,9 +127,9 @@ public class legacyGL{
 		long END = System.nanoTime();
 		System.err.println((END - START) / 1e9d);
 
-		Enemy first = new Enemy();
-		enemies.add(first);
-		Enemy second = new Enemy(new Point3f(0, -1, -2), new Point4f(0, 0, 0, 0));
+		//Enemy first = new Enemy();
+		//enemies.add(first);
+		Enemy second = new Enemy(new Point3f(1, -1, 5), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
 		
 		while (!glfwWindowShouldClose(window)){

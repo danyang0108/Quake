@@ -20,7 +20,7 @@ public class Enemy{
 		choice = 0;
 		WF = PF = DF = 1;
 		health = 100;
-		this.shift = shift;
+		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 		this.rotate = rotate;
 	}
 
@@ -55,7 +55,6 @@ public class Enemy{
 	public boolean hit(double x, double y){
 		//(x, y) is the center point
 		//Hit range: circle of radius 0.2
-		//Equation: (x-shift.x)^2+(y-shift.z)^2<=0.2^2
-		return ((x - shift.x) * (x - shift.x) + (y - shift.z) * (y - shift.z) <= 0.04);
+		return ((x + shift.x) * (x + shift.x) + (y + shift.z) * (y + shift.z) <= 0.04);
 	}
 }
