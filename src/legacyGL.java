@@ -134,10 +134,13 @@ public class legacyGL{
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glPushMatrix();
+			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			tex.bind();
 			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -TX, -0.1f, 6);
 			drawText(" a m m o :  2 0 / 8 0         ", -TX, -0.25f, 5);
+			glPopMatrix();
 			render();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
