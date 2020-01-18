@@ -16,6 +16,20 @@ public class BFS{
 	public BFS() throws Exception{
 		readFile("Resource/Models/Map.txt");
 	}
+
+	public void readFile(String fileName) throws Exception{
+		Scanner scan = new Scanner(new File(fileName));
+		//read the x and y coordinates on each line of the file and store them in ArrayLists
+		int j = 0;
+		while (scan.hasNextLine()){
+			String[] line = scan.nextLine().split(" ");
+			for (int i = 0; i < line.length; i++){
+				wall[j][i] = Integer.parseInt(line[i]) == 1;
+			}
+			j++;
+		}
+		scan.close();
+	}
 	
 	public Point2f bfs(Point2f start, Point2f end){
 		q.enqueue(start);
@@ -34,7 +48,7 @@ public class BFS{
 		    for (int i = 0; i < 4; i++){
 		      int nx = cur.x + d[i][0];
 		      int ny = cur.y + d[i][1];
-		      if (nx >= 0 && nx < WIDTH && ny >= 0 && ny < HEIGHT){
+		      if (nx >= 0 && nx < HEIGHT && ny >= 0 && ny < WIDTH){
 		      	if (vis[nx][ny]) continue; //Already visited
 		      	if (!wall[nx][ny]) continue; //Wall
 		    	q.enqueue(new Point2f(nx, ny));
@@ -45,27 +59,5 @@ public class BFS{
 		    }
 		}
 		return new Point2f(-1, -1);
-	}
-	
-	public void readFile(String fileName) throws Exception{
-		Scanner scan = new Scanner(new File(fileName));
-        //read the x and y coordinates on each line of the file and store them in ArrayLists
-        int j = 0;
-        while (scan.hasNextLine()){
-            String[] line = scan.nextLine().split(" ");
-            for (int i = 0; i < line.length; i++){
-                wall[j][i] = Integer.parseInt(line[i]) == 1;
-            }
-            j++;
-       }
-       scan.close();
-	}
-	
-	public static void main(String[] args) throws Exception{
-	    BFS lol = new BFS();
-		lol.readFile("Resource/Models/Map.txt");
-		Point2f a = new Point2f(1, 2);
-		Point2f b = new Point2f(11, 11);
-		System.out.println(lol.bfs(a,b));
 	}
 }

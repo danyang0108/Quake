@@ -14,7 +14,7 @@ public class legacyGL{
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP, GUN, KIT;
+	private MeshObject MAP, GUN;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -107,10 +107,8 @@ public class legacyGL{
 			counter++;
 		}
 
-		MAP = new MeshObject("Resource/Models/untitled.obj");
-		MAP.scale(new Point3f(0.05f, 0.05f, 0.05f));
+		MAP = new MeshObject("Resource/Models/Map.obj");
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
-		KIT = new MeshObject("Resource/Models/MedKit.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 
 		long START = System.nanoTime();
@@ -132,7 +130,7 @@ public class legacyGL{
 
 		Enemy first = new Enemy();
 		//enemies.add(first);
-		Enemy second = new Enemy(new Point3f(1, -1, 5), new Point4f(0, 0, 0, 0));
+		Enemy second = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
 		
 		while (!glfwWindowShouldClose(window)){
@@ -173,8 +171,7 @@ public class legacyGL{
 						break;
 					}
 				}
-			}
-			else{
+			}else{
 				X = Math.round(-TX) + fixX;
 				if (vis[Z][X]){
 					TZ += move.z;
@@ -211,7 +208,6 @@ public class legacyGL{
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
 		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
 		GUN.draw();
-		KIT.draw();
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
@@ -229,11 +225,10 @@ public class legacyGL{
 			if (choice == 0) temp = keyframes.get(E.WF);
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
-			System.out.println("USER: " + (Math.round(TZ) + fixZ) + " " + Math.round(TX) + fixX);
-			Point2f userRounded = roundUser(Math.round(TZ) + fixZ, Math.round(TX) + fixX);
+			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
 			Point2f answer = E.findUser(userRounded.x, userRounded.y);
+			System.out.println("ANSWER: " + answer.x + " " + answer.y);
 			//PROBLEM: user position is rounded into wall positions
-			//System.out.println("ANS: " + answer.x + " " + answer.y);
 
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
@@ -298,18 +293,97 @@ public class legacyGL{
 	}
 
 	public Point2f roundUser(double x, double z){
-		//Check the 4 directions
 		//NOTE: +LEFT, +UP
 		double fracX = x - Math.floor(x); //From point to right
 		double fracZ = z - Math.floor(z); //From point to bottom
 		double smallX = Math.abs(0.5 - fracX);
 		double smallZ = Math.abs(0.5 - fracZ);
-		double actualX, actualZ;
-		if (fracX <= 0.5 && fracZ  <= 0.5){
-			//Bottom-Right section
-			actualX = Math.floor(x);
-			actualZ = Math.floor(z);
+		int actualX, actualZ;
+		if (fracX < 0.5){
+			if (fracZ < 0.5){
+				//Bottom-Right section
+				//First quadrant check
+				actualX = (int)Math.floor(x);
+				actualZ = (int)Math.floor(z);
+				if (vis[actualX][actualZ]) return new Point2f(actualX, actualZ);
+				//Check the rest of the quadrants
+				if (smallX <= smallZ){
+					//Bottom-Left
+					if (vis[actualX + 1][actualZ]) return new Point2f(actualX + 1, actualZ);
+					//Top-Right
+					if (vis[actualX][actualZ + 1]) return new Point2f(actualX, actualZ + 1);
+				}else{
+					//Top-Right
+					if (vis[actualX][actualZ + 1]) return new Point2f(actualX, actualZ + 1);
+					//Bottom-Left
+					if (vis[actualX + 1][actualZ]) return new Point2f(actualX + 1, actualZ);
+				}
+				//Corner
+				if (vis[actualX + 1][actualZ + 1]) return new Point2f(actualX + 1, actualZ + 1);
+				else return new Point2f(-1, -1); //SHOULD NOT REACH
+			}else{
+				//Top-Right Section
+				actualX = (int)Math.floor(x);
+				actualZ = (int)Math.ceil(z);
+				if (vis[actualX][actualZ]) return new Point2f(actualX, actualZ);
+				//Check the rest of the quadrants
+				if (smallX <= smallZ){
+					//Top-Left
+					if (vis[actualX + 1][actualZ]) return new Point2f(actualX + 1, actualZ);
+					//Bottom-Right
+					if (vis[actualX][actualZ - 1]) return new Point2f(actualX, actualZ - 1);
+				}else{
+					//Bottom-Right
+					if (vis[actualX][actualZ - 1]) return new Point2f(actualX, actualZ - 1);
+					//Top-Left
+					if (vis[actualX + 1][actualZ]) return new Point2f(actualX + 1, actualZ);
+				}
+				//Corner
+				if (vis[actualX + 1][actualZ - 1]) return new Point2f(actualX + 1, actualZ - 1);
+				else return new Point2f(-1, -1); //SHOULD NOT REACH
+			}
+		}else{
+			if (fracZ < 0.5){
+				//Bottom-Left section
+				actualX = (int)Math.ceil(x);
+				actualZ = (int)Math.floor(z);
+				if (vis[actualX][actualZ]) return new Point2f(actualX, actualZ);
+				//Check the rest of the quadrants
+				if (smallX <= smallZ){
+					//Bottom-Right
+					if (vis[actualX - 1][actualZ]) return new Point2f(actualX - 1, actualZ);
+					//Top-Left
+					if (vis[actualX][actualZ + 1]) return new Point2f(actualX, actualZ + 1);
+				}else{
+					//Top-Left
+					if (vis[actualX][actualZ + 1]) return new Point2f(actualX, actualZ + 1);
+					//Bottom-Right
+					if (vis[actualX - 1][actualZ]) return new Point2f(actualX - 1, actualZ);
+				}
+				//Corner
+				if (vis[actualX - 1][actualZ + 1]) return new Point2f(actualX - 1, actualZ + 1);
+				else return new Point2f(-1, -1); //SHOULD NOT REACH
+			}else{
+				//Top-Left section
+				actualX = (int)Math.ceil(x);
+				actualZ = (int)Math.ceil(z);
+				if (vis[actualX][actualZ]) return new Point2f(actualX, actualZ);
+				//Check the rest of the quadrants
+				if (smallX <= smallZ){
+					//Top-Right
+					if (vis[actualX - 1][actualZ]) return new Point2f(actualX - 1, actualZ);
+					//Bottom-Left
+					if (vis[actualX][actualZ - 1]) return new Point2f(actualX, actualZ - 1);
+				}else{
+					//Bottom-Left
+					if (vis[actualX][actualZ - 1]) return new Point2f(actualX, actualZ - 1);
+					//Top-Right
+					if (vis[actualX - 1][actualZ]) return new Point2f(actualX - 1, actualZ);
+				}
+				//Corner
+				if (vis[actualX - 1][actualZ - 1]) return new Point2f(actualX - 1, actualZ - 1);
+				else return new Point2f(-1, -1); //SHOULD NOT REACH
+			}
 		}
-		return new Point2f(2, 3);
 	}
 }
