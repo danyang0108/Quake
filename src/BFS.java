@@ -12,8 +12,12 @@ public class BFS{
 	private int[][] d = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 	private Queue<Point2f> q = new Queue<>();
 	private boolean[][] wall = new boolean[HEIGHT][WIDTH];
+
+	public BFS() throws Exception{
+		readFile("Resource/Models/Map.txt");
+	}
 	
-	public int bfs(Point2f start, Point2f end){
+	public Point2f bfs(Point2f start, Point2f end){
 		q.enqueue(start);
 		vis[start.x][start.y] = true;
 		dis[start.x][start.y] = 0;
@@ -25,8 +29,7 @@ public class BFS{
 				while (prev[backtrack.x][backtrack.y].x != start.x || prev[backtrack.x][backtrack.y].y != start.y){
 					backtrack = prev[backtrack.x][backtrack.y];
 				}
-				System.out.println(backtrack.x + " " + backtrack.y);
-				return dis[end.x][end.y];
+				return backtrack;
 			}
 		    for (int i = 0; i < 4; i++){
 		      int nx = cur.x + d[i][0];
@@ -41,7 +44,7 @@ public class BFS{
 		      }
 		    }
 		}
-		return -1;
+		return new Point2f(-1, -1);
 	}
 	
 	public void readFile(String fileName) throws Exception{

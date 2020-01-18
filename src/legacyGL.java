@@ -106,7 +106,8 @@ public class legacyGL{
 			counter++;
 		}
 
-		MAP = new MeshObject("Resource/Models/Map.obj");
+		MAP = new MeshObject("Resource/Models/untitled.obj");
+		MAP.scale(new Point3f(0.05f, 0.05f, 0.05f));
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		KIT = new MeshObject("Resource/Models/MedKit.obj");
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
@@ -143,7 +144,7 @@ public class legacyGL{
 		}
 	}
 
-	private void render(){
+	private void render() throws Exception{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
@@ -188,19 +189,18 @@ public class legacyGL{
 
 		if (mouse){
 			double faceX = 0.1 * Math.sin(Math.toRadians(-move.rot));
-			double faceY = 0.1 * Math.cos(Math.toRadians(-move.rot));
-			double curX = TX + faceX, curY = TZ + faceY;
+			double faceZ = 0.1 * Math.cos(Math.toRadians(-move.rot));
+			double curX = TX + faceX, curZ = TZ + faceZ;
 			boolean cont = true;
-			while (inMap(curX, curY) && cont){
-				for (int i = 0; i < enemies.size(); i++){
-					Enemy E = enemies.get(i);
-					if (E.hit(curX, curY)){
+			while (inMap(curX, curZ) && cont){
+				for (Enemy E : enemies){
+					if (E.hit(curX, curZ)){
 						E.health--;
 						cont = false;
 					}
 				}
 				curX += faceX;
-				curY += faceY;
+				curZ += faceZ;
 			}
 		}
 
@@ -227,6 +227,12 @@ public class legacyGL{
 			if (choice == 0) temp = keyframes.get(E.WF);
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
+			System.out.println("USER: " + (Math.round(TZ) + fixZ) + " " + Math.round(TX) + fixX);
+			Point2f userRounded = roundUser(Math.round(TZ) + fixZ, Math.round(TX) + fixX);
+			Point2f answer = E.findUser(userRounded.x, userRounded.y);
+			//PROBLEM: user position is rounded into wall positions
+			//System.out.println("ANS: " + answer.x + " " + answer.y);
+
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
@@ -270,22 +276,38 @@ public class legacyGL{
 		}
 	}
 
-	public boolean inMap(double x, double y){
-		int FX = -(int)Math.round(y);
-		int FY = -(int)Math.round(x);
-		if (FX > -fixX && FX < fixX && FY > 1-fixZ && FY < fixZ){
-			return vis[FX + fixZ][FY + fixX];
+	public boolean inMap(double x, double z){
+		int FX = -(int)Math.round(z);
+		int FZ = -(int)Math.round(x);
+		if (FX > -fixX && FX < fixX && FZ > 1-fixZ && FZ < fixZ){
+			return vis[FX + fixZ][FZ + fixX];
 		}
 		return false;
 	}
 
-	public boolean nearUser(double x, double y){
+	public boolean nearUser(double x, double z){
 		double enemyReach = 1.5;
-		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= enemyReach * enemyReach;
+		return (x + TX) * (x + TX) + (z + TZ) * (z + TZ) <= enemyReach * enemyReach;
 	}
 
-	public boolean nearEnemy(double x, double y){
+	public boolean nearEnemy(double x, double z){
 		double userReach = 1.0;
-		return (x + TX) * (x + TX) + (y + TZ) * (y + TZ) <= userReach * userReach;
+		return (x + TX) * (x + TX) + (z + TZ) * (z + TZ) <= userReach * userReach;
+	}
+
+	public Point2f roundUser(double x, double z){
+		//Check the 4 directions
+		//NOTE: +LEFT, +UP
+		double fracX = x - Math.floor(x); //From point to right
+		double fracZ = z - Math.floor(z); //From point to bottom
+		double smallX = Math.abs(0.5 - fracX);
+		double smallZ = Math.abs(0.5 - fracZ);
+		double actualX, actualZ;
+		if (fracX <= 0.5 && fracZ  <= 0.5){
+			//Bottom-Right section
+			actualX = Math.floor(x);
+			actualZ = Math.floor(z);
+		}
+		return new Point2f(2, 3);
 	}
 }

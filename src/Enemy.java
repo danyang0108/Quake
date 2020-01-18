@@ -7,6 +7,7 @@ public class Enemy{
 	public Point3f shift; //Position in map
 	public Point4f rotate; //Rotation in map
 	public int health;
+	private int fixX = 10, fixZ = 12;
 
 	public Enemy(){
 		choice = 0; //Start with walking
@@ -48,8 +49,16 @@ public class Enemy{
 		return false;
 	}
 
-	public void findUser(double x, double y){
+	public Point2f findUser(int x, int y) throws Exception{
 		//Graph Theory Part
+		Point2f EPos = new Point2f(Math.round(shift.z) + fixZ, Math.round(shift.x) + fixX);
+		Point2f UPos = new Point2f(x, y);
+		BFS RUN = new BFS();
+		Point2f next = RUN.bfs(EPos, UPos);
+		if (next.x == -1 && next.y == -1){
+			//Shouldn't happen
+		}
+		return new Point2f(next.x, next.y);
 	}
 
 	public boolean hit(double x, double y){
