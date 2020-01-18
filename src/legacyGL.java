@@ -24,6 +24,7 @@ public class legacyGL{
 
 	TextureV2 tex;
 	int charCnt = 0;
+	int offset = 32;
 	Colour yellow = new Colour(255, 255, 0);
 	Colour blue = new Colour(0, 0, 255);
 	int start = 0, end = 0;
@@ -241,9 +242,9 @@ public class legacyGL{
 		text = text.toUpperCase();
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++){
-			int ascii = text.charAt(i) - 32;
+			int ascii = text.charAt(i) - offset;
 			charCnt = 0;
-			for (int j = 0; j < 308; j++){
+			for (int j = 0; j < tex.getBI().getWidth(); j++){
 				Colour c = tex.getPixel(j, 0);
 				if (charCnt > ascii) break;
 				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
@@ -258,13 +259,13 @@ public class legacyGL{
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
 			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
-			glTexCoord2f(start/308f,0);
+			glTexCoord2f(start/tex.getBI().getWidth(),0);
 			glVertex3f(startX, startY, -2f);
-			glTexCoord2f(end/308f,0);
+			glTexCoord2f(end/tex.getBI().getWidth(),0);
 			glVertex3f(endX, startY, -2f);
-			glTexCoord2f(end/308f,1f);
+			glTexCoord2f(end/tex.getBI().getWidth(),1);
 			glVertex3f(endX, endY, -2f);
-			glTexCoord2f(start/308f,1f);
+			glTexCoord2f(start/tex.getBI().getWidth(),1);
 			glVertex3f(startX, endY, -2f);
 			glEnd();
 			startX = endX;
