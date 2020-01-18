@@ -134,11 +134,11 @@ public class legacyGL{
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			render();
+			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			tex.bind();
-			glRotatef(-move.rot, 0, 1, 0);
 			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -TX, -0.1f, 6);
 			drawText(" a m m o :  2 0 / 8 0         ", -TX, -0.25f, 5);
+			render();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -226,14 +226,15 @@ public class legacyGL{
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z)){
+			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z) && !E.dead){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
 				E.moveX = 0.05 * (answer.x - E.shift.x);
 				E.moveZ = 0.05 * (answer.z - E.shift.z);
-			}else if (nearUser(E.shift.x, E.shift.z)){
+				//Rotate
+			}else if (nearUser(E.shift.x, E.shift.z) && !E.dead){
 				float angle = (float)Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
 				E.rotate = new Point4f(180 + angle, 0, 1, 0);
-			}else{
+			}else if (!E.dead){
 				E.shift.x += E.moveX;
 				E.shift.z += E.moveZ;
 			}
