@@ -7,12 +7,15 @@ public class Enemy{
 	public Point3f shift; //Position in map
 	public Point4f rotate; //Rotation in map
 	public int health;
+	public int walk; //For movement
+	public double moveX, moveZ;
 	private int fixX = 10, fixZ = 12;
 
 	public Enemy(){
 		choice = 0; //Start with walking
 		WF = PF = DF = 1;
 		health = 100;
+		walk = 0;
 		shift = new Point3f(0, -1, 0);
 		rotate = new Point4f(0, 0, 0, 0);
 	}
@@ -21,6 +24,7 @@ public class Enemy{
 		choice = 0;
 		WF = PF = DF = 1;
 		health = 100;
+		walk = 0;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 		this.rotate = rotate;
 	}
@@ -31,6 +35,7 @@ public class Enemy{
 	}
 
 	public boolean updateFrame(){
+		walk = (walk == 10) ? 0 : (walk + 1);
 		//0 is walk, 1 is punch, 2 is despawn
 		if (choice == 0) WF = (WF == WS - 1) ? 1 : (WF + 1);
 		if (choice == 1){
@@ -49,21 +54,22 @@ public class Enemy{
 		return false;
 	}
 
-	public Point2f findUser(int x, int y) throws Exception{
+	public Point2f findUser(int x, int z) throws Exception{
 		//Graph Theory Part
 		Point2f EPos = new Point2f(Math.round(shift.z) + fixZ, Math.round(shift.x) + fixX);
-		Point2f UPos = new Point2f(x, y);
+		Point2f UPos = new Point2f(x, z);
 		BFS RUN = new BFS();
 		Point2f next = RUN.bfs(EPos, UPos);
-		if (next.x == -1 && next.y == -1){
+		if (next.x == -1 && next.z == -1){
 			//Shouldn't happen
+			return null;
 		}
-		return new Point2f(next.x, next.y);
+		return new Point2f(next.z - fixX, next.x - fixZ);
 	}
 
-	public boolean hit(double x, double y){
+	public boolean hit(double x, double z){
 		//(x, y) is the center point
 		//Hit range: circle of radius 0.2
-		return ((x + shift.x) * (x + shift.x) + (y + shift.z) * (y + shift.z) <= 0.04);
+		return ((x + shift.x) * (x + shift.x) + (z + shift.z) * (z + shift.z) <= 0.04);
 	}
 }

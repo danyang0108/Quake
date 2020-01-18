@@ -1,7 +1,7 @@
 public class Point2f{
-    int x, y;
-    public Point2f(int x, int y){
+    int x, z;
+    public Point2f(int x, int z){
         this.x = x;
-        this.y = y;
+        this.z = z;
     }
 }
