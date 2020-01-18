@@ -24,6 +24,7 @@ public class legacyGL{
 
 	TextureV2 tex;
 	int charCnt = 0;
+	int offset = 32;
 	Colour yellow = new Colour(255, 255, 0);
 	Colour blue = new Colour(0, 0, 255);
 	int start = 0, end = 0;
@@ -138,7 +139,8 @@ public class legacyGL{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
 			tex.bind();
-			drawText(" h o a n g ", 0, 0, 20);
+			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -2f, -1.3f, 24);
+			drawText(" a m m o :  2 0 / 8 0         ", -2f, -1.5f, 20);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -246,9 +248,9 @@ public class legacyGL{
 		text = text.toUpperCase();
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++){
-			int ascii = text.charAt(i) - 32;
+			int ascii = text.charAt(i) - offset;
 			charCnt = 0;
-			for (int j = 0; j < 308; j++){
+			for (int j = 0; j < tex.getBI().getWidth(); j++){
 				Colour c = tex.getPixel(j, 0);
 				if (charCnt > ascii) break;
 				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
@@ -263,14 +265,14 @@ public class legacyGL{
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
 			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
-			glTexCoord2f(start/308f,0);
-			glVertex3f(startX, startY, -2);
-			glTexCoord2f(end/308f,0);
-			glVertex3f(endX, startY, -2);
-			glTexCoord2f(end/308f,1f);
-			glVertex3f(endX, endY, -2);
-			glTexCoord2f(start/308f,1f);
-			glVertex3f(startX, endY, -2);
+			glTexCoord2f(start/tex.getBI().getWidth(),0);
+			glVertex3f(startX, startY, -2f);
+			glTexCoord2f(end/tex.getBI().getWidth(),0);
+			glVertex3f(endX, startY, -2f);
+			glTexCoord2f(end/tex.getBI().getWidth(),1);
+			glVertex3f(endX, endY, -2f);
+			glTexCoord2f(start/tex.getBI().getWidth(),1);
+			glVertex3f(startX, endY, -2f);
 			glEnd();
 			startX = endX;
 		}
