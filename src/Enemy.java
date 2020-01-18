@@ -11,15 +11,6 @@ public class Enemy{
 	public double moveX, moveZ;
 	private int fixX = 10, fixZ = 12;
 
-	public Enemy(){
-		choice = 0; //Start with walking
-		WF = PF = DF = 1;
-		health = 100;
-		walk = 0;
-		shift = new Point3f(0, -1, 0);
-		rotate = new Point4f(0, 0, 0, 0);
-	}
-
 	public Enemy(Point3f shift, Point4f rotate){
 		choice = 0;
 		WF = PF = DF = 1;

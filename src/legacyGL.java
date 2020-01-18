@@ -21,6 +21,7 @@ public class legacyGL{
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
+	private Point4f move;
 
 	TextureV2 tex;
 	int charCnt = 0;
@@ -98,7 +99,7 @@ public class legacyGL{
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
-		
+
 		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
 		int counter = 0;
 		while (maze.hasNextLine()){
@@ -128,17 +129,16 @@ public class legacyGL{
 		long END = System.nanoTime();
 		System.out.println("TIME: " + (END - START) / 1e9d);
 
-		Enemy first = new Enemy();
-		//enemies.add(first);
 		Enemy second = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
-		
+
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
 			tex.bind();
-			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -2f, -1.3f, 24);
-			drawText(" a m m o :  2 0 / 8 0         ", -2f, -1.5f, 20);
+			glRotatef(-move.rot, 0, 1, 0);
+			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -TX, -0.1f, 6);
+			drawText(" a m m o :  2 0 / 8 0         ", -TX, -0.25f, 5);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -148,7 +148,7 @@ public class legacyGL{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		Point4f move = new Control().movement(window, movement);
+		move = new Control().movement(window, movement);
 		int Z = Math.round(-TZ - move.z) + fixZ;
 		int X = Math.round(-TX - move.x) + fixX;
 		if (vis[Z][X]){
@@ -206,7 +206,7 @@ public class legacyGL{
 		//Draw the objects
 		MAP.draw();
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
-		GUN.rotate(new Point4f(270-move.rot, 0, 1, 0));
+		GUN.rotate(new Point4f(270 - move.rot, 0, 1, 0));
 		GUN.draw();
 
 		ArrayList<Integer> remove = new ArrayList<>();
@@ -249,32 +249,34 @@ public class legacyGL{
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
 		float startX = x, startY = y;
-		for (int i = 0; i < text.length(); i++){
+		for (int i = 0; i < text.length(); i++) {
 			int ascii = text.charAt(i) - offset;
 			charCnt = 0;
-			for (int j = 0; j < tex.getBI().getWidth(); j++){
+			for (int j = 0; j < tex.getBI().getWidth(); j++) {
+
 				Colour c = tex.getPixel(j, 0);
-				if (charCnt > ascii) break;
-				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
+				if (charCnt > ascii)
+					break;
+				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
 					charCnt++;
 					end = j;
 				}
-				if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()){
-					start = j+1;
+				if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
+					start = j + 1;
 				}
 			}
 			int x_length = end - start;
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
-			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
+			float endY = (startY * WINDOW_HEIGHT - tex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
-			glTexCoord2f(start/tex.getBI().getWidth(),0);
-			glVertex3f(startX, startY, -2f);
-			glTexCoord2f(end/tex.getBI().getWidth(),0);
-			glVertex3f(endX, startY, -2f);
-			glTexCoord2f(end/tex.getBI().getWidth(),1);
-			glVertex3f(endX, endY, -2f);
-			glTexCoord2f(start/tex.getBI().getWidth(),1);
-			glVertex3f(startX, endY, -2f);
+			glTexCoord2d((double)start / tex.getBI().getWidth(), 0);
+			glVertex3d(startX, startY, -TZ - 0.4);
+			glTexCoord2d((double)end / tex.getBI().getWidth(), 0);
+			glVertex3d(endX, startY, -TZ - 0.4);
+			glTexCoord2d((double)end / tex.getBI().getWidth(), 1);
+			glVertex3d(endX, endY, -TZ - 0.4);
+			glTexCoord2d((double)start / tex.getBI().getWidth(), 1);
+			glVertex3d(startX, endY, -TZ - 0.4);
 			glEnd();
 			startX = endX;
 		}

@@ -1,7 +1,7 @@
 public interface AL<T>{
-    public void add(T n);
-    public void removeFront();
-    public void replaceNode(T n, int i);
-    public T get(int i);
-    public int size();
+    void add(T n);
+    void removeFront();
+    void replaceNode(T n, int i);
+    T get(int i);
+    int size();
 }
