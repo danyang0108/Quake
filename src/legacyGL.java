@@ -34,7 +34,7 @@ public class legacyGL{
 		new legacyGL().run();
 	}
 
-	private void run() throws Exception{
+	public void run() throws Exception{
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwInit();
 		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Quake", glfwGetPrimaryMonitor(), NULL);

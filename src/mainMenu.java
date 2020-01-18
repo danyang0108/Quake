@@ -19,11 +19,11 @@ import java.nio.file.Paths;
 
 public class mainMenu extends Application{
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         launch(args);
     }
 
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception{
         //Initializing variable
         int scene_x = 900;
         int scene_y = 600;
@@ -44,7 +44,11 @@ public class mainMenu extends Application{
         button.setPrefHeight(50);
         button.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent arg0) {
-
+                try{
+                    new legacyGL().run();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         Button instruct = new Button("Instructions");
