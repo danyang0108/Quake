@@ -226,8 +226,13 @@ public class legacyGL{
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			Point2f answer = E.findUser(userRounded.x, userRounded.y);
-			System.out.println("ANSWER: " + answer.x + " " + answer.y);
+			if (!nearUser(E.shift.x, E.shift.z)){
+				Point2f answer = E.findUser(userRounded.x, userRounded.y);
+				System.out.println("ANSWER: " + answer.x + " " + answer.y);
+			}else{
+				float angle = (float)Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
+				E.rotate = new Point4f(180 + angle, 0, 1, 0);
+			}
 			//PROBLEM: user position is rounded into wall positions
 
 			temp.translate(E.shift);
