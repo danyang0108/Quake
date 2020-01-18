@@ -137,7 +137,8 @@ public class legacyGL{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			render();
 			tex.bind();
-			drawText(" h o a n g ", 0, 0, 20);
+			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -2f, -1.3f, 24);
+			drawText(" a m m o :  2 0 / 8 0         ", -2f, -1.5f, 20);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
@@ -258,13 +259,13 @@ public class legacyGL{
 			float endY = (startY * WINDOW_HEIGHT - 6 * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
 			glTexCoord2f(start/308f,0);
-			glVertex3f(startX, startY, -2);
+			glVertex3f(startX, startY, -2f);
 			glTexCoord2f(end/308f,0);
-			glVertex3f(endX, startY, -2);
+			glVertex3f(endX, startY, -2f);
 			glTexCoord2f(end/308f,1f);
-			glVertex3f(endX, endY, -2);
+			glVertex3f(endX, endY, -2f);
 			glTexCoord2f(start/308f,1f);
-			glVertex3f(startX, endY, -2);
+			glVertex3f(startX, endY, -2f);
 			glEnd();
 			startX = endX;
 		}
