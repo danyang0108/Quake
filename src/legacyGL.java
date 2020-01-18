@@ -138,8 +138,8 @@ public class legacyGL{
 			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			tex.bind();
-			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", -TX, -0.1f, 6);
-			drawText(" a m m o :  2 0 / 8 0         ", -TX, -0.25f, 5);
+			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", 0, -0.1f, 6);
+			drawText(" a m m o :  2 0 / 8 0         ", 0, -0.25f, 5);
 			glPopMatrix();
 			render();
 			glfwSwapBuffers(window);
@@ -274,13 +274,13 @@ public class legacyGL{
 			float endY = (startY * WINDOW_HEIGHT - tex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
 			glTexCoord2d((double)start / tex.getBI().getWidth(), 0);
-			glVertex3d(startX, startY, -TZ - 0.4);
+			glVertex3d(startX, startY, -0.4);
 			glTexCoord2d((double)end / tex.getBI().getWidth(), 0);
-			glVertex3d(endX, startY, -TZ - 0.4);
+			glVertex3d(endX, startY, -0.4);
 			glTexCoord2d((double)end / tex.getBI().getWidth(), 1);
-			glVertex3d(endX, endY, -TZ - 0.4);
+			glVertex3d(endX, endY, -0.4);
 			glTexCoord2d((double)start / tex.getBI().getWidth(), 1);
-			glVertex3d(startX, endY, -TZ - 0.4);
+			glVertex3d(startX, endY, -0.4);
 			glEnd();
 			startX = endX;
 		}
