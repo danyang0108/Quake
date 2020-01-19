@@ -1,12 +1,10 @@
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
-
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -16,13 +14,16 @@ public class legacyGL{
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
+	private int sizeX = 24, sizeZ = 21;
 	private MeshObject MAP, GUN, MEDKIT, AMMOPACK;
-	private Boolean[][] vis = new Boolean[24][21];
+	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
 	private int curHealth = 100;
 	private int curAmmo = 30;
 	private int totalAmmo = 90;
+	private int maxHealth = 100;
+	private int maxRound = 30;
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
@@ -32,7 +33,6 @@ public class legacyGL{
 	private ArrayList<Boolean> probability = new ArrayList<>();
 	private Point4f move;
 	private Texture enemyTex, mapTex, gunTex, charTex, medTex, ammoTex;
-	private int charCnt = 0;
 	private int offset = 32;
 	private final Colour yellow = new Colour(255, 255, 0);
 	private final Colour blue = new Colour(0, 0, 255);
@@ -70,24 +70,21 @@ public class legacyGL{
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS){
-				if (button == GLFW_MOUSE_BUTTON_LEFT && curAmmo > 0) {
+				if (button == GLFW_MOUSE_BUTTON_LEFT && curAmmo > 0){
 					mouse = true;
-					curAmmo -= 1;
+					curAmmo--;
 				}
-				else if (button == GLFW_MOUSE_BUTTON_RIGHT && totalAmmo > 0) {
-					int required = 30 - curAmmo;
-					if (totalAmmo >= required) {
+				else if (button == GLFW_MOUSE_BUTTON_RIGHT && totalAmmo > 0){
+					int required = maxRound - curAmmo;
+					if (totalAmmo >= required){
 						totalAmmo -= required;
 						curAmmo += required;
-					}
-					else {
+					}else{
 						curAmmo += totalAmmo;
 						totalAmmo = 0;
 					}
 				}
-			}else if (action == GLFW_RELEASE){
-				if (button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
-			}
+			}else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
 		});
 		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -106,8 +103,9 @@ public class legacyGL{
 			counter++;
 		}
 
-		for (int i = 0; i < 499; i++) probability.add(false);
-		for (int i = 0; i < 1; i++) probability.add(true);
+		int numFalse = 399;
+		for (int i = 0; i < numFalse; i++) probability.add(false);
+		probability.add(true);
 
 		charTex = new Texture("Resource/Images/text.png");
 		charTex.setPixel(0);
@@ -142,47 +140,53 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
+		float gunScale = 0.09f;
+		float kitScale = 0.8f;
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		MAP.texture = mapTex;
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		GUN.texture = gunTex;
-		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
+		GUN.scale(new Point3f(gunScale, gunScale, gunScale));
 		MEDKIT = new MeshObject("Resource/Models/MedKit.obj");
-		MEDKIT.scale(new Point3f(0.8f, 0.8f, 0.8f));
+		MEDKIT.scale(new Point3f(kitScale, kitScale, kitScale));
 		MEDKIT.texture = medTex;
 		AMMOPACK = new MeshObject("Resource/Models/Ammo.obj");
 		AMMOPACK.texture = ammoTex;
 
-		long START = System.nanoTime();
-
 		String path2 = "Resource/Models/Move_000";
-		int frames = 360; //There are 360 frames in total for enemy animation.
+		//There are 360 frames in total for enemy animation.
+		int frames = 360, ten = 10, hundred = 100;
 		for (int i = 1; i <= frames; i++){
 			String threeDigit;
-			if (i < 10) threeDigit = "00" + i;
-			else if (i < 100) threeDigit = "0" + i;
+			if (i < ten) threeDigit = "00" + i;
+			else if (i < hundred) threeDigit = "0" + i;
 			else threeDigit = Integer.toString(i);
 			MeshObject animation = new MeshObject(path2 + threeDigit + ".obj");
 			animation.texture = enemyTex;
-			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
+			float enemyScaleX = 0.35f, enemyScaleY = 0.5f, enemyScaleZ = 0.5f;
+			animation.scale(new Point3f(enemyScaleX, enemyScaleY, enemyScaleZ));
 			keyframes.add(animation);
 		}
 
-		long END = System.nanoTime();
-		System.out.println("TIME: " + (END - START) / 1e9d);
-
 		Enemy second = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
 		enemies.add(second);
+		Enemy first = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
+		enemies.add(first);
+		Enemy third = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
+		enemies.add(third);
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			charTex.bind();
-			String health = "Health:" + curHealth + "/100";
+			String health = "Health:" + curHealth + "/" + maxHealth;
 			String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
-			drawText(health, -0.4f, -0.31f, 6);
-			drawText(ammo, -0.4f, -0.35f, 6);
+			//Take care of magic numbers
+			float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
+			int fontSize = 6;
+			drawText(health, textX, textY, fontSize);
+			drawText(ammo, textX, textY - intervalY, fontSize);
 			render();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
@@ -232,8 +236,9 @@ public class legacyGL{
 		glTranslatef(TX, 0, TZ);
 
 		if (mouse){
-			double faceX = 0.1 * Math.sin(Math.toRadians(-move.rot));
-			double faceZ = 0.1 * Math.cos(Math.toRadians(-move.rot));
+			double ratio = 0.1;
+			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
+			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
 			double curX = TX + faceX, curZ = TZ + faceZ;
 			boolean cont = true;
 			while (inMap(curX, curZ) && cont){
@@ -281,13 +286,14 @@ public class legacyGL{
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
-			if (nearUser(coordX, coordZ) && curHealth < 100){
+			if (nearUser(coordX, coordZ) && curHealth < maxHealth){
 				//The medkit is used
-				curHealth = 100;
+				curHealth = maxHealth;
 				removeMed.add(p);
 			}else{
 				MeshObject medkit = MEDKIT;
-				medkit.translate(new Point3f(coordX, -2f, coordZ));
+				float shiftKit = -2f;
+				medkit.translate(new Point3f(coordX, shiftKit, coordZ));
 				medkit.draw();
 			}
 		}
@@ -299,13 +305,15 @@ public class legacyGL{
 			float coordZ = p.x - fixZ;
 			if (nearUser(coordX, coordZ)){
 				//The medkit is used
-				if (curAmmo == 30 && totalAmmo == 90) continue;
-				curAmmo = 30;
-				totalAmmo = 90;
+				int maxAmmo = 90;
+				if (curAmmo == maxRound && totalAmmo == maxAmmo) continue;
+				curAmmo = maxRound;
+				totalAmmo = maxAmmo;
 				removeAmmo.add(p);
 			}else{
 				MeshObject ammoPack = AMMOPACK;
-				ammoPack.translate(new Point3f(coordX, -2f, coordZ));
+				float shiftPack = -2f;
+				ammoPack.translate(new Point3f(coordX, shiftPack, coordZ));
 				ammoPack.draw();
 			}
 		}
@@ -332,12 +340,14 @@ public class legacyGL{
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
 			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z) && !E.dead){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
-				E.moveX = 0.05d * Math.round(answer.x - E.shift.x);
-				E.moveZ = 0.05d * Math.round(answer.z - E.shift.z);
+				double enemySpeed = 0.05;
+				E.moveX = enemySpeed * Math.round(answer.x - E.shift.x);
+				E.moveZ = enemySpeed * Math.round(answer.z - E.shift.z);
 				E.turnToUser();
 			}else if (nearUser(E.shift.x, E.shift.z) && !E.dead){
-				float angle = (float)Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
-				E.rotate = new Point4f(180 + angle, 0, 1, 0);
+				double angle = Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
+				float fixAngle = 180;
+				E.rotate = new Point4f(fixAngle + (float)angle, 0, 1, 0);
 			}else if (!E.dead){
 				E.shift.x += E.moveX;
 				E.shift.z += E.moveZ;
@@ -346,11 +356,8 @@ public class legacyGL{
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
-			if (dropHealth) {
-				curHealth -= 1;
-			}
-			//Display health bar
 			if (E.updateFrame()) remove.add(i); //The enemy is dead
+			if (dropHealth) curHealth -= 1;
 		}
 		//Sort in decreasing order
 		Collections.sort(remove);
@@ -364,7 +371,7 @@ public class legacyGL{
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++){
 			int ascii = text.charAt(i) - offset;
-			charCnt = 0;
+			int charCnt = 0;
 			for (int j = 0; j < charTex.getBI().getWidth(); j++){
 				Colour c = charTex.getPixel(j, 0);
 				if (charCnt > ascii)
@@ -382,13 +389,14 @@ public class legacyGL{
 			float endY = (startY * WINDOW_HEIGHT - charTex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
 			glTexCoord2d((double)start / charTex.getBI().getWidth(), 0);
-			glVertex3d(startX, startY, -0.4);
+			double adjust = -0.4;
+			glVertex3d(startX, startY, adjust);
 			glTexCoord2d((double)end / charTex.getBI().getWidth(), 0);
-			glVertex3d(endX, startY, -0.4);
+			glVertex3d(endX, startY, adjust);
 			glTexCoord2d((double)end / charTex.getBI().getWidth(), 1);
-			glVertex3d(endX, endY, -0.4);
+			glVertex3d(endX, endY, adjust);
 			glTexCoord2d((double)start / charTex.getBI().getWidth(), 1);
-			glVertex3d(startX, endY, -0.4);
+			glVertex3d(startX, endY, adjust);
 			glEnd();
 			startX = endX;
 		}
@@ -417,11 +425,12 @@ public class legacyGL{
 		//NOTE: +LEFT, +UP
 		double fracX = x - Math.floor(x); //From point to right
 		double fracZ = z - Math.floor(z); //From point to bottom
-		double smallX = Math.abs(0.5 - fracX);
-		double smallZ = Math.abs(0.5 - fracZ);
+		double half = 0.5;
+		double smallX = Math.abs(half - fracX);
+		double smallZ = Math.abs(half - fracZ);
 		int actualX, actualZ;
-		if (fracX < 0.5){
-			if (fracZ < 0.5){
+		if (fracX < half){
+			if (fracZ < half){
 				//Bottom-Right section
 				//First quadrant check
 				actualX = (int)Math.floor(x);
@@ -464,7 +473,7 @@ public class legacyGL{
 				else return new Point2f(-1, -1); //SHOULD NOT REACH
 			}
 		}else{
-			if (fracZ < 0.5){
+			if (fracZ < half){
 				//Bottom-Left section
 				actualX = (int)Math.ceil(x);
 				actualZ = (int)Math.floor(z);
