@@ -115,7 +115,7 @@ public class legacyGL{
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
 		medTex = new Texture("Resource/Images/Medkit.png");
-		ammoTex = new Texture("Resource/Images/Ammo.png");
+		ammoTex = new Texture("Resource/Images/Ammo.jpg");
 
 		glfwShowWindow(window);
 		loop();
@@ -281,7 +281,7 @@ public class legacyGL{
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
-			if (nearUser(coordX, coordZ)){
+			if (nearUser(coordX, coordZ) && curHealth < 100){
 				//The medkit is used
 				curHealth = 100;
 				removeMed.add(p);
@@ -299,6 +299,7 @@ public class legacyGL{
 			float coordZ = p.x - fixZ;
 			if (nearUser(coordX, coordZ)){
 				//The medkit is used
+				if (curAmmo == 30 && totalAmmo == 90) continue;
 				curAmmo = 30;
 				totalAmmo = 90;
 				removeAmmo.add(p);
