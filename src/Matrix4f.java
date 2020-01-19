@@ -175,7 +175,7 @@ public class Matrix4f implements Matrix4f_Interface {
 
 		// Search the pivoting element from each column
 		int k = 0;
-		for (int j = 0; j < 4 - 1; j++) {
+		for (int j = 0; j < 3; j++) {
 			double pi1 = 0;
 			for (int i = j; i < 4; i++) {
 				double pi0 = Math.abs(a[index[i]][j]);
@@ -203,15 +203,15 @@ public class Matrix4f implements Matrix4f_Interface {
 		}
 
 		// Update the matrix b[i][j] with the ratios stored
-		for (int i = 0; i < 4 - 1; i++)
+		for (int i = 0; i < 3; i++)
 			for (int j = i + 1; j < 4; j++)
 				for (int p = 0; p < 4; ++p)
 					b[index[j]][p] -= a[index[j]][i] * b[index[i]][p];
 
 		// Perform backward substitutions
 		for (int i = 0; i < 4; i++) {
-			ans[4 - 1][i] = b[index[4 - 1]][i] / a[index[4 - 1]][4 - 1];
-			for (int j = 4 - 2; j >= 0; --j) {
+			ans[3][i] = b[index[3]][i] / a[index[3]][3];
+			for (int j = 2; j >= 0; --j) {
 				ans[j][i] = b[index[j]][i];
 				for (int p = j + 1; p < 4; ++p) {
 					ans[j][i] -= a[index[j]][p] * ans[p][i];

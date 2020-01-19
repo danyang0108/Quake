@@ -11,8 +11,8 @@ import org.lwjgl.BufferUtils;
 public class Texture{
     
 	private int id;
-    private BufferedImage bi;
-    private int[] pixels_raw;
+    private BufferedImage bi;	//stores texture
+    private int[] pixels_raw;	//array of pixels
     
     //load texture based on file name
     public Texture(String filename) throws Exception{
@@ -51,7 +51,7 @@ public class Texture{
           int pixel = pixels_raw[y * bi.getWidth() + x];
           int r=(pixel >> 16) & 0xFF;     // Red 
           int g=(pixel >> 8) & 0xFF;      // Green 
-          int b=(pixel & 0xFF);            // Blue
+          int b=(pixel & 0xFF);           // Blue
           return new Colour(r,g,b);
         }
         else{
