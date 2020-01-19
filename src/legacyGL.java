@@ -22,7 +22,10 @@ public class legacyGL{
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private Point4f move;
-
+	private int curHealth = 100;
+    private int curAmmo = 30;
+    private int totalAmmo = 90;
+	
 	TextureV2 tex;
 	int charCnt = 0;
 	int offset = 32;
@@ -138,8 +141,10 @@ public class legacyGL{
 			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			tex.bind();
-			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", 0, -0.1f, 6);
-			drawText(" a m m o :  2 0 / 8 0         ", 0, -0.25f, 5);
+			String health = "health:"+ curHealth +"/100";
+            String ammo = "ammo:"+ curAmmo +"/" + totalAmmo;
+            drawText(health, -0.4f, -0.31f, 6);
+            drawText(ammo, -0.4f, -0.35f, 6);
 			glPopMatrix();
 			render();
 			glfwSwapBuffers(window);
@@ -253,6 +258,7 @@ public class legacyGL{
 
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
+		text = text.replace("", " ");
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++) {
 			int ascii = text.charAt(i) - offset;
