@@ -22,9 +22,8 @@ public class legacyGL{
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private Point4f move;
-	private Texture enemyTex, mapTex, gunTex;
 
-	Texture tex;
+	TextureV2 tex;
 	int charCnt = 0;
 	int offset = 32;
 	Colour yellow = new Colour(255, 255, 0);
@@ -74,11 +73,8 @@ public class legacyGL{
 		glfwSwapInterval(1);
 
 		GL.createCapabilities();
-		tex = new Texture("Resource/Images/text.png");
+		tex = new TextureV2("Resource/Images/text.png");
 		tex.setPixel(0);
-		enemyTex = new Texture("Resource/Images/Enemy1.png");
-		gunTex = new Texture("Resource/Images/Slide.png");
-		mapTex = new Texture("Resource/Images/Wall.jpg");
 		glfwShowWindow(window);
 		loop();
 		glfwFreeCallbacks(window);
@@ -113,9 +109,7 @@ public class legacyGL{
 		}
 
 		MAP = new MeshObject("Resource/Models/Map.obj");
-		MAP.texture = mapTex;
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
-		GUN.texture = gunTex;
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
 
 		long START = System.nanoTime();
@@ -128,7 +122,6 @@ public class legacyGL{
 			else if (i < 100) threeDigit = "0" + i;
 			else threeDigit = Integer.toString(i);
 			MeshObject animation = new MeshObject(path2 + threeDigit + ".obj");
-			animation.texture = enemyTex;
 			animation.scale(new Point3f(0.35f, 0.5f, 0.5f));
 			keyframes.add(animation);
 		}
