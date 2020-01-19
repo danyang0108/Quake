@@ -273,15 +273,22 @@ public class legacyGL{
 		GUN.rotate(new Point4f(270 - move.rot, 0, 1, 0));
 		GUN.draw();
 
-		System.out.println(medPos.size() + " " + ammoPos.size());
+		//System.out.println(medPos.size() + " " + ammoPos.size());
+		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
-			float coordX = p.x - fixX; //WRONG
-			float coordZ = p.z - fixZ;
-			MeshObject medkit = MEDKIT;
-			System.out.println("COORD: " + coordX + " " + coordZ);
-			medkit.translate(new Point3f(-coordZ, -2f, -coordX));
-			medkit.draw();
+			float coordX = p.z - fixX;
+			float coordZ = p.x - fixZ;
+			if (nearUser(coordX, coordZ)){
+				//The medkit is used
+				curHealth = 100;
+				removeMed.add(p);
+			}else{
+				MeshObject medkit = MEDKIT;
+				medkit.translate(new Point3f(coordX, -2f, coordZ));
+				medkit.draw();
+			}
 		}
+		for (Point2f p: removeMed) medPos.remove(p);
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
