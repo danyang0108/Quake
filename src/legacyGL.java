@@ -18,21 +18,19 @@ public class legacyGL{
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
+	private int curHealth = 100;
+	private int curAmmo = 30;
+	private int totalAmmo = 90;
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private Point4f move;
 	private Texture enemyTex, mapTex, gunTex, charTex;
-
-	private int curHealth = 100;
-	private int curAmmo = 30;
-	private int totalAmmo = 90;
-
-	int charCnt = 0;
-	int offset = 32;
-	Colour yellow = new Colour(255, 255, 0);
-	Colour blue = new Colour(0, 0, 255);
-	int start = 0, end = 0;
+	private int charCnt = 0;
+	private int offset = 32;
+	private final Colour yellow = new Colour(255, 255, 0);
+	private final Colour blue = new Colour(0, 0, 255);
+	private int start = 0, end = 0;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -144,15 +142,13 @@ public class legacyGL{
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glPushMatrix();
 			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
 			charTex.bind();
 			String health = "Health:" + curHealth + "/100";
 			String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
 			drawText(health, -0.4f, -0.31f, 6);
-			drawText(ammo, -0.4f, 0.35f, 6);
-			glPopMatrix();
+			drawText(ammo, -0.4f, -0.35f, 6);
 			render();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
@@ -267,19 +263,18 @@ public class legacyGL{
 		text = text.toUpperCase();
 		text = text.replace("", " ");
 		float startX = x, startY = y;
-		for (int i = 0; i < text.length(); i++) {
+		for (int i = 0; i < text.length(); i++){
 			int ascii = text.charAt(i) - offset;
 			charCnt = 0;
-			for (int j = 0; j < charTex.getBI().getWidth(); j++) {
-
+			for (int j = 0; j < charTex.getBI().getWidth(); j++){
 				Colour c = charTex.getPixel(j, 0);
 				if (charCnt > ascii)
 					break;
-				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
+				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()){
 					charCnt++;
 					end = j;
 				}
-				if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()) {
+				if (c.getR() == blue.getR() && c.getG() == blue.getG() && c.getB() == blue.getB()){
 					start = j + 1;
 				}
 			}
