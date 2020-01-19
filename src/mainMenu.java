@@ -42,13 +42,11 @@ public class mainMenu extends Application{
         button.setLayoutY(scene_y/2-25);
         button.setPrefWidth(200);
         button.setPrefHeight(50);
-        button.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent arg0) {
-                try{
-                    new legacyGL().run();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        button.setOnAction(arg0 -> {
+            try{
+                new legacyGL().run();
+            }catch (Exception e){
+                e.printStackTrace();
             }
         });
         Button instruct = new Button("Instructions");
@@ -56,10 +54,8 @@ public class mainMenu extends Application{
         instruct.setLayoutY(scene_y/2+30);
         instruct.setPrefWidth(200);
         instruct.setPrefHeight(50);
-        instruct.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent arg0) {
+        instruct.setOnAction(arg0 -> {
 
-            }
         });
         root.getChildren().addAll(background, button, instruct, text);
 

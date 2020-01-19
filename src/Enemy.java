@@ -63,4 +63,11 @@ public class Enemy{
 		//Hit range: circle of radius 0.2
 		return ((x + shift.x) * (x + shift.x) + (z + shift.z) * (z + shift.z) <= 0.04);
 	}
+
+	public void turnToUser(){
+		if (moveX == 0 && moveZ == -0.05) rotate = new Point4f(180, 0, 1, 0);
+		else if (moveX == 0 && moveZ == 0.05) rotate = new Point4f(0, 0, 1, 0);
+		else if (moveX == -0.05 && moveZ == 0) rotate = new Point4f(270, 0, 1, 0);
+		else if (moveX == 0.05 && moveZ == 0) rotate = new Point4f(90, 0, 1, 0);
+	}
 }
