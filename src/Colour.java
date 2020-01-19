@@ -1,16 +1,26 @@
-
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 5th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class stores the Colour based on rgb value. Note
+ * that rgb value are float since I am using the colour3f method in
+ * lwjgl 3.
+*/
 public class Colour {
-	//rgb colour converter for colour3f method in openGL
+	
 	private float r;
 	private float g;
 	private float b;
 	
+	//Constructor (changes rgb value into float)
 	public Colour(int r, int g, int b){
 		this.r = (float) (r/256.0);
 		this.g = (float) (g/256.0);
 		this.b = (float) (b/256.0);
 	}
 	
+	//getter and setter
 	public float getR() {
 		return r;
 	}
