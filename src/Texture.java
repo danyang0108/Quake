@@ -1,4 +1,11 @@
-
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 2nd, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class loads the texture based on file path. In addition, 
+ * it can find and change the colour of specific pixels of the texture. 
+*/
 import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
