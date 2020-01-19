@@ -231,15 +231,22 @@ public class legacyGL{
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
 			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z) && !E.dead){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
-				E.moveX = 0.05 * (answer.x - E.shift.x);
-				E.moveZ = 0.05 * (answer.z - E.shift.z);
-				//Rotate
+				E.moveX = 0.05d * Math.round(answer.x - E.shift.x);
+				E.moveZ = 0.05d * Math.round(answer.z - E.shift.z);
+				if (E.moveX == 0 && E.moveZ == -0.05) E.rotate = new Point4f(180, 0, 1, 0);
+				else if (E.moveX == 0 && E.moveZ == 0.05) E.rotate = new Point4f(0, 0, 1, 0);
+				else if (E.moveX == -0.05 && E.moveZ == 0) E.rotate = new Point4f(270, 0, 1, 0);
+				else if (E.moveX == 0.05 && E.moveZ == 0) E.rotate = new Point4f(90, 0, 1, 0);
 			}else if (nearUser(E.shift.x, E.shift.z) && !E.dead){
 				float angle = (float)Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
 				E.rotate = new Point4f(180 + angle, 0, 1, 0);
 			}else if (!E.dead){
 				E.shift.x += E.moveX;
 				E.shift.z += E.moveZ;
+				if (E.moveX == 0 && E.moveZ == -0.05) E.rotate = new Point4f(180, 0, 1, 0);
+				else if (E.moveX == 0 && E.moveZ == 0.05) E.rotate = new Point4f(0, 0, 1, 0);
+				else if (E.moveX == -0.05 && E.moveZ == 0) E.rotate = new Point4f(270, 0, 1, 0);
+				else if (E.moveX == 0.05 && E.moveZ == 0) E.rotate = new Point4f(90, 0, 1, 0);
 			}
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);

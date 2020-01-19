@@ -26,7 +26,7 @@ public class Enemy{
 	}
 
 	public boolean updateFrame(){
-		walk = (walk == 10) ? 0 : (walk + 1);
+		walk = (walk == 20) ? 0 : (walk + 1);
 		//0 is walk, 1 is punch, 2 is despawn
 		if (choice == 0) WF = (WF == WS - 1) ? 1 : (WF + 1);
 		if (choice == 1){
