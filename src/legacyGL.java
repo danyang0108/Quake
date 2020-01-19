@@ -31,7 +31,7 @@ public class legacyGL{
 	private ArrayList<Point2f> ammoPos = new ArrayList<>(); //Track ammo kit positions
 	private ArrayList<Boolean> probability = new ArrayList<>();
 	private Point4f move;
-	private Texture enemyTex, mapTex, gunTex, charTex, medTex;
+	private Texture enemyTex, mapTex, gunTex, charTex, medTex, ammoTex;
 	private int charCnt = 0;
 	private int offset = 32;
 	private final Colour yellow = new Colour(255, 255, 0);
@@ -115,6 +115,7 @@ public class legacyGL{
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
 		medTex = new Texture("Resource/Images/Medkit.png");
+		ammoTex = new Texture("Resource/Images/Ammo.png");
 
 		glfwShowWindow(window);
 		loop();
@@ -149,6 +150,8 @@ public class legacyGL{
 		MEDKIT = new MeshObject("Resource/Models/MedKit.obj");
 		MEDKIT.scale(new Point3f(0.8f, 0.8f, 0.8f));
 		MEDKIT.texture = medTex;
+		AMMOPACK = new MeshObject("Resource/Models/Ammo.obj");
+		AMMOPACK.texture = ammoTex;
 
 		long START = System.nanoTime();
 
