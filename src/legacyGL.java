@@ -2,6 +2,8 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ public class legacyGL{
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP, GUN;
+	private MeshObject MAP, GUN, MEDKIT;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -24,8 +26,12 @@ public class legacyGL{
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
+	private ArrayList<Point2f> space = new ArrayList<>(); //Spaces in map
+	private ArrayList<Point2f> medPos = new ArrayList<>(); //Track medical kit positions
+	private ArrayList<Point2f> ammoPos = new ArrayList<>(); //Track ammo kit positions
+	private ArrayList<Boolean> probability = new ArrayList<>();
 	private Point4f move;
-	private Texture enemyTex, mapTex, gunTex, charTex;
+	private Texture enemyTex, mapTex, gunTex, charTex, medTex;
 	private int charCnt = 0;
 	private int offset = 32;
 	private final Colour yellow = new Colour(255, 255, 0);
@@ -73,13 +79,29 @@ public class legacyGL{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
-
 		GL.createCapabilities();
+
+		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
+		int counter = 0;
+		while (maze.hasNextLine()){
+			String[] line = maze.nextLine().split(" ");
+			for (int i = 0; i < line.length; i++){
+				vis[counter][i] = Integer.parseInt(line[i]) == 1;
+				if (Integer.parseInt(line[i]) == 1) space.add(new Point2f(counter, i));
+			}
+			counter++;
+		}
+
+		for (int i = 0; i < 499; i++) probability.add(false);
+		for (int i = 0; i < 1; i++) probability.add(true);
+
 		charTex = new Texture("Resource/Images/text.png");
 		charTex.setPixel(0);
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
+		medTex = new Texture("Resource/Images/Medkit.png");
+
 		glfwShowWindow(window);
 		loop();
 		glfwFreeCallbacks(window);
@@ -105,19 +127,14 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
-		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
-		int counter = 0;
-		while (maze.hasNextLine()){
-			String[] line = maze.nextLine().split(" ");
-			for (int i = 0; i < line.length; i++) vis[counter][i] = Integer.parseInt(line[i]) == 1;
-			counter++;
-		}
-
 		MAP = new MeshObject("Resource/Models/Map.obj");
 		MAP.texture = mapTex;
 		GUN = new MeshObject("Resource/Models/M9A1.obj");
 		GUN.texture = gunTex;
 		GUN.scale(new Point3f(0.09f, 0.09f, 0.09f));
+		MEDKIT = new MeshObject("Resource/Models/MedKit.obj");
+		MEDKIT.scale(new Point3f(0.8f, 0.8f, 0.8f));
+		MEDKIT.texture = medTex;
 
 		long START = System.nanoTime();
 
@@ -214,11 +231,40 @@ public class legacyGL{
 			}
 		}
 
+		Collections.shuffle(probability);
+		if (probability.get(0)){ //Add new medkit/ammo pack
+			Random RD = new Random();
+			ArrayList<Point2f> newKit = space;
+			ArrayList<Integer> removed = new ArrayList<>();
+			for (int i = 0; i < newKit.size(); i++){
+				if (medPos.contains(newKit.get(i))) removed.add(i);
+				else if (ammoPos.contains(newKit.get(i))) removed.add(i);
+			}
+			for (int i: removed) newKit.remove(i); //This is the remaining space
+			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
+			newKit.remove(userRounded); //Don't generate at user position
+			if (newKit.size() > 0){
+				Collections.shuffle(newKit);
+				Point2f addPoint = newKit.get(0);
+				//Define TRUE as medkit, FALSE as ammo pack
+				if (RD.nextBoolean()) medPos.add(addPoint);
+				else ammoPos.add(addPoint);
+			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
+		}
+
 		//Draw the objects
 		MAP.draw();
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
 		GUN.rotate(new Point4f(270 - move.rot, 0, 1, 0));
 		GUN.draw();
+		System.out.println(medPos.size() + " " + ammoPos.size());
+		for (Point2f p: medPos){
+			float coordX = p.x - fixX;
+			float coordZ = p.z - fixZ;
+			MeshObject medkit = MEDKIT;
+			medkit.translate(new Point3f(coordZ, -2f, coordX));
+			medkit.draw();
+		}
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
@@ -256,7 +302,10 @@ public class legacyGL{
 			//Display health bar
 			if (E.updateFrame()) remove.add(i); //The enemy is dead
 		}
-		for (int i: remove) enemies.remove(i); //Remove dead enemies
+		//Sort in decreasing order
+		Collections.sort(remove);
+		//Remove dead enemies
+		for (int i = remove.size()-1; i >= 0; i--) enemies.remove((int)remove.get(i));
 	}
 
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
