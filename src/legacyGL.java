@@ -64,7 +64,21 @@ public class legacyGL{
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS){
-				if (button == GLFW_MOUSE_BUTTON_LEFT) mouse = true;
+				if (button == GLFW_MOUSE_BUTTON_LEFT && curAmmo > 0) {
+					mouse = true;
+					curAmmo -= 1;
+				}
+				else if (button == GLFW_MOUSE_BUTTON_RIGHT && totalAmmo > 0) {
+					int required = 30 - curAmmo;
+					if (totalAmmo >= required) {
+						totalAmmo -= required;
+						curAmmo += required;
+					}
+					else {
+						curAmmo += totalAmmo;
+						totalAmmo = 0;
+					}
+				}
 			}else if (action == GLFW_RELEASE){
 				if (button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
 			}
@@ -213,7 +227,7 @@ public class legacyGL{
 				curZ += faceZ;
 			}
 		}
-
+		mouse = false;
 		//Draw the objects
 		MAP.draw();
 		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
@@ -222,6 +236,7 @@ public class legacyGL{
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
+			boolean dropHealth = false;
 			Enemy E = enemies.get(i);
 			if (E.health <= 0 && !E.dead){
 				//One time only
@@ -230,6 +245,7 @@ public class legacyGL{
 			}else if (nearUser(E.shift.x, E.shift.z) && !E.punch){
 				E.setChoice(1);
 				E.punch = true;
+				dropHealth = true;
 			};
 			int choice = E.choice; //Which animation it's in
 			MeshObject temp;
@@ -253,6 +269,9 @@ public class legacyGL{
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
+			if (dropHealth) {
+				curHealth -= 1;
+			}
 			//Display health bar
 			if (E.updateFrame()) remove.add(i); //The enemy is dead
 		}
