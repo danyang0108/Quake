@@ -4,22 +4,33 @@ import java.util.Scanner;
 
 public class BFS{
 
-	private int WIDTH = 21, HEIGHT = 24;
+	private int WIDTH = 21, HEIGHT = 24;	//size of map
 
-	private boolean[][] vis = new boolean[HEIGHT][WIDTH];
+	//visited array
+	private boolean[][] vis = new boolean[HEIGHT][WIDTH];	
+	
+	//distance from starting node 
 	private int[][] dis = new int[HEIGHT][WIDTH];
+	
+	//backtracking the previous node that was visited
 	private Point2f[][] prev = new Point2f[HEIGHT][WIDTH];
+	
+	//directions (left, right, up, down)
 	private int[][] d = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
+	
+	//queue for running bfs
 	private Queue<Point2f> q = new Queue<>();
+	
+	//position of walls
 	private boolean[][] wall = new boolean[HEIGHT][WIDTH];
 
 	public BFS() throws Exception{
 		readFile("Resource/Models/Map.txt");
 	}
 
+	//reads the map, 0 represents a wall and 1 represents open space
 	public void readFile(String fileName) throws Exception{
 		Scanner scan = new Scanner(new File(fileName));
-		//read the x and y coordinates on each line of the file and store them in ArrayLists
 		int j = 0;
 		while (scan.hasNextLine()){
 			String[] line = scan.nextLine().split(" ");
@@ -31,6 +42,8 @@ public class BFS{
 		scan.close();
 	}
 	
+	//finds the shortest path from the start position to the end position
+	//then backtrack to trace the path  
 	public Point2f bfs(Point2f start, Point2f end){
 		q.enqueue(start);
 		vis[start.x][start.z] = true;
@@ -45,6 +58,8 @@ public class BFS{
 				}
 				return backtrack;
 			}
+			
+			//check the left, right, up, down directions
 		    for (int i = 0; i < 4; i++){
 		      int nx = cur.x + d[i][0];
 		      int nz = cur.z + d[i][1];
