@@ -1,3 +1,12 @@
+///Author: Danyang Wang & Ethan Zhang
+//Class: ICS4U
+//Date: Jan 17th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class is for enemies to find the shortest path towards the user.
+ * Using bfs, we find the shortest path from starting position to ending position.
+ * Then we trace the path. 
+*/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
