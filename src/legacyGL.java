@@ -22,9 +22,12 @@ public class legacyGL{
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private Point4f move;
-	private Texture enemyTex, mapTex, gunTex;
+	private Texture enemyTex, mapTex, gunTex, charTex;
 
-	Texture tex;
+	private int curHealth = 100;
+	private int curAmmo = 30;
+	private int totalAmmo = 90;
+
 	int charCnt = 0;
 	int offset = 32;
 	Colour yellow = new Colour(255, 255, 0);
@@ -74,8 +77,8 @@ public class legacyGL{
 		glfwSwapInterval(1);
 
 		GL.createCapabilities();
-		tex = new Texture("Resource/Images/text.png");
-		tex.setPixel(0);
+		charTex = new Texture("Resource/Images/text.png");
+		charTex.setPixel(0);
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
@@ -144,9 +147,11 @@ public class legacyGL{
 			glPushMatrix();
 			glTranslatef(-TX, 0, -TZ);
 			if (move != null) glRotatef(-move.rot, 0, 1, 0);
-			tex.bind();
-			drawText(" h e a l t h :  1 0 0 / 1 0 0 ", 0, -0.1f, 6);
-			drawText(" a m m o :  2 0 / 8 0         ", 0, -0.25f, 5);
+			charTex.bind();
+			String health = "Health:" + curHealth + "/100";
+			String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
+			drawText(health, -0.4f, -0.31f, 6);
+			drawText(ammo, -0.4f, 0.35f, 6);
 			glPopMatrix();
 			render();
 			glfwSwapBuffers(window);
@@ -260,13 +265,14 @@ public class legacyGL{
 
 	public void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
+		text = text.replace("", " ");
 		float startX = x, startY = y;
 		for (int i = 0; i < text.length(); i++) {
 			int ascii = text.charAt(i) - offset;
 			charCnt = 0;
-			for (int j = 0; j < tex.getBI().getWidth(); j++) {
+			for (int j = 0; j < charTex.getBI().getWidth(); j++) {
 
-				Colour c = tex.getPixel(j, 0);
+				Colour c = charTex.getPixel(j, 0);
 				if (charCnt > ascii)
 					break;
 				if (c.getR() == yellow.getR() && c.getG() == yellow.getG() && c.getB() == yellow.getB()) {
@@ -279,15 +285,15 @@ public class legacyGL{
 			}
 			int x_length = end - start;
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
-			float endY = (startY * WINDOW_HEIGHT - tex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
+			float endY = (startY * WINDOW_HEIGHT - charTex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
-			glTexCoord2d((double)start / tex.getBI().getWidth(), 0);
+			glTexCoord2d((double)start / charTex.getBI().getWidth(), 0);
 			glVertex3d(startX, startY, -0.4);
-			glTexCoord2d((double)end / tex.getBI().getWidth(), 0);
+			glTexCoord2d((double)end / charTex.getBI().getWidth(), 0);
 			glVertex3d(endX, startY, -0.4);
-			glTexCoord2d((double)end / tex.getBI().getWidth(), 1);
+			glTexCoord2d((double)end / charTex.getBI().getWidth(), 1);
 			glVertex3d(endX, endY, -0.4);
-			glTexCoord2d((double)start / tex.getBI().getWidth(), 1);
+			glTexCoord2d((double)start / charTex.getBI().getWidth(), 1);
 			glVertex3d(startX, endY, -0.4);
 			glEnd();
 			startX = endX;
