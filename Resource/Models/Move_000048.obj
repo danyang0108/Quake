@@ -1,6 +1,6 @@
 # Blender v2.81 (sub 16) OBJ File: 'Original.blend'
 # www.blender.org
-mtllib Move.mtl
+
 o Stormtrooper.001_Stormtrooper
 v -0.485261 1.676733 -0.324209
 v -0.400582 1.675657 -0.345678
@@ -11726,7 +11726,7 @@ vn 0.3586 -0.1944 -0.9130
 vn 0.2146 -0.3385 -0.9162
 vn 0.0230 -0.3960 -0.9180
 vn -0.1794 -0.3473 -0.9204
-usemtl Stormtrooper
+
 s 1
 f 1/1/1 2/2/2 3/3/3
 f 2/2/2 1/1/1 4/4/4
