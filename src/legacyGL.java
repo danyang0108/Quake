@@ -16,7 +16,7 @@ public class legacyGL{
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
-	private MeshObject MAP, GUN, MEDKIT;
+	private MeshObject MAP, GUN, MEDKIT, AMMOPACK;
 	private Boolean[][] vis = new Boolean[24][21];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -289,6 +289,23 @@ public class legacyGL{
 			}
 		}
 		for (Point2f p: removeMed) medPos.remove(p);
+
+		ArrayList<Point2f> removeAmmo = new ArrayList<>();
+		for (Point2f p: ammoPos){
+			float coordX = p.z - fixX;
+			float coordZ = p.x - fixZ;
+			if (nearUser(coordX, coordZ)){
+				//The medkit is used
+				curAmmo = 30;
+				totalAmmo = 90;
+				removeAmmo.add(p);
+			}else{
+				MeshObject ammoPack = AMMOPACK;
+				ammoPack.translate(new Point3f(coordX, -2f, coordZ));
+				ammoPack.draw();
+			}
+		}
+		for (Point2f p: removeAmmo) ammoPos.remove(p);
 
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
