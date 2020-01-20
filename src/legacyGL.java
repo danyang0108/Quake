@@ -42,6 +42,7 @@ public class legacyGL{
 	private long loadTime;
 	private long elapsedTime;
 	private boolean gameStart = true;
+	private int elimination = 0;
 	
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -199,6 +200,7 @@ public class legacyGL{
 		String health = "Health:" + curHealth + "/" + maxHealth;
 		String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
 		String time = "Time:" + elapsedTime; 
+		String kills = "Kills:" + elimination;
 		//Take care of magic numbers
 		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
 		float statX = 0.2f, statY = -0.31f;
@@ -206,6 +208,7 @@ public class legacyGL{
 		drawText(health, textX, textY, fontSize);
 		drawText(ammo, textX, textY - intervalY, fontSize);
 		drawText(time, statX, statY, fontSize);
+		drawText(kills, statX, statY - intervalY, fontSize);
 	}
 
 	private void render() throws Exception{
@@ -342,7 +345,10 @@ public class legacyGL{
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
-			if (E.updateFrame()) remove.add(i); //The enemy is dead
+			if (E.updateFrame()) {
+				elimination++;
+				remove.add(i); //The enemy is dead
+			}
 			if (dropHealth) curHealth -= 1;
 		}
 		//Sort in decreasing order
