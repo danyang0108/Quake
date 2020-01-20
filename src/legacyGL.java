@@ -37,6 +37,8 @@ public class legacyGL{
 	private final Colour yellow = new Colour(255, 255, 0);
 	private final Colour blue = new Colour(0, 0, 255);
 	private int start = 0, end = 0;
+	private long startTime = System.nanoTime();
+	private long accumulate = 0;
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -168,13 +170,6 @@ public class legacyGL{
 			keyframes.add(animation);
 		}
 
-		Enemy second = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
-		enemies.add(second);
-		Enemy first = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
-		enemies.add(first);
-		Enemy third = new Enemy(new Point3f(1, -1, -1), new Point4f(0, 0, 0, 0));
-		enemies.add(third);
-
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -208,10 +203,10 @@ public class legacyGL{
 		moveUser(); //Handles keyboard input
 		rotateUser(); //Handles mouse input
 
+		ArrayList<Point2f> newKit = space;
 		Collections.shuffle(probability);
 		if (probability.get(0)){ //Add new medkit/ammo pack
 			Random RD = new Random();
-			ArrayList<Point2f> newKit = space;
 			ArrayList<Integer> removed = new ArrayList<>();
 			for (int i = 0; i < newKit.size(); i++){
 				if (medPos.contains(newKit.get(i))) removed.add(i);
@@ -235,6 +230,32 @@ public class legacyGL{
 		GUN.translate(new Point3f(-TX, shiftGun, -TZ));
 		GUN.rotate(new Point4f(rotateGun - move.rot, 0, 1, 0));
 		GUN.draw();
+
+		//Add new enemies
+		long nowTime = System.nanoTime();
+		accumulate += (nowTime - startTime);
+		double spawnTime = 15;
+		int enemyLimit = 4;
+		if (accumulate / 1e9d >= spawnTime){
+			accumulate = 0;
+			if (enemies.size() < enemyLimit){ //Upper limit of 4
+				Collections.shuffle(space);
+				boolean finish = true;
+				int index = 0;
+				while (finish){
+					Point2f generate = space.get(index);
+					float coordX = generate.z - fixX;
+					float coordZ = generate.x - fixZ;
+					if (!nearUser(coordX, coordZ)){
+						float shiftEnemy = -1f;
+						Enemy newEnemy = new Enemy(new Point3f(coordX, shiftEnemy, coordZ));
+						enemies.add(newEnemy);
+						finish = false;
+					}
+				}
+			}
+		}
+		startTime = nowTime;
 
 		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
@@ -364,7 +385,6 @@ public class legacyGL{
 				}
 			}
 			glTranslatef(TX, 0, TZ);
-			return;
 		}
 	}
 

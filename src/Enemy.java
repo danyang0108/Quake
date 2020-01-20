@@ -11,13 +11,12 @@ public class Enemy{
 	public double moveX, moveZ;
 	private int fixX = 10, fixZ = 12;
 
-	public Enemy(Point3f shift, Point4f rotate){
+	public Enemy(Point3f shift){
 		choice = 0;
 		WF = PF = DF = 1;
 		health = 100;
 		walk = 0;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
-		this.rotate = rotate;
 	}
 
 	public void setChoice(int choice){
