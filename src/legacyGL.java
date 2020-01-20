@@ -143,15 +143,15 @@ public class legacyGL{
 		float gunScale = 0.09f;
 		float kitScale = 0.8f;
 		map = new MeshObject("Resource/Models/Map.obj");
-		map.texture = mapTex;
+		map.setTexture(mapTex);
 		gun = new MeshObject("Resource/Models/M9A1.obj");
-		gun.texture = gunTex;
+		gun.setTexture(gunTex);
 		gun.scale(new Point3f(gunScale, gunScale, gunScale));
 		medKit = new MeshObject("Resource/Models/MedKit.obj");
 		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
-		medKit.texture = medTex;
+		medKit.setTexture(medTex);
 		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
-		ammoPack.texture = ammoTex;
+		ammoPack.setTexture(ammoTex);
 
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
@@ -162,7 +162,7 @@ public class legacyGL{
 			else if (i < hundred) threeDigit = "0" + i;
 			else threeDigit = Integer.toString(i);
 			MeshObject animation = new MeshObject(path2 + threeDigit + ".obj");
-			animation.texture = enemyTex;
+			animation.setTexture(enemyTex);
 			float enemyScaleX = 0.35f, enemyScaleY = 0.5f, enemyScaleZ = 0.5f;
 			animation.scale(new Point3f(enemyScaleX, enemyScaleY, enemyScaleZ));
 			keyframes.add(animation);
@@ -306,50 +306,49 @@ public class legacyGL{
 		for (int i = 0; i < enemies.size(); i++){
 			boolean dropHealth = false;
 			Enemy E = enemies.get(i);
-			if (E.dead){
+			if (E.isDead()){
 				if (E.updateFrame()){
 					elimination++;
 					remove.add(i);
 				}
-				MeshObject temp = keyframes.get(E.WS + E.PS + E.DF);
-				temp.translate(E.shift);
-				temp.rotate(E.rotate);
+				MeshObject temp = keyframes.get(E.getWS() + E.getPS() + E.getDF());
+				temp.translate(E.getShift());
+				temp.rotate(E.getRotate());
 				temp.draw();
 				continue;
 			}
-			if (E.health <= 0){
+			if (E.getHealth() <= 0){
 				//One time only
 				E.setChoice(2);
-				E.dead = true;
-			}else if (nearUser(E.shift.x, E.shift.z) && !E.punch){
+				E.setDead(true);
+			}else if (nearUser(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
 				E.setChoice(1);
-				E.punch = true;
+				E.setPunch(true);
 				dropHealth = true;
 			};
-			int choice = E.choice; //Which animation it's in
+			int choice = E.getChoice(); //Which animation it's in
 			MeshObject temp;
-			if (choice == 0) temp = keyframes.get(E.WF);
-			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
-			else temp = keyframes.get(E.WS + E.PS + E.DF);
+			if (choice == 0) temp = keyframes.get(E.getWF());
+			else if (choice == 1) temp = keyframes.get(E.getWS() + E.getPF());
+			else temp = keyframes.get(E.getWS() + E.getPS() + E.getDF());
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			System.out.println(userRounded.x + " " + userRounded.z);
-			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z)){
+			if (E.getWalk() == 0 && !nearUser(E.getShiftX(), E.getShiftZ())){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
 				double enemySpeed = 0.05;
-				E.moveX = enemySpeed * Math.round(answer.x - E.shift.x);
-				E.moveZ = enemySpeed * Math.round(answer.z - E.shift.z);
+				E.setMoveX(enemySpeed * Math.round(answer.x - E.getShiftX()));
+				E.setMoveZ(enemySpeed * Math.round(answer.z - E.getShiftZ()));
 				E.turnToUser();
-			}else if (nearUser(E.shift.x, E.shift.z)){
-				double angle = Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
+			}else if (nearUser(E.getShiftX(), E.getShiftZ())){
+				double angle = Math.toDegrees(Math.atan2((E.getShiftX() + TX), (E.getShiftZ() + TZ)));
 				float fixAngle = 180;
-				E.rotate = new Point4f(fixAngle + (float)angle, 0, 1, 0);
+				E.setRotate(new Point4f(fixAngle + (float)angle, 0, 1, 0));
 			}else{
-				E.shift.x += E.moveX;
-				E.shift.z += E.moveZ;
+				E.setShiftX(E.getShiftX() + (float)E.getMoveX());
+				E.setShiftZ(E.getShiftZ() + (float)E.getMoveZ());
 				E.turnToUser();
 			}
-			temp.translate(E.shift);
-			temp.rotate(E.rotate);
+			temp.translate(E.getShift());
+			temp.rotate(E.getRotate());
 			temp.draw();
 			E.updateFrame();
 			if (dropHealth) u.reduceHealth(1);
@@ -372,7 +371,7 @@ public class legacyGL{
 			TZ += move.z;
 			//Also disable user from walking through enemies
 			for (Enemy E: enemies){
-				if (nearEnemy(E.shift.x, E.shift.z)){
+				if (nearEnemy(E.getShiftX(), E.getShiftZ())){
 					//If user is near an enemy, cancel the movement
 					TX -= move.x;
 					TZ -= move.z;
@@ -387,7 +386,7 @@ public class legacyGL{
 		if (vis[Z][X]){
 			TX += move.x;
 			for (Enemy E: enemies){
-				if (nearEnemy(E.shift.x, E.shift.z)){
+				if (nearEnemy(E.getShiftX(), E.getShiftZ())){
 					TX -= move.x;
 					break;
 				}
@@ -400,7 +399,7 @@ public class legacyGL{
 		if (vis[Z][X]){
 			TZ += move.z;
 			for (Enemy E: enemies){
-				if (nearEnemy(E.shift.x, E.shift.z)){
+				if (nearEnemy(E.getShiftX(), E.getShiftZ())){
 					TZ -= move.z;
 					break;
 				}
@@ -421,7 +420,8 @@ public class legacyGL{
 			while (inMap(curX, curZ) && cont){
 				for (Enemy E: enemies){
 					if (E.hit(curX, curZ)){
-						E.health -= 5;
+						int damage = 25;
+						E.setHealth(E.getHealth() - damage);
 						cont = false;
 					}
 				}
@@ -429,7 +429,7 @@ public class legacyGL{
 				curZ += faceZ;
 			}
 		}
-		//mouse = false;
+		mouse = false;
 	}
 
 	private void drawText(String text, float x, float y, int fontSize) throws Exception{

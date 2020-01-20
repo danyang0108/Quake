@@ -12,7 +12,7 @@ public class MeshObject{
     private Point3f trans;
     private Point4f rotate;
     private Point3f scale;
-    public Texture texture;
+    private Texture texture;
 
     private void init(){
         vertex = new ArrayList<>();
@@ -108,5 +108,9 @@ public class MeshObject{
             glEnd();
         }
         glPopMatrix();
+    }
+
+    public void setTexture(Texture tex){
+        texture = tex;
     }
 }
