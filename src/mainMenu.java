@@ -4,6 +4,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -19,29 +21,59 @@ import java.nio.file.Paths;
 
 public class mainMenu extends Application{
 
-    public static void main(String[] args) {
+    private int scene_x, scene_y;
+    private int lfont, sfont;
+    private String name;
+
+    public static void main(String args[]) {
         launch(args);
     }
 
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         //Initializing variable
         int scene_x = 900;
         int scene_y = 600;
         Group root= new Group();
+        Group scene_container = new Group();
+        HBox control = new HBox();
+        root.getChildren().addAll(scene_container,control);
         Scene scene=new Scene(root,scene_x,scene_y);
         ImageView background=loadBackground("Resource/Images/Wall.jpg",scene_x,scene_y);
         background.setX(0);
         background.setY(0);
-        Text text = new Text("Quake ICS4U");
-        text.setFont(Font.font ("Verdana", FontWeight.BOLD,50));
-        text.setFill(Color.WHITE);
-        text.setX(300);
-        text.setY(100);
+        Text title = new Text("Quake ICS4U");
+        lfont = 50; sfont  = 25;
+        title.setFont(Font.font ("Verdana", FontWeight.BOLD,lfont));
+        title.setFill(Color.WHITE);
+        int title_x = 275, title_y = 100;
+        title.setX(title_x);
+        title.setY(title_y);
+        Text user = new Text("Username: ");
+        user.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
+        user.setFill(Color.WHITE);
+        int user_x = 225, user_y = 200;
+        user.setX(user_x);
+        user.setY(user_y);
+        TextField enterUser = new TextField("enter username");
+        int field_x = 400, field_y = 165, field_w = 300, field_h = 50;
+        enterUser.setLayoutX(field_x);
+        enterUser.setLayoutY(field_y);
+        enterUser.setPrefWidth(field_w);
+        enterUser.setPrefHeight(field_h);
+        enterUser.setOnAction(new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent arg0) {
+                name = enterUser.getText();
+            }
+        });
+
         Button button = new Button("Start Game");
-        button.setLayoutX(scene_x/2-100);
-        button.setLayoutY(scene_y/2-25);
-        button.setPrefWidth(200);
-        button.setPrefHeight(50);
+        int button_x = scene_x/2 - 100, button_y = scene_y/2 + 25;
+        int button_w = 200, button_h = 75;
+        button.setLayoutX(button_x);
+        button.setLayoutY(button_y);
+        button.setPrefWidth(button_w);
+        button.setPrefHeight(button_h);
         button.setOnAction(arg0 -> {
             try{
                 new legacyGL().run();
@@ -49,16 +81,22 @@ public class mainMenu extends Application{
                 e.printStackTrace();
             }
         });
-        Button instruct = new Button("Instructions");
+        /*Button instruct = new Button("Help");
         instruct.setLayoutX(scene_x/2-100);
         instruct.setLayoutY(scene_y/2+30);
         instruct.setPrefWidth(200);
         instruct.setPrefHeight(50);
-        instruct.setOnAction(arg0 -> {
-
-        });
-        root.getChildren().addAll(background, button, instruct, text);
-
+        instruct.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent arg0) {
+                scene_container.getChildren().clear();
+                //scene_container.getChildren().add(background);
+                Label label = new Label("Player movement");
+                control.getChildren().addAll(label);
+                label.setFont(Font.font ("Verdana", FontWeight.BOLD,20));
+                label.setTextFill(Color.WHITE);
+            }
+        });*/
+        scene_container.getChildren().addAll(background,button,title,user, enterUser);
         primaryStage.setTitle("Culminating Project");		//display title
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -73,7 +111,7 @@ public class mainMenu extends Application{
             e.printStackTrace();
         }
         Image image=new Image(url,width,height,true,false);
-        ImageView map = new ImageView(image);
-        return map;
+        ImageView background = new ImageView(image);
+        return background;
     }
 }
