@@ -21,7 +21,6 @@ public class legacyGL{
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
-
 	private int maxHealth = 100;
 	private int maxRound = 30;
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
@@ -43,9 +42,8 @@ public class legacyGL{
 	private long elapsedTime;
 	private boolean gameStart = true;
 	private int elimination = 0;
-	private int enemyLimit = 3;
 	private User u = new User();
-	
+
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
 	}
@@ -85,6 +83,7 @@ public class legacyGL{
 				else if (button == GLFW_MOUSE_BUTTON_RIGHT && u.getTotalAmmo() > 0){
 					u.reload();
 				}
+
 			}else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
 		});
 		//This line is to not show the cursor on the screen. It's to allow unlimited movement.
@@ -173,7 +172,7 @@ public class legacyGL{
 			gameStart = false;
 			loadTime = System.nanoTime();
 		}
-		
+
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -194,7 +193,7 @@ public class legacyGL{
 		elapsedTime = Math.round((System.nanoTime()-loadTime) / 1e9d);
 		String health = "Health:" + u.getHealth() + "/" + maxHealth;
 		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
-		String time = "Time:" + elapsedTime; 
+		String time = "Time:" + elapsedTime;
 		String kills = "Kills:" + elimination;
 		//Take care of magic numbers
 		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
@@ -229,9 +228,8 @@ public class legacyGL{
 				Collections.shuffle(newKit);
 				Point2f addPoint = newKit.get(0);
 				//Define TRUE as medkit, FALSE as ammo pack
-				boolean decision = RD.nextBoolean();
-				if (medPos.size() < enemyLimit && decision) medPos.add(addPoint);
-				if (ammoPos.size() < enemyLimit && !decision) ammoPos.add(addPoint);
+				if (RD.nextBoolean()) medPos.add(addPoint);
+				else ammoPos.add(addPoint);
 			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
 		}
 
@@ -246,9 +244,10 @@ public class legacyGL{
 		long nowTime = System.nanoTime();
 		accumulate += (nowTime - startTime);
 		double spawnTime = 15;
+		int enemyLimit = 4;
 		if (accumulate / 1e9d >= spawnTime){
 			accumulate = 0;
-			if (enemies.size() < enemyLimit){ //Upper limit of 3
+			if (enemies.size() < enemyLimit){ //Upper limit of 4
 				Collections.shuffle(space);
 				boolean finish = true;
 				int index = 0;
@@ -291,7 +290,7 @@ public class legacyGL{
 			int maxAmmo = 90;
 			if (nearUser(coordX, coordZ) && (u.getCurAmmo() != maxRound || u.getTotalAmmo() != maxAmmo)){
 				//The medkit is used
-				u.setCurAmmo(maxRound);;
+				u.setCurAmmo(maxRound);
 				u.setTotalAmmo(maxAmmo);
 				removeAmmo.add(p);
 			}else{
@@ -318,7 +317,7 @@ public class legacyGL{
 				temp.draw();
 				continue;
 			}
-			if (E.getHealth() <= 0){
+			if (E.health <= 0){
 				//One time only
 				E.setChoice(2);
 				E.dead = true;
@@ -333,6 +332,7 @@ public class legacyGL{
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
+			System.out.println(userRounded.x + " " + userRounded.z);
 			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z)){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
 				double enemySpeed = 0.05;
@@ -416,12 +416,12 @@ public class legacyGL{
 			double ratio = 0.1;
 			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
 			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
-			double curX = TX, curZ = TZ;
+			double curX = TX + faceX, curZ = TZ + faceZ;
 			boolean cont = true;
 			while (inMap(curX, curZ) && cont){
 				for (Enemy E: enemies){
 					if (E.hit(curX, curZ)){
-						E.reduceHealth(5);
+						E.health -= 5;
 						cont = false;
 					}
 				}
@@ -470,10 +470,10 @@ public class legacyGL{
 	}
 
 	public boolean inMap(double x, double z){
-		int FX = -(int)Math.round(x) + fixX;
-		int FZ = -(int)Math.round(z) + fixZ;
-		if (FX > 0 && FX < sizeX && FZ > 0 && FZ < sizeZ){
-			return vis[FZ][FX];
+		int FX = -(int)Math.round(z);
+		int FZ = -(int)Math.round(x);
+		if (FX > -fixX && FX < fixX && FZ > 1-fixZ && FZ < fixZ){
+			return vis[FX + fixZ][FZ + fixX];
 		}
 		return false;
 	}
