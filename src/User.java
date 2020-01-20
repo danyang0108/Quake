@@ -1,7 +1,7 @@
 public class User extends Entity{
 	
 	private Point3f curPos;
-	private float health;
+	private int health;
 	private int curAmmo;
 	private int totalAmmo;
 	
