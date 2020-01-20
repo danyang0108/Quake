@@ -43,7 +43,7 @@ public class legacyGL{
 	private long elapsedTime;
 	private boolean gameStart = true;
 	private int elimination = 0;
-	private int enemyLimit = 4;
+	private int enemyLimit = 3;
 	private User u = new User();
 	
 	public static void main(String[] args) throws Exception{
@@ -248,7 +248,7 @@ public class legacyGL{
 		double spawnTime = 15;
 		if (accumulate / 1e9d >= spawnTime){
 			accumulate = 0;
-			if (enemies.size() < enemyLimit){ //Upper limit of 4
+			if (enemies.size() < enemyLimit){ //Upper limit of 3
 				Collections.shuffle(space);
 				boolean finish = true;
 				int index = 0;

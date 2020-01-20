@@ -69,7 +69,6 @@ public class BFS{
 				//Backtrack to the original point
 				Point2f backtrack = new Point2f(end.x, end.z);
 				while (prev[backtrack.x][backtrack.z].x != start.x || prev[backtrack.x][backtrack.z].z != start.z){
-					System.out.println("NO FROM " + start.x + " " + start.z + " TO " + end.x + " " + end.z);
 					backtrack = prev[backtrack.x][backtrack.z];
 				}
 				return backtrack;
