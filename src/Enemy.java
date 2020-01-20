@@ -1,4 +1,4 @@
-public class Enemy{
+public class Enemy extends Entity{
 	public final int WS = 100, PS = 80, DS = 180;
 	public boolean punch = false;
 	public boolean dead = false;
@@ -9,7 +9,6 @@ public class Enemy{
 	public int health;
 	public int walk; //For movement
 	public double moveX, moveZ;
-	private int fixX = 10, fixZ = 12;
 
 	public Enemy(Point3f shift){
 		choice = 0;
@@ -64,6 +63,7 @@ public class Enemy{
 
 	public Point2f findUser(int x, int z) throws Exception{
 		//Graph Theory Part
+		int fixZ = 12, fixX = 10;
 		Point2f EPos = new Point2f(Math.round(shift.z) + fixZ, Math.round(shift.x) + fixX);
 		Point2f UPos = new Point2f(x, z);
 		BFS RUN = new BFS();

@@ -1,4 +1,4 @@
-public class User {
+public class User extends Entity{
 	
 	private Point3f curPos;
 	private float health = 100;
