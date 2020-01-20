@@ -39,7 +39,10 @@ public class legacyGL{
 	private int start = 0, end = 0;
 	private long startTime = System.nanoTime();
 	private long accumulate = 0;
-
+	private long loadTime;
+	private long elapsedTime;
+	private boolean gameStart = true;
+	
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
 	}
@@ -170,6 +173,11 @@ public class legacyGL{
 			keyframes.add(animation);
 		}
 
+		if (gameStart) {
+			gameStart = false;
+			loadTime = System.nanoTime();
+		}
+		
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -187,13 +195,17 @@ public class legacyGL{
 		glTranslatef(-TX, 0, -TZ);
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
+		elapsedTime = Math.round((System.nanoTime()-loadTime) / 1e9d);
 		String health = "Health:" + curHealth + "/" + maxHealth;
 		String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
+		String time = "Time:" + elapsedTime; 
 		//Take care of magic numbers
 		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
+		float statX = 0.2f, statY = -0.31f;
 		int fontSize = 6;
 		drawText(health, textX, textY, fontSize);
 		drawText(ammo, textX, textY - intervalY, fontSize);
+		drawText(time, statX, statY, fontSize);
 	}
 
 	private void render() throws Exception{
