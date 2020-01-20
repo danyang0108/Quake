@@ -220,7 +220,7 @@ public class legacyGL{
 
 		ArrayList<Point2f> newKit = space;
 		Collections.shuffle(probability);
-		if (probability.get(0)){ //Add new medkit/ammo pack
+		if (probability.get(0)){ //Add new med kit/ammo pack
 			Random RD = new Random();
 			ArrayList<Integer> removed = new ArrayList<>();
 			for (int i = 0; i < newKit.size(); i++){
@@ -418,7 +418,7 @@ public class legacyGL{
 			while (inMap(curX, curZ) && cont){
 				for (Enemy E : enemies){
 					if (E.hit(curX, curZ)){
-						E.health--;
+						E.health -= 5;
 						cont = false;
 					}
 				}

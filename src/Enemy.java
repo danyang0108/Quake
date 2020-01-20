@@ -19,6 +19,24 @@ public class Enemy{
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 	}
 
+	public Enemy(Point4f rotate){
+		choice = 0;
+		WF = PF = DF = 1;
+		health = 100;
+		walk = 0;
+		this.shift = new Point3f(0, 0, 0);
+		this.rotate = rotate;
+	}
+
+	public Enemy(Point3f shift, Point4f rotate){
+		choice = 0;
+		WF = PF = DF = 1;
+		health = 100;
+		walk = 0;
+		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
+		this.rotate = rotate;
+	}
+
 	public void setChoice(int choice){
 		this.choice = choice;
 		WF = PF = DF = 1;
