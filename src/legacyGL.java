@@ -177,82 +177,36 @@ public class legacyGL{
 
 		while (!glfwWindowShouldClose(window)){
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glTranslatef(-TX, 0, -TZ);
-			if (move != null) glRotatef(-move.rot, 0, 1, 0);
-			charTex.bind();
-			String health = "Health:" + curHealth + "/" + maxHealth;
-			String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
-			//Take care of magic numbers
-			float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
-			int fontSize = 6;
-			drawText(health, textX, textY, fontSize);
-			drawText(ammo, textX, textY - intervalY, fontSize);
+
+			//Draw the text and objects
+			text();
 			render();
+
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+	}
+
+	private void text() throws Exception{
+		//Draw the text on the screen
+		glTranslatef(-TX, 0, -TZ);
+		if (move != null) glRotatef(-move.rot, 0, 1, 0);
+		charTex.bind();
+		String health = "Health:" + curHealth + "/" + maxHealth;
+		String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
+		//Take care of magic numbers
+		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
+		int fontSize = 6;
+		drawText(health, textX, textY, fontSize);
+		drawText(ammo, textX, textY - intervalY, fontSize);
 	}
 
 	private void render() throws Exception{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		move = new Control().movement(window, movement);
-		int Z = Math.round(-TZ - move.z) + fixZ;
-		int X = Math.round(-TX - move.x) + fixX;
-		if (vis[Z][X]){
-			TX += move.x;
-			TZ += move.z;
-			for (Enemy E: enemies){
-				if (nearEnemy(E.shift.x, E.shift.z)){
-					TX -= move.x;
-					TZ -= move.z;
-					break;
-				}
-			}
-		}else{
-			Z = Math.round(-TZ) + fixZ;
-			if (vis[Z][X]){
-				TX += move.x;
-				for (Enemy E: enemies){
-					if (nearEnemy(E.shift.x, E.shift.z)){
-						TX -= move.x;
-						break;
-					}
-				}
-			}else{
-				X = Math.round(-TX) + fixX;
-				if (vis[Z][X]){
-					TZ += move.z;
-					for (Enemy E: enemies){
-						if (nearEnemy(E.shift.x, E.shift.z)){
-							TZ -= move.z;
-							break;
-						}
-					}
-				}
-			}
-		}
-		glTranslatef(TX, 0, TZ);
-
-		if (mouse){
-			double ratio = 0.1;
-			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
-			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
-			double curX = TX + faceX, curZ = TZ + faceZ;
-			boolean cont = true;
-			while (inMap(curX, curZ) && cont){
-				for (Enemy E : enemies){
-					if (E.hit(curX, curZ)){
-						E.health--;
-						cont = false;
-					}
-				}
-				curX += faceX;
-				curZ += faceZ;
-			}
-		}
-		mouse = false;
+		moveUser(); //Handles keyboard input
+		rotateUser(); //Handles mouse input
 
 		Collections.shuffle(probability);
 		if (probability.get(0)){ //Add new medkit/ammo pack
@@ -277,11 +231,11 @@ public class legacyGL{
 
 		//Draw the objects
 		MAP.draw();
-		GUN.translate(new Point3f(-TX, -0.5f, -TZ));
-		GUN.rotate(new Point4f(270 - move.rot, 0, 1, 0));
+		float shiftGun = -0.5f, rotateGun = 270;
+		GUN.translate(new Point3f(-TX, shiftGun, -TZ));
+		GUN.rotate(new Point4f(rotateGun - move.rot, 0, 1, 0));
 		GUN.draw();
 
-		//System.out.println(medPos.size() + " " + ammoPos.size());
 		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
@@ -303,10 +257,9 @@ public class legacyGL{
 		for (Point2f p: ammoPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
-			if (nearUser(coordX, coordZ)){
+			int maxAmmo = 90;
+			if (nearUser(coordX, coordZ) && (curAmmo != maxRound || totalAmmo != maxAmmo)){
 				//The medkit is used
-				int maxAmmo = 90;
-				if (curAmmo == maxRound && totalAmmo == maxAmmo) continue;
 				curAmmo = maxRound;
 				totalAmmo = maxAmmo;
 				removeAmmo.add(p);
@@ -365,7 +318,78 @@ public class legacyGL{
 		for (int i = remove.size()-1; i >= 0; i--) enemies.remove((int)remove.get(i));
 	}
 
-	public void drawText(String text, float x, float y, int fontSize) throws Exception{
+	private void moveUser(){
+		//Handle keyboard and mouse control
+		move = new Control().movement(window, movement);
+		//Convert world coordinates into indices
+		int Z = Math.round(-TZ - move.z) + fixZ;
+		int X = Math.round(-TX - move.x) + fixX;
+		//Check if the coordinate is accessible (i.e. not walking into a wall)
+		if (vis[Z][X]){
+			TX += move.x;
+			TZ += move.z;
+			//Also disable user from walking through enemies
+			for (Enemy E: enemies){
+				if (nearEnemy(E.shift.x, E.shift.z)){
+					//If user is near an enemy, cancel the movement
+					TX -= move.x;
+					TZ -= move.z;
+					break;
+				}
+			}
+			glTranslatef(TX, 0, TZ);
+			return;
+		}
+		//Check if the user can travel in one direction (check description)
+		Z = Math.round(-TZ) + fixZ;
+		if (vis[Z][X]){
+			TX += move.x;
+			for (Enemy E: enemies){
+				if (nearEnemy(E.shift.x, E.shift.z)){
+					TX -= move.x;
+					break;
+				}
+			}
+			glTranslatef(TX, 0, TZ);
+			return;
+		}
+		//If this part is reached, the other direction is checked
+		X = Math.round(-TX) + fixX;
+		if (vis[Z][X]){
+			TZ += move.z;
+			for (Enemy E: enemies){
+				if (nearEnemy(E.shift.x, E.shift.z)){
+					TZ -= move.z;
+					break;
+				}
+			}
+			glTranslatef(TX, 0, TZ);
+			return;
+		}
+	}
+
+	private void rotateUser(){
+		if (mouse){
+			double ratio = 0.1;
+			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
+			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
+			double curX = TX + faceX, curZ = TZ + faceZ;
+			boolean cont = true;
+			while (inMap(curX, curZ) && cont){
+				for (Enemy E : enemies){
+					if (E.hit(curX, curZ)){
+						E.health--;
+						cont = false;
+					}
+				}
+				curX += faceX;
+				curZ += faceZ;
+			}
+		}
+		mouse = false;
+	}
+
+	private void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
 		text = text.replace("", " ");
 		float startX = x, startY = y;
