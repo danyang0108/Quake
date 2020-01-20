@@ -318,7 +318,7 @@ public class legacyGL{
 				temp.draw();
 				continue;
 			}
-			if (E.health <= 0){
+			if (E.getHealth() <= 0){
 				//One time only
 				E.setChoice(2);
 				E.dead = true;
@@ -421,7 +421,7 @@ public class legacyGL{
 			while (inMap(curX, curZ) && cont){
 				for (Enemy E: enemies){
 					if (E.hit(curX, curZ)){
-						E.health -= 5;
+						E.reduceHealth(5);
 						cont = false;
 					}
 				}
