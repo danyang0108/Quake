@@ -403,7 +403,9 @@ public class legacyGL{
 				}
 			}
 			glTranslatef(TX, 0, TZ);
+			return;
 		}
+		glTranslatef(TX, 0, TZ);
 	}
 
 	private void rotateUser(){
