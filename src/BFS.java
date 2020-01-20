@@ -31,7 +31,7 @@ public class BFS{
 	private Queue<Point2f> q = new Queue<>();
 	
 	//position of walls
-	private boolean[][] wall = new boolean[HEIGHT][WIDTH];
+	public boolean[][] wall = new boolean[HEIGHT][WIDTH];
 
 	public BFS() throws Exception{
 		readFile("Resource/Models/Map.txt");
@@ -63,12 +63,13 @@ public class BFS{
 		q.enqueue(start);
 		vis[start.x][start.z] = true;
 		dis[start.x][start.z] = 0;
+		prev[start.x][start.z] = start;
 		while (!q.isEmpty()){
 			Point2f cur = q.dequeue();
 			if (cur.x == end.x && cur.z == end.z){
 				//Backtrack to the original point
 				Point2f backtrack = new Point2f(end.x, end.z);
-				while (prev[backtrack.x][backtrack.z].x != start.x || prev[backtrack.x][backtrack.z].z != start.z){
+				while (prev[backtrack.x][backtrack.z] != backtrack){
 					backtrack = prev[backtrack.x][backtrack.z];
 				}
 				return backtrack;
@@ -76,18 +77,18 @@ public class BFS{
 			
 			//check the left, right, up, down directions
 		    for (int i = 0; i < 4; i++){
-		      int nx = cur.x + d[i][0];
-		      int nz = cur.z + d[i][1];
-		      if (nx >= 0 && nx < HEIGHT && nz >= 0 && nz < WIDTH){
-		      	if (vis[nx][nz]) continue; //Already visited
-		      	if (!wall[nx][nz]) continue; //Wall
-		    	q.enqueue(new Point2f(nx, nz));
-		        vis[nx][nz] = true;
-		        dis[nx][nz] = dis[cur.x][cur.z] + 1;
-		        prev[nx][nz] = cur;
-		      }
+		      	int nx = cur.x + d[i][0];
+		      	int nz = cur.z + d[i][1];
+		      	if (nx >= 0 && nx < HEIGHT && nz >= 0 && nz < WIDTH){
+		      		if (vis[nx][nz] || !wall[nx][nz]) continue; //Already visited OR Wall
+		    		q.enqueue(new Point2f(nx, nz));
+		        	vis[nx][nz] = true;
+		        	dis[nx][nz] = dis[cur.x][cur.z] + 1;
+		        	prev[nx][nz] = cur;
+		      	}
 		    }
 		}
+		System.out.println("PATH NOT FOUND");
 		return new Point2f(-1, -1);
 	}
 }
