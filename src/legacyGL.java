@@ -21,9 +21,7 @@ public class legacyGL{
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
-	private int curHealth = 100;
-	private int curAmmo = 30;
-	private int totalAmmo = 90;
+
 	private int maxHealth = 100;
 	private int maxRound = 30;
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
@@ -79,19 +77,12 @@ public class legacyGL{
 
 		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
 			if (action == GLFW_PRESS){
-				if (button == GLFW_MOUSE_BUTTON_LEFT && curAmmo > 0){
+				if (button == GLFW_MOUSE_BUTTON_LEFT && u.getCurAmmo() > 0){
 					mouse = true;
-					curAmmo--;
+					u.shoot();
 				}
-				else if (button == GLFW_MOUSE_BUTTON_RIGHT && totalAmmo > 0){
-					int required = maxRound - curAmmo;
-					if (totalAmmo >= required){
-						totalAmmo -= required;
-						curAmmo += required;
-					}else{
-						curAmmo += totalAmmo;
-						totalAmmo = 0;
-					}
+				else if (button == GLFW_MOUSE_BUTTON_RIGHT && u.getTotalAmmo() > 0){
+					u.reload();
 				}
 			}else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT) mouse = false;
 		});
@@ -200,8 +191,8 @@ public class legacyGL{
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
 		elapsedTime = Math.round((System.nanoTime()-loadTime) / 1e9d);
-		String health = "Health:" + curHealth + "/" + u.getHealth();
-		String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
+		String health = "Health:" + u.getHealth() + "/" + maxHealth;
+		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
 		String time = "Time:" + elapsedTime; 
 		String kills = "Kills:" + elimination;
 		//Take care of magic numbers
@@ -279,9 +270,9 @@ public class legacyGL{
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
-			if (nearUser(coordX, coordZ) && curHealth < maxHealth){
+			if (nearUser(coordX, coordZ) && u.getHealth() < maxHealth){
 				//The medkit is used
-				curHealth = maxHealth;
+				u.setHealth(maxHealth);
 				removeMed.add(p);
 			}else{
 				MeshObject medkit = medKit;
@@ -297,10 +288,10 @@ public class legacyGL{
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
 			int maxAmmo = 90;
-			if (nearUser(coordX, coordZ) && (curAmmo != maxRound || totalAmmo != maxAmmo)){
+			if (nearUser(coordX, coordZ) && (u.getCurAmmo() != maxRound || u.getTotalAmmo() != maxAmmo)){
 				//The medkit is used
-				curAmmo = maxRound;
-				totalAmmo = maxAmmo;
+				u.setCurAmmo(maxRound);;
+				u.setTotalAmmo(maxAmmo);
 				removeAmmo.add(p);
 			}else{
 				MeshObject newPack = ammoPack;
@@ -361,7 +352,7 @@ public class legacyGL{
 			temp.rotate(E.rotate);
 			temp.draw();
 			E.updateFrame();
-			if (dropHealth) curHealth -= 1;
+			if (dropHealth) u.reduceHealth(1);
 		}
 		//Sort in decreasing order
 		Collections.sort(remove);
