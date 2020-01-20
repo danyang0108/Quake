@@ -1,22 +1,15 @@
 public class User extends Entity{
 	
 	private Point3f curPos;
-	private float health = 100;
-	private int curAmmo = 30;
-	private int totalAmmo = 90;
+	private float health;
+	private int curAmmo;
+	private int totalAmmo;
 	
-	
-	public float reduceHealth(float h) {
-		health -= h;
-		
-		return 0;
+	public User() {
+		health = 100;
+		curAmmo = 30;
+		totalAmmo = 90;
 	}
-
-	
-	public Point3f getCurPos() {
-		return curPos;
-	}
-	
 	
 	//returns the current ammo count of the gun
 	public int getCurAmmo() {

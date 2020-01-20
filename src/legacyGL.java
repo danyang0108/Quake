@@ -43,6 +43,7 @@ public class legacyGL{
 	private long elapsedTime;
 	private boolean gameStart = true;
 	private int elimination = 0;
+	private User u = new User();
 	
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -197,7 +198,7 @@ public class legacyGL{
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
 		elapsedTime = Math.round((System.nanoTime()-loadTime) / 1e9d);
-		String health = "Health:" + curHealth + "/" + maxHealth;
+		String health = "Health:" + curHealth + "/" + u.getHealth();
 		String ammo = "Ammo:" + curAmmo + "/" + totalAmmo;
 		String time = "Time:" + elapsedTime; 
 		String kills = "Kills:" + elimination;

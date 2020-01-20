@@ -1,10 +1,13 @@
 public class Entity {
 	
-	private int health = 100; 
+	private float health; 
 	private Point3f curPos;
 	
-	public void showHealth(){
-
+	public Entity() {
+		health = 100;
+	}
+	public float getHealth(){
+		return health;
 	}
 	
 	public float reduceHealth(float h) {
