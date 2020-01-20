@@ -70,6 +70,7 @@ public class Enemy extends Entity{
 		Point2f next = RUN.bfs(EPos, UPos);
 		if (next.x == -1 && next.z == -1){
 			//Shouldn't happen
+			System.out.println("RIP");
 			return null;
 		}
 		return new Point2f(next.z - fixX, next.x - fixZ);

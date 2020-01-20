@@ -55,6 +55,12 @@ public class BFS{
 	//then backtrack to trace the path  
 	public Point2f bfs(Point2f start, Point2f end){
 		q.enqueue(start);
+		for (int i = 0; i < HEIGHT; i++){
+			for (int j = 0; j < WIDTH; j++){
+				vis[i][j] = false;
+				dis[i][j] = 0;
+			}
+		}
 		vis[start.x][start.z] = true;
 		dis[start.x][start.z] = 0;
 		while (!q.isEmpty()){

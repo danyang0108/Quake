@@ -1,3 +1,4 @@
+//Imports
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import java.io.File;
@@ -11,11 +12,12 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class legacyGL{
+	//Variables
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
 	private int fixX = 10, fixZ = 12;
 	private int sizeX = 24, sizeZ = 21;
-	private MeshObject MAP, GUN, MEDKIT, AMMOPACK;
+	private MeshObject map, gun, medKit, ammoPack;
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
@@ -148,16 +150,16 @@ public class legacyGL{
 
 		float gunScale = 0.09f;
 		float kitScale = 0.8f;
-		MAP = new MeshObject("Resource/Models/Map.obj");
-		MAP.texture = mapTex;
-		GUN = new MeshObject("Resource/Models/M9A1.obj");
-		GUN.texture = gunTex;
-		GUN.scale(new Point3f(gunScale, gunScale, gunScale));
-		MEDKIT = new MeshObject("Resource/Models/MedKit.obj");
-		MEDKIT.scale(new Point3f(kitScale, kitScale, kitScale));
-		MEDKIT.texture = medTex;
-		AMMOPACK = new MeshObject("Resource/Models/Ammo.obj");
-		AMMOPACK.texture = ammoTex;
+		map = new MeshObject("Resource/Models/Map.obj");
+		map.texture = mapTex;
+		gun = new MeshObject("Resource/Models/M9A1.obj");
+		gun.texture = gunTex;
+		gun.scale(new Point3f(gunScale, gunScale, gunScale));
+		medKit = new MeshObject("Resource/Models/MedKit.obj");
+		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
+		medKit.texture = medTex;
+		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
+		ammoPack.texture = ammoTex;
 
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
@@ -240,11 +242,11 @@ public class legacyGL{
 		}
 
 		//Draw the objects
-		MAP.draw();
+		map.draw();
 		float shiftGun = -0.5f, rotateGun = 270;
-		GUN.translate(new Point3f(-TX, shiftGun, -TZ));
-		GUN.rotate(new Point4f(rotateGun - move.rot, 0, 1, 0));
-		GUN.draw();
+		gun.translate(new Point3f(-TX, shiftGun, -TZ));
+		gun.rotate(new Point4f(rotateGun - move.rot, 0, 1, 0));
+		gun.draw();
 
 		//Add new enemies
 		long nowTime = System.nanoTime();
@@ -281,7 +283,7 @@ public class legacyGL{
 				curHealth = maxHealth;
 				removeMed.add(p);
 			}else{
-				MeshObject medkit = MEDKIT;
+				MeshObject medkit = medKit;
 				float shiftKit = -2f;
 				medkit.translate(new Point3f(coordX, shiftKit, coordZ));
 				medkit.draw();
@@ -300,10 +302,10 @@ public class legacyGL{
 				totalAmmo = maxAmmo;
 				removeAmmo.add(p);
 			}else{
-				MeshObject ammoPack = AMMOPACK;
+				MeshObject newPack = ammoPack;
 				float shiftPack = -2f;
-				ammoPack.translate(new Point3f(coordX, shiftPack, coordZ));
-				ammoPack.draw();
+				newPack.translate(new Point3f(coordX, shiftPack, coordZ));
+				newPack.draw();
 			}
 		}
 		for (Point2f p: removeAmmo) ammoPos.remove(p);
@@ -312,7 +314,18 @@ public class legacyGL{
 		for (int i = 0; i < enemies.size(); i++){
 			boolean dropHealth = false;
 			Enemy E = enemies.get(i);
-			if (E.health <= 0 && !E.dead){
+			if (E.dead){
+				if (E.updateFrame()){
+					elimination++;
+					remove.add(i);
+				}
+				MeshObject temp = keyframes.get(E.WS + E.PS + E.DF);
+				temp.translate(E.shift);
+				temp.rotate(E.rotate);
+				temp.draw();
+				continue;
+			}
+			if (E.health <= 0){
 				//One time only
 				E.setChoice(2);
 				E.dead = true;
@@ -327,17 +340,18 @@ public class legacyGL{
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z) && !E.dead){
+			System.out.println(userRounded.x + " " + userRounded.z);
+			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z)){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
 				double enemySpeed = 0.05;
 				E.moveX = enemySpeed * Math.round(answer.x - E.shift.x);
 				E.moveZ = enemySpeed * Math.round(answer.z - E.shift.z);
 				E.turnToUser();
-			}else if (nearUser(E.shift.x, E.shift.z) && !E.dead){
+			}else if (nearUser(E.shift.x, E.shift.z)){
 				double angle = Math.toDegrees(Math.atan2((E.shift.x + TX), (E.shift.z + TZ)));
 				float fixAngle = 180;
 				E.rotate = new Point4f(fixAngle + (float)angle, 0, 1, 0);
-			}else if (!E.dead){
+			}else{
 				E.shift.x += E.moveX;
 				E.shift.z += E.moveZ;
 				E.turnToUser();
@@ -345,10 +359,7 @@ public class legacyGL{
 			temp.translate(E.shift);
 			temp.rotate(E.rotate);
 			temp.draw();
-			if (E.updateFrame()) {
-				elimination++;
-				remove.add(i); //The enemy is dead
-			}
+			E.updateFrame();
 			if (dropHealth) curHealth -= 1;
 		}
 		//Sort in decreasing order
@@ -416,7 +427,7 @@ public class legacyGL{
 			double curX = TX + faceX, curZ = TZ + faceZ;
 			boolean cont = true;
 			while (inMap(curX, curZ) && cont){
-				for (Enemy E : enemies){
+				for (Enemy E: enemies){
 					if (E.hit(curX, curZ)){
 						E.health -= 5;
 						cont = false;
@@ -426,7 +437,7 @@ public class legacyGL{
 				curZ += faceZ;
 			}
 		}
-		mouse = false;
+		//mouse = false;
 	}
 
 	private void drawText(String text, float x, float y, int fontSize) throws Exception{
@@ -514,7 +525,10 @@ public class legacyGL{
 				}
 				//Corner
 				if (vis[actualX + 1][actualZ + 1]) return new Point2f(actualX + 1, actualZ + 1);
-				else return new Point2f(-1, -1); //SHOULD NOT REACH
+				else{
+					System.out.println("OUT OF BOUNDS");
+					return new Point2f(-1, -1); //SHOULD NOT REACH
+				}
 			}else{
 				//Top-Right Section
 				actualX = (int)Math.floor(x);
@@ -534,7 +548,10 @@ public class legacyGL{
 				}
 				//Corner
 				if (vis[actualX + 1][actualZ - 1]) return new Point2f(actualX + 1, actualZ - 1);
-				else return new Point2f(-1, -1); //SHOULD NOT REACH
+				else{
+					System.out.println("OUT OF BOUNDS");
+					return new Point2f(-1, -1); //SHOULD NOT REACH
+				}
 			}
 		}else{
 			if (fracZ < half){
@@ -556,7 +573,10 @@ public class legacyGL{
 				}
 				//Corner
 				if (vis[actualX - 1][actualZ + 1]) return new Point2f(actualX - 1, actualZ + 1);
-				else return new Point2f(-1, -1); //SHOULD NOT REACH
+				else{
+					System.out.println("OUT OF BOUNDS");
+					return new Point2f(-1, -1); //SHOULD NOT REACH
+				}
 			}else{
 				//Top-Left section
 				actualX = (int)Math.ceil(x);
@@ -576,7 +596,10 @@ public class legacyGL{
 				}
 				//Corner
 				if (vis[actualX - 1][actualZ - 1]) return new Point2f(actualX - 1, actualZ - 1);
-				else return new Point2f(-1, -1); //SHOULD NOT REACH
+				else{
+					System.out.println("OUT OF BOUNDS");
+					return new Point2f(-1, -1); //SHOULD NOT REACH
+				}
 			}
 		}
 	}
