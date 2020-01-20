@@ -45,6 +45,7 @@ public class legacyGL{
 	private long elapsedTime;
 	private boolean gameStart = true;
 	private int elimination = 0;
+	private int enemyLimit = 4;
 	private User u = new User();
 	
 	public static void main(String[] args) throws Exception{
@@ -237,8 +238,9 @@ public class legacyGL{
 				Collections.shuffle(newKit);
 				Point2f addPoint = newKit.get(0);
 				//Define TRUE as medkit, FALSE as ammo pack
-				if (RD.nextBoolean()) medPos.add(addPoint);
-				else ammoPos.add(addPoint);
+				boolean decision = RD.nextBoolean();
+				if (medPos.size() < enemyLimit && decision) medPos.add(addPoint);
+				if (ammoPos.size() < enemyLimit && !decision) ammoPos.add(addPoint);
 			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
 		}
 
@@ -253,7 +255,6 @@ public class legacyGL{
 		long nowTime = System.nanoTime();
 		accumulate += (nowTime - startTime);
 		double spawnTime = 15;
-		int enemyLimit = 4;
 		if (accumulate / 1e9d >= spawnTime){
 			accumulate = 0;
 			if (enemies.size() < enemyLimit){ //Upper limit of 4
@@ -341,7 +342,6 @@ public class legacyGL{
 			else if (choice == 1) temp = keyframes.get(E.WS + E.PF);
 			else temp = keyframes.get(E.WS + E.PS + E.DF);
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			System.out.println(userRounded.x + " " + userRounded.z);
 			if (E.walk == 0 && !nearUser(E.shift.x, E.shift.z)){
 				Point2f answer = E.findUser(userRounded.x, userRounded.z);
 				double enemySpeed = 0.05;
@@ -425,7 +425,7 @@ public class legacyGL{
 			double ratio = 0.1;
 			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
 			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
-			double curX = TX + faceX, curZ = TZ + faceZ;
+			double curX = TX, curZ = TZ;
 			boolean cont = true;
 			while (inMap(curX, curZ) && cont){
 				for (Enemy E: enemies){

@@ -54,13 +54,13 @@ public class BFS{
 	//finds the shortest path from the start position to the end position
 	//then backtrack to trace the path  
 	public Point2f bfs(Point2f start, Point2f end){
-		q.enqueue(start);
 		for (int i = 0; i < HEIGHT; i++){
 			for (int j = 0; j < WIDTH; j++){
 				vis[i][j] = false;
 				dis[i][j] = 0;
 			}
 		}
+		q.enqueue(start);
 		vis[start.x][start.z] = true;
 		dis[start.x][start.z] = 0;
 		while (!q.isEmpty()){
@@ -69,6 +69,7 @@ public class BFS{
 				//Backtrack to the original point
 				Point2f backtrack = new Point2f(end.x, end.z);
 				while (prev[backtrack.x][backtrack.z].x != start.x || prev[backtrack.x][backtrack.z].z != start.z){
+					System.out.println("NO FROM " + start.x + " " + start.z + " TO " + end.x + " " + end.z);
 					backtrack = prev[backtrack.x][backtrack.z];
 				}
 				return backtrack;
