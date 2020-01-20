@@ -30,7 +30,7 @@ public class Enemy extends Entity{
 	public Enemy(Point3f shift, Point4f rotate){
 		choice = 0;
 		WF = PF = DF = 1;
-		health = 100;
+		//health = 100;
 		walk = 0;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 		this.rotate = rotate;
