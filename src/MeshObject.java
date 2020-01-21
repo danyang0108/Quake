@@ -1,3 +1,11 @@
+///Author: Ethan Zhang
+//Class: ICS4U
+//Date: Jan 12th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class applies textures, transformations, and draws
+ * 3D models.
+*/
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;

@@ -1,4 +1,11 @@
-//
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 12th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This interface includes the operations and transformations of 
+ * matrices. 
+ */
 public interface Matrix4f_Interface{
 	
 	// perform matrix addition 
