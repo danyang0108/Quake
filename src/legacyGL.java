@@ -254,8 +254,8 @@ public class legacyGL{
 		gun.draw();
 
 		//Add new enemies
-		double spawnTime = 15;
-		int enemyLimit = 4;
+		double spawnTime = 15; //Enemies spawned every 15 seconds
+		int enemyLimit = 4; //A total of 4 enemies allowed at one time
 		nowTime = System.nanoTime();
 		accumulate += (nowTime - startTime);
 		if (accumulate / oneSecond >= spawnTime){
