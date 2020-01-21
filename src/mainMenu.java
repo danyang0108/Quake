@@ -46,9 +46,13 @@ public class mainMenu extends Application{
         HBox control = new HBox();
         root.getChildren().addAll(scene_container,control);
         Scene scene=new Scene(root,scene_x,scene_y);
+        
+        //display a background for the start menu
         ImageView background=loadBackground("Resource/Images/Wall.jpg",scene_x,scene_y);
         background.setX(0);
         background.setY(0);
+        
+        //display title
         Text title = new Text("Quake ICS4U");
         lfont = 50; sfont  = 25;
         title.setFont(Font.font ("Verdana", FontWeight.BOLD,lfont));
@@ -56,6 +60,8 @@ public class mainMenu extends Application{
         int title_x = 275, title_y = 100;
         title.setX(title_x);
         title.setY(title_y);
+        
+        //provides a text box to get username
         Text user = new Text("Username: ");
         user.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
         user.setFill(Color.WHITE);
@@ -72,6 +78,8 @@ public class mainMenu extends Application{
             name = enterUser.getText();
         });
 
+        
+        //this button launches the first-person shooter game
         Button button = new Button("Start Game");
         int button_x = scene_x/2 - 100, button_y = scene_y/2 + 25;
         int button_w = 200, button_h = 75;
@@ -83,6 +91,8 @@ public class mainMenu extends Application{
             try{
                 legacyGL GL = new legacyGL();
                 GL.run();
+                
+                //prints the score after the player dies
                 scene_container.getChildren().clear();
                 scene_container.getChildren().add(background);
                 Text endUser = new Text("User: " + name);
@@ -118,6 +128,8 @@ public class mainMenu extends Application{
         primaryStage.show();
     }
 
+    //this method loads an image based on the file location
+    //rescales the image based on the user input - width and height
     public ImageView loadBackground(String FileLocation, int width, int height){
         String url="";
         try {

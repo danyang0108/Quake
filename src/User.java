@@ -9,9 +9,10 @@
 public class User extends Entity implements User_Interface{
 	
 	private int health;
-	private int curAmmo;
-	private int totalAmmo;
+	private int curAmmo;	//a weapon can hold 30 ammos before reloading
+	private int totalAmmo;	
 	
+	//constructor for player
 	public User() {
 		health = 100;
 		curAmmo = 30;
@@ -23,6 +24,7 @@ public class User extends Entity implements User_Interface{
 		return curAmmo;
 	}
 	
+	//set the total number of ammo based on parameter
 	public void setCurAmmo(int ammo) {
 		curAmmo = ammo;
 	}
@@ -36,11 +38,13 @@ public class User extends Entity implements User_Interface{
 	public int getTotalAmmo() {
 		return totalAmmo;
 	}
-	
+	//set the total number of ammo based on parameter
 	public void setTotalAmmo(int ammo) {
 		totalAmmo = ammo;
 	}
 	
+	//update the current ammo and total ammo after
+	//the user right-clicks
 	public void reload() {
 		int maxRound = 30;
 		int required = maxRound - curAmmo;

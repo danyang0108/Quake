@@ -1,3 +1,12 @@
+///Author: Danyang Wang & Ethan Zhang
+//Class: ICS4U
+//Date: Jan 20th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class is for the main game. It checks for 
+ * all interactions amongst User, Enemy and walls during the game.
+ * 
+ */
 //Imports
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;

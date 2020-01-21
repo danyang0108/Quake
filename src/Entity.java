@@ -14,6 +14,7 @@ public class Entity {
 		health = 100;
 	}
 	
+	//getter and setter
 	public int getHealth(){
 		return health;
 	}
@@ -22,6 +23,7 @@ public class Entity {
 		this.health = health;
 	}
 	
+	//update health after taking damage
 	public int reduceHealth(int dmg) {
 		health -= dmg;
 		return health;
