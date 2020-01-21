@@ -21,6 +21,7 @@ public class legacyGL{
 	private final int maxRound = 30;
 	private final int offset = 32;
 	private final int packLimit = 3;
+	private final double oneSecond = 1e9d;
 	private MeshObject map, gun, medKit, ammoPack;
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
@@ -189,7 +190,7 @@ public class legacyGL{
 		glTranslatef(-TX, 0, -TZ);
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
-		long timeTrack1 = Math.round((System.nanoTime() - timeTrack2) / 1e9d);
+		long timeTrack1 = Math.round((System.nanoTime() - timeTrack2) / oneSecond);
 		String health = "Health:" + u.getHealth() + "/" + maxHealth;
 		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
 		String time = "Time:" + timeTrack1;
@@ -211,28 +212,35 @@ public class legacyGL{
 		moveUser(); //Handles keyboard input
 		bullet(); //Handles bullets
 
-		long nowTime = System.nanoTime();
+		//Handles ammo and health packs
+		long nowTime = System.nanoTime(); //Get current time
 		accumulate2 += (nowTime - timeTrack3);
-		double packTime = 5;
-		if (accumulate2 / 1e9 >= packTime){
+		double packTime = 5; //Packs are generated every 5 seconds
+		if (accumulate2 / oneSecond >= packTime){
 			accumulate2 = 0;
-			if (medPos.size() < packLimit && ammoPos.size() < packLimit){
-				Random RD = new Random();
-				ArrayList<Point2f> newKit = space;
+			if (medPos.size() < packLimit || ammoPos.size() < packLimit){
+				//There are spaces left for packs
+				ArrayList<Point2f> newKit = space; //Copy the spaces in the map
 				ArrayList<Integer> removed = new ArrayList<>();
 				for (int i = 0; i < newKit.size(); i++){
 					if (medPos.contains(newKit.get(i))) removed.add(i);
 					else if (ammoPos.contains(newKit.get(i))) removed.add(i);
+					//If either occurs, then that spot already has a pack
 				}
 				for (int i: removed) newKit.remove(i); //This is the remaining space
-				Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-				newKit.remove(userRounded); //Don't generate at user position
-				if (newKit.size() > 0){
+				if (newKit.size() > 0){ //There are more space to place packs
 					Collections.shuffle(newKit);
 					Point2f addPoint = newKit.get(0);
-					//Define TRUE as medkit, FALSE as ammo pack
-					if (RD.nextBoolean()) medPos.add(addPoint);
-					else ammoPos.add(addPoint);
+					//If med packs have reached the limit, spawn ammo packs
+					if (medPos.size() == packLimit) ammoPos.add(addPoint);
+					//If ammo packs have reached the limit, spawn med packs
+					else if (ammoPos.size() == packLimit) medPos.add(addPoint);
+					else{
+						//Choose which pack to spawn randomly
+						Random RD = new Random();
+						if (RD.nextBoolean()) medPos.add(addPoint);
+						else ammoPos.add(addPoint);
+					}
 				}//Otherwise, there are no more spots to place packs (Shouldn't happen)
 			}
 		}
@@ -250,7 +258,7 @@ public class legacyGL{
 		int enemyLimit = 4;
 		nowTime = System.nanoTime();
 		accumulate += (nowTime - startTime);
-		if (accumulate / 1e9d >= spawnTime){
+		if (accumulate / oneSecond >= spawnTime){
 			accumulate = 0;
 			if (enemies.size() < enemyLimit){ //Upper limit of 4
 				Collections.shuffle(space);
