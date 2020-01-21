@@ -33,7 +33,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 		health = maxHealth;
 		walk = 0;
 		enemyReach = reach;
-		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
+		this.shift = new Point3f(-shift.getX(), shift.getY(), -shift.getZ());
 	}
 
 	public Enemy(Point4f rotate){
@@ -52,7 +52,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 		health = maxHealth;
 		walk = 0;
 		enemyReach = reach;
-		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
+		this.shift = new Point3f(-shift.getX(), shift.getY(), -shift.getZ());
 		this.rotate = rotate;
 	}
 
@@ -83,7 +83,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 
 	public Point2f findUser(int x, int z) throws Exception{
 		//Graph Theory Part
-		Point2f EPos = new Point2f(Math.round(shift.z) + fixZ, Math.round(shift.x) + fixX);
+		Point2f EPos = new Point2f(Math.round(shift.getZ()) + fixZ, Math.round(shift.getX()) + fixX);
 		Point2f UPos = new Point2f(x, z);
 		BFS RUN = new BFS();
 		Point2f next = RUN.bfs(EPos, UPos);
@@ -96,7 +96,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 	public boolean hit(double x, double z){
 		//(x, y) is the center point
 		//Hit range: circle of radius 0.2
-		return ((x + shift.x) * (x + shift.x) + (z + shift.z) * (z + shift.z) <= ratio * ratio);
+		return ((x + shift.getX()) * (x + shift.getX()) + (z + shift.getZ()) * (z + shift.getZ()) <= ratio * ratio);
 	}
 
 	public void turnToUser(){
@@ -141,21 +141,21 @@ public class Enemy extends Entity implements Enemy_Interface{
 	}
 
 	public float getShiftX(){
-		return shift.x;
+		return shift.getX();
 	}
 
 	public float getShiftZ(){
-		return shift.z;
+		return shift.getZ();
 	}
 
 	public void setShiftX(float x){
-		shift.x = x;
+		shift.setX(x);
 	}
 
 	public void setShiftZ(float z){
-		shift.z = z;
+		shift.setZ(z);
 	}
-
+	
 	public boolean isDead(){
 		return dead;
 	}

@@ -92,11 +92,11 @@ public class Matrix4f implements Matrix4f_Interface {
 	public Matrix4f translate(Point3f p) {
 		float[][] translation_matrix = new float[4][4];
 		translation_matrix[0][0] = 1;
-		translation_matrix[0][3] = p.x;
+		translation_matrix[0][3] = p.getX();
 		translation_matrix[1][1] = 1;
-		translation_matrix[1][3] = p.y;
+		translation_matrix[1][3] = p.getY();
 		translation_matrix[2][2] = 1;
-		translation_matrix[2][3] = p.z;
+		translation_matrix[2][3] = p.getZ();
 		translation_matrix[3][3] = 1;
 
 		Matrix4f m = new Matrix4f(translation_matrix);
@@ -107,9 +107,9 @@ public class Matrix4f implements Matrix4f_Interface {
 	// using euler's angles
 	@Override
 	public Matrix4f rotate(Point3f p) {
-		float x = (float) Math.toRadians(p.x);
-		float y = (float) Math.toRadians(p.y);
-		float z = (float) Math.toRadians(p.z);
+		float x = (float) Math.toRadians(p.getX());
+		float y = (float) Math.toRadians(p.getY());
+		float z = (float) Math.toRadians(p.getZ());
 
 		float[][] rotZ = new float[4][4];
 		rotZ[0][0] = (float) Math.cos(z);
@@ -146,9 +146,9 @@ public class Matrix4f implements Matrix4f_Interface {
 	// represent scaling using matrix
 	public Matrix4f scale(Point3f p) {
 		float[][] scale_matrix = new float[4][4];
-		scale_matrix[0][0] = p.x;
-		scale_matrix[1][1] = p.y;
-		scale_matrix[2][2] = p.z;
+		scale_matrix[0][0] = p.getX();
+		scale_matrix[1][1] = p.getY();
+		scale_matrix[2][2] = p.getZ();
 		scale_matrix[3][3] = 1;
 
 		Matrix4f m = new Matrix4f(scale_matrix);

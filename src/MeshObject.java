@@ -73,29 +73,29 @@ public class MeshObject{
     }
 
     public void translate(Point3f trans){
-        this.trans.x = trans.x;
-        this.trans.y = trans.y;
-        this.trans.z = trans.z;
+        this.trans.setX(trans.getX());
+        this.trans.setY(trans.getY());
+        this.trans.setZ(trans.getZ());
     }
 
     public void rotate(Point4f rotate){
         this.rotate.rot = rotate.rot;
-        this.rotate.x = rotate.x;
-        this.rotate.y = rotate.y;
-        this.rotate.z = rotate.z;
+        this.rotate.setX(rotate.getX());
+        this.rotate.setY(rotate.getY());
+        this.rotate.setZ(rotate.getZ());
     }
 
     public void scale(Point3f scale){
-        this.scale.x = scale.x;
-        this.scale.y = scale.y;
-        this.scale.z = scale.z;
+        this.scale.setX(scale.getX());
+        this.scale.setY(scale.getY());
+        this.scale.setZ(scale.getZ());
     }
 
     public void draw(){
         glPushMatrix();
-        glTranslatef(trans.x, trans.y, trans.z);
-        glRotatef(rotate.rot, rotate.x, rotate.y, rotate.z);
-        glScalef(scale.x, scale.y, scale.z);
+        glTranslatef(trans.getX(), trans.getY(), trans.getZ());
+        glRotatef(rotate.rot, rotate.getX(), rotate.getY(), rotate.getZ());
+        glScalef(scale.getX(), scale.getY(), scale.getZ());
         if(texture != null){
             glEnable(GL_TEXTURE_2D); //Enable texture mapping
             texture.bind();
@@ -109,7 +109,7 @@ public class MeshObject{
                 Float[] tex = this.texCoords.get(ti);
                 glTexCoord2f(tex[0], tex[1]);
                 Point3f vertex = this.vertex.get(vi);
-                glVertex3f(vertex.x, vertex.y, vertex.z);
+                glVertex3f(vertex.getX(), vertex.getY(), vertex.getZ());
                 Vector3f normal = this.normals.get(ni);
                 glNormal3f(normal.getX(), normal.getY(), normal.getZ());
             }

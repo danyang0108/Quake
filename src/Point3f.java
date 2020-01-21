@@ -7,9 +7,9 @@
  * operations such as subtracting two points. 
 */
 public class Point3f{
-	public float x;
-	public float y;
-	public float z;
+	private float x;
+	private float y;
+	private float z;
 	
 	//Constructors for Point3f class
 	public Point3f(){
@@ -46,5 +46,25 @@ public class Point3f{
 	public String toString(){
 		String result = "x: "+ x + " y: " + y + " z: " + z;
 		return result;
+	}
+	
+	//getters and setters
+	public float getX() {
+		return x;
+	}
+	public void setX(float x) {
+		this.x = x;
+	}
+	public float getY() {
+		return y;
+	}
+	public void setY(float y) {
+		this.y = y;
+	}
+	public float getZ() {
+		return z;
+	}
+	public void setZ(float z) {
+		this.z = z;
 	}
 }
