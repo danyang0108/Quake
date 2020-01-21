@@ -4,7 +4,7 @@
 //Instructor: Mr Radulovic
 //Assignment name: ICS4U Culminating
 /*Description: This class stores the Colour based on rgb value. Note
- * that rgb value are float since I am using the colour3f method in
+ * that rgb values are floats since I am using the colour3f method in
  * lwjgl 3.
 */
 public class Colour {

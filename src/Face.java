@@ -1,3 +1,11 @@
+///Author: Ethan Zhang
+//Class: ICS4U
+//Date: Jan 5th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class is for organizing the faces and vertices
+ * of objects.
+ */
 public class Face{
 
     private int[] vertexIndices;
@@ -19,7 +27,7 @@ public class Face{
         textureCoordIndices[i] = attrib[1];
         normalIndices[i] = attrib[2];
     }
-//hi this is dany im 18!
+
     public int getVertexIndex(int i){
         return vertexIndices[i];
     }
