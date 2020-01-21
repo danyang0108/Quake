@@ -514,13 +514,20 @@ public class legacyGL{
 		mouse = false;
 	}
 
+	/*
+	This method draws text on the screen. The parameters (x,y) allow the user to place the 
+	text to its intended location. The user can also decide the font size.
+	 */
 	private void drawText(String text, float x, float y, int fontSize) throws Exception{
 		text = text.toUpperCase();
 		text = text.replace("", " ");
 		float startX = x, startY = y;
+		
 		for (int i = 0; i < text.length(); i++){
 			int ascii = text.charAt(i) - offset;
 			int charCnt = 0;
+			
+			//finds the location of the every character within the texture
 			for (int j = 0; j < charTex.getBI().getWidth(); j++){
 				Colour c = charTex.getPixel(j, 0);
 				if (charCnt > ascii)
@@ -533,9 +540,13 @@ public class legacyGL{
 					start = j + 1;
 				}
 			}
+			
+			//stores the starting and ending pixel for that specific character
 			int x_length = end - start;
 			float endX = (startX * WINDOW_WIDTH + x_length * fontSize) / WINDOW_WIDTH;
 			float endY = (startY * WINDOW_HEIGHT - charTex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
+			
+			//renders the texture of the character onto a GL_QUAD 
 			glBegin(GL_QUADS);
 			glTexCoord2d((double)start / charTex.getBI().getWidth(), 0);
 			double adjust = -0.35;
