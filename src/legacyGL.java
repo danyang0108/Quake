@@ -121,9 +121,9 @@ public class legacyGL{
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
-		medTex = new Texture("Resource/Images/Medkit.png");
+		/*medTex = new Texture("Resource/Images/Medkit.png");
 		ammoTex = new Texture("Resource/Images/Ammo.jpg");
-
+*/
 		glfwShowWindow(window);
 		loop();
 	}
@@ -153,12 +153,12 @@ public class legacyGL{
 		gun = new MeshObject("Resource/Models/M9A1.obj");
 		gun.setTexture(gunTex);
 		gun.scale(new Point3f(gunScale, gunScale, gunScale));
-		medKit = new MeshObject("Resource/Models/MedKit.obj");
+		/*medKit = new MeshObject("Resource/Models/MedKit.obj");
 		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
 		medKit.setTexture(medTex);
 		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
 		ammoPack.setTexture(ammoTex);
-
+*/
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
 		int frames = 360, ten = 10, hundred = 100;
@@ -208,9 +208,9 @@ public class legacyGL{
 		String time = "Time:" + timeTrack1;
 		String kills = "Kills:" + elimination;
 		//Take care of magic numbers
-		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
-		float statX = 0.2f, statY = -0.31f;
-		int fontSize = 6;
+		float textX = -0.3f, textY = -0.27f, intervalY = 0.04f;
+		float statX = 0.15f, statY = -0.27f;
+		int fontSize = 4;
 		drawText(health, textX, textY, fontSize);
 		drawText(ammo, textX, textY - intervalY, fontSize);
 		drawText(time, statX, statY, fontSize);
@@ -228,7 +228,7 @@ public class legacyGL{
 		long nowTime = System.nanoTime(); //Get current time
 		accumulate2 += (nowTime - timeTrack3);
 		double packTime = 5; //Packs are generated every 5 seconds
-		if (accumulate2 / oneSecond >= packTime){
+	/*	if (accumulate2 / oneSecond >= packTime){
 			accumulate2 = 0;
 			if (medPos.size() < packLimit || ammoPos.size() < packLimit){
 				//There are spaces left for packs
@@ -257,7 +257,7 @@ public class legacyGL{
 			}
 		}
 		timeTrack3 = nowTime;
-
+*/
 		//Draw the objects
 		map.draw();
 		float shiftGun = -0.5f, rotateGun = 270;
@@ -293,7 +293,7 @@ public class legacyGL{
 		startTime = nowTime;
 
 		//Remove med packs that were consumed by the user
-		ArrayList<Point2f> removeMed = new ArrayList<>();
+	/*	ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
 			//Convert to local coordinates
 			float coordX = p.z - fixX;
@@ -335,7 +335,7 @@ public class legacyGL{
 			}
 		}
 		for (Point2f p: removeAmmo) ammoPos.remove(p); //Remove packs that were used
-
+*/
 		//Update enemies; remove dead ones
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
@@ -531,7 +531,7 @@ public class legacyGL{
 			float endY = (startY * WINDOW_HEIGHT - charTex.getBI().getHeight() * fontSize) / WINDOW_HEIGHT;
 			glBegin(GL_QUADS);
 			glTexCoord2d((double)start / charTex.getBI().getWidth(), 0);
-			double adjust = -0.4;
+			double adjust = -0.35;
 			glVertex3d(startX, startY, adjust);
 			glTexCoord2d((double)end / charTex.getBI().getWidth(), 0);
 			glVertex3d(endX, startY, adjust);
