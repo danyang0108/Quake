@@ -211,9 +211,9 @@ public class legacyGL{
 		glLoadIdentity();
 
 		moveUser(); //Handles keyboard input
-		rotateUser(); //Handles mouse input
+		bullet(); //Handles bullets
 
-		/*ArrayList<Point2f> newKit = space;
+		ArrayList<Point2f> newKit = space;
 		Collections.shuffle(probability);
 		if (probability.get(0)){ //Add new med kit/ammo pack
 			Random RD = new Random();
@@ -232,7 +232,7 @@ public class legacyGL{
 				if (RD.nextBoolean()) medPos.add(addPoint);
 				else ammoPos.add(addPoint);
 			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
-		}*/
+		}
 
 		//Draw the objects
 		map.draw();
@@ -267,7 +267,7 @@ public class legacyGL{
 		}
 		startTime = nowTime;
 
-		/*ArrayList<Point2f> removeMed = new ArrayList<>();
+		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
@@ -302,7 +302,7 @@ public class legacyGL{
 			}
 		}
 		for (Point2f p: removeAmmo) ammoPos.remove(p);
-*/
+
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
 			boolean dropHealth = false;
@@ -360,8 +360,13 @@ public class legacyGL{
 		for (int i = remove.size()-1; i >= 0; i--) enemies.remove((int)remove.get(i));
 	}
 
+	/*
+	This method handles the keyboard controls. Whenever the user attempts to move
+	by pressing the WASD keys, the program checks if the new spot is available.
+	This includes not being a wall and not walking into enemies.
+	 */
 	private void moveUser(){
-		//Handle keyboard and mouse control
+		//Handle the keyboard inputs first
 		move = new Control().movement(window, movement);
 		//Convert world coordinates into indices
 		int Z = Math.round(-TZ - move.z) + fixZ;
@@ -382,12 +387,13 @@ public class legacyGL{
 			glTranslatef(TX, 0, TZ);
 			return;
 		}
-		//Check if the user can travel in one direction (check description)
+		//Check if the user can travel in one direction (check analysis document)
 		Z = Math.round(-TZ) + fixZ;
 		if (vis[Z][X]){
 			TX += move.x;
 			for (Enemy E: enemies){
 				if (nearEnemy(E.getShiftX(), E.getShiftZ())){
+					//Again, if near an enemy, do not walk through it
 					TX -= move.x;
 					break;
 				}
@@ -401,6 +407,7 @@ public class legacyGL{
 			TZ += move.z;
 			for (Enemy E: enemies){
 				if (nearEnemy(E.getShiftX(), E.getShiftZ())){
+					//Similar to the above part
 					TZ -= move.z;
 					break;
 				}
@@ -408,28 +415,43 @@ public class legacyGL{
 			glTranslatef(TX, 0, TZ);
 			return;
 		}
+		//Otherwise, the user cannot move anywhere. This may occur if
+		//the user is directly facing a corner and attempting to walk into it.
 		glTranslatef(TX, 0, TZ);
 	}
 
-	private void rotateUser(){
+	/*
+	This method handles mouse input from the user. If the mouse is clicked,
+	then the method tracks the bullet path. The bullets stops when it hits
+	a wall or when it hits an enemy.
+	 */
+	private void bullet(){
 		if (mouse){
-			double ratio = 0.1;
+			//The (left) mouse is clicked
+			double ratio = 0.2; //How far the bullet travels
+			//Find the x and y distances according to where the bullet was facing
 			double faceX = ratio * Math.sin(Math.toRadians(-move.rot));
 			double faceZ = ratio * Math.cos(Math.toRadians(-move.rot));
 			double curX = TX + faceX, curZ = TZ + faceZ;
 			boolean cont = true;
 			while (inMap(curX, curZ) && cont){
+				//The loop only runs when the bullet is still inside the map,
+				//and it has not hit any enemies yet.
 				for (Enemy E: enemies){
 					if (E.hit(curX, curZ)){
+						//The enemy is hit
 						int damage = 25;
 						E.setHealth(E.getHealth() - damage);
+						//Since the bullet has already hit an enemy, it cannot travel further
 						cont = false;
 					}
 				}
+				//If the bullet didn't hit an enemies, update the position of the bullet
 				curX += faceX;
 				curZ += faceZ;
 			}
 		}
+		//This is to disable holding the mouse for continuous shooting
 		mouse = false;
 	}
 

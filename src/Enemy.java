@@ -1,5 +1,12 @@
 public class Enemy extends Entity{
 	private final int WS = 100, PS = 80, DS = 180;
+	private final int maxHealth = 100;
+	private final float reach = 1.5f;
+	private final int frames = 20;
+	private final double adjust = 0.05;
+	private final int q1 = 0, q2 = 90, q3 = 180, q4 = 270;
+	private final int fixZ = 12, fixX = 10;
+	private final double ratio = 0.2;
 	private boolean punch = false;
 	private boolean dead = false;
 	private int WF, PF, DF; //KeyFrame for walk, punch, despawn
@@ -14,18 +21,18 @@ public class Enemy extends Entity{
 	public Enemy(Point3f shift){
 		choice = 0;
 		WF = PF = DF = 1;
-		health = 100;
+		health = maxHealth;
 		walk = 0;
-		enemyReach = 1.5f;
+		enemyReach = reach;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 	}
 
 	public Enemy(Point4f rotate){
 		choice = 0;
 		WF = PF = DF = 1;
-		health = 100;
+		health = maxHealth;
 		walk = 0;
-		enemyReach = 1.5f;
+		enemyReach = reach;
 		this.shift = new Point3f(0, 0, 0);
 		this.rotate = rotate;
 	}
@@ -33,9 +40,9 @@ public class Enemy extends Entity{
 	public Enemy(Point3f shift, Point4f rotate){
 		choice = 0;
 		WF = PF = DF = 1;
-		health = 100;
+		health = maxHealth;
 		walk = 0;
-		enemyReach = 1.5f;
+		enemyReach = reach;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 		this.rotate = rotate;
 	}
@@ -46,7 +53,7 @@ public class Enemy extends Entity{
 	}
 
 	public boolean updateFrame(){
-		walk = (walk == 20) ? 0 : (walk + 1);
+		walk = (walk == frames) ? 0 : (walk + 1);
 		//0 is walk, 1 is punch, 2 is despawn
 		if (choice == 0) WF = (WF == WS - 1) ? 1 : (WF + 1);
 		if (choice == 1){
@@ -67,7 +74,6 @@ public class Enemy extends Entity{
 
 	public Point2f findUser(int x, int z) throws Exception{
 		//Graph Theory Part
-		int fixZ = 12, fixX = 10;
 		Point2f EPos = new Point2f(Math.round(shift.z) + fixZ, Math.round(shift.x) + fixX);
 		Point2f UPos = new Point2f(x, z);
 		BFS RUN = new BFS();
@@ -83,14 +89,14 @@ public class Enemy extends Entity{
 	public boolean hit(double x, double z){
 		//(x, y) is the center point
 		//Hit range: circle of radius 0.2
-		return ((x + shift.x) * (x + shift.x) + (z + shift.z) * (z + shift.z) <= 0.04);
+		return ((x + shift.x) * (x + shift.x) + (z + shift.z) * (z + shift.z) <= ratio * ratio);
 	}
 
 	public void turnToUser(){
-		if (moveX == 0 && moveZ == -0.05) rotate = new Point4f(180, 0, 1, 0);
-		else if (moveX == 0 && moveZ == 0.05) rotate = new Point4f(0, 0, 1, 0);
-		else if (moveX == -0.05 && moveZ == 0) rotate = new Point4f(270, 0, 1, 0);
-		else if (moveX == 0.05 && moveZ == 0) rotate = new Point4f(90, 0, 1, 0);
+		if (moveX == 0 && moveZ == -adjust) rotate = new Point4f(q3, 0, 1, 0);
+		else if (moveX == 0 && moveZ == adjust) rotate = new Point4f(q1, 0, 1, 0);
+		else if (moveX == -adjust && moveZ == 0) rotate = new Point4f(q4, 0, 1, 0);
+		else if (moveX == adjust && moveZ == 0) rotate = new Point4f(q2, 0, 1, 0);
 	}
 
 	//example of dynamic polymorphism, since there's a method with same name
