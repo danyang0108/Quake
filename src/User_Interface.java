@@ -6,7 +6,7 @@ public interface User_Interface {
 	//set the current number of ammo based on parameter
 	public void setCurAmmo(int ammo);
 	
-	//update ammo after attacking
+	//shoots an ammo to attack
 	public void attack();
 	
 	//return total number of ammo left
