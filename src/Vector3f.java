@@ -5,6 +5,7 @@
 //Assignment name: ICS4U Culminating
 /*Description: This program implements a 3d vector object which contains a magnitude and a 
  * direction. Additionally, it contains the operations between vectors.
+ * (Not used because we decided to use legacyGL)
 */
 public class Vector3f {
 
