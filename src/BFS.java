@@ -61,29 +61,30 @@ public class BFS{
 				dis[i][j] = 0;
 			}
 		}
-		vis[start.x][start.z] = true;
-		dis[start.x][start.z] = 0;
+		vis[start.getX()][start.getZ()] = true;
+		dis[start.getX()][start.getZ()] = 0;
 		while (!q.isEmpty()){
 			Point2f cur = q.dequeue();
-			if (cur.x == end.x && cur.z == end.z){
+			if (cur.getX() == end.getX() && cur.getZ() == end.getZ()){
 				//Backtrack to the original point
-				Point2f backtrack = new Point2f(end.x, end.z);
-				while (prev[backtrack.x][backtrack.z].x != start.x || prev[backtrack.x][backtrack.z].z != start.z){
-					backtrack = prev[backtrack.x][backtrack.z];
+				Point2f backtrack = new Point2f(end.getX(), end.getZ());
+				while (prev[backtrack.getX()][backtrack.getZ()].getX() != start.getX() || 
+						prev[backtrack.getX()][backtrack.getZ()].getZ() != start.getZ()){
+					backtrack = prev[backtrack.getX()][backtrack.getZ()];
 				}
 				return backtrack;
 			}
 
 			//check the left, right, up, down directions
 			for (int i = 0; i < 4; i++){
-				int nx = cur.x + d[i][0];
-				int nz = cur.z + d[i][1];
+				int nx = cur.getX() + d[i][0];
+				int nz = cur.getZ() + d[i][1];
 				if (nx >= 0 && nx < HEIGHT && nz >= 0 && nz < WIDTH){
 					if (vis[nx][nz]) continue; //Already visited
 					if (!wall[nx][nz]) continue; //Wall
 					q.enqueue(new Point2f(nx, nz));
 					vis[nx][nz] = true;
-					dis[nx][nz] = dis[cur.x][cur.z] + 1;
+					dis[nx][nz] = dis[cur.getX()][cur.getZ()] + 1;
 					prev[nx][nz] = cur;
 				}
 			}

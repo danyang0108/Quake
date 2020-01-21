@@ -153,12 +153,11 @@ public class legacyGL{
 		gun = new MeshObject("Resource/Models/M9A1.obj");
 		gun.setTexture(gunTex);
 		gun.scale(new Point3f(gunScale, gunScale, gunScale));
-		/*medKit = new MeshObject("Resource/Models/MedKit.obj");
+		medKit = new MeshObject("Resource/Models/MedKit.obj");
 		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
 		medKit.setTexture(medTex);
 		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
 		ammoPack.setTexture(ammoTex);
-*/
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
 		int frames = 360, ten = 10, hundred = 100;
@@ -228,7 +227,7 @@ public class legacyGL{
 		long nowTime = System.nanoTime(); //Get current time
 		accumulate2 += (nowTime - timeTrack3);
 		double packTime = 5; //Packs are generated every 5 seconds
-	/*	if (accumulate2 / oneSecond >= packTime){
+		if (accumulate2 / oneSecond >= packTime){
 			accumulate2 = 0;
 			if (medPos.size() < packLimit || ammoPos.size() < packLimit){
 				//There are spaces left for packs
@@ -257,7 +256,7 @@ public class legacyGL{
 			}
 		}
 		timeTrack3 = nowTime;
-*/
+
 		//Draw the objects
 		map.draw();
 		float shiftGun = -0.5f, rotateGun = 270;
@@ -279,8 +278,8 @@ public class legacyGL{
 				while (finish){
 					Point2f generate = space.get(index);
 					//Convert from indices to world coordinates
-					float coordX = generate.z - fixX;
-					float coordZ = generate.x - fixZ;
+					float coordX = generate.getZ() - fixX;
+					float coordZ = generate.getX() - fixZ;
 					if (!nearUser(coordX, coordZ)){ //Do not generate right beside the user
 						float shiftEnemy = -1f;
 						Enemy newEnemy = new Enemy(new Point3f(coordX, shiftEnemy, coordZ));
@@ -293,11 +292,11 @@ public class legacyGL{
 		startTime = nowTime;
 
 		//Remove med packs that were consumed by the user
-	/*	ArrayList<Point2f> removeMed = new ArrayList<>();
+		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
 			//Convert to local coordinates
-			float coordX = p.z - fixX;
-			float coordZ = p.x - fixZ;
+			float coordX = p.getZ() - fixX;
+			float coordZ = p.getX() - fixZ;
 			if (nearUser(coordX, coordZ) && u.getHealth() < maxHealth){
 				//If the user walked near it and user health is not full
 				//The medkit is used
@@ -317,8 +316,8 @@ public class legacyGL{
 		ArrayList<Point2f> removeAmmo = new ArrayList<>();
 		for (Point2f p: ammoPos){
 			//Convert to local coordinates
-			float coordX = p.z - fixX;
-			float coordZ = p.x - fixZ;
+			float coordX = p.getZ() - fixX;
+			float coordZ = p.getX() - fixZ;
 			int maxAmmo = 90;
 			if (nearUser(coordX, coordZ) && (u.getCurAmmo() != maxRound || u.getTotalAmmo() != maxAmmo)){
 				//If the user walked near it and user ammo count is not full
@@ -335,7 +334,7 @@ public class legacyGL{
 			}
 		}
 		for (Point2f p: removeAmmo) ammoPos.remove(p); //Remove packs that were used
-*/
+
 		//Update enemies; remove dead ones
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
@@ -375,11 +374,11 @@ public class legacyGL{
 			if (E.getWalk() == 0 && !nearUser(E.getShiftX(), E.getShiftZ())){
 				//If the enemy is walking but not close to the user
 				//This call finds the next step the enemy should take to get closer to the user
-				Point2f answer = E.findUser(userRounded.x, userRounded.z); //BFS
+				Point2f answer = E.findUser(userRounded.getX(), userRounded.getZ()); //BFS
 				double enemySpeed = 0.05; //How fast the enemy walks per frame
 				//Update enemy position to be closer to the user
-				E.setMoveX(enemySpeed * Math.round(answer.x - E.getShiftX()));
-				E.setMoveZ(enemySpeed * Math.round(answer.z - E.getShiftZ()));
+				E.setMoveX(enemySpeed * Math.round(answer.getX() - E.getShiftX()));
+				E.setMoveZ(enemySpeed * Math.round(answer.getZ() - E.getShiftZ()));
 				E.turnToUser(); //Rotate the enemy so it's facing in the direction it's travelling in
 			}else if (nearUser(E.getShiftX(), E.getShiftZ())){
 				//If the enemy is near the user, start attacking

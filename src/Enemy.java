@@ -87,10 +87,10 @@ public class Enemy extends Entity implements Enemy_Interface{
 		Point2f UPos = new Point2f(x, z);
 		BFS RUN = new BFS();
 		Point2f next = RUN.bfs(EPos, UPos);
-		if (next.x == -1 && next.z == -1){
-			return new Point2f(-next.x - fixX, -next.z - fixZ);
+		if (next.getX() == -1 && next.getZ() == -1){
+			return new Point2f(-next.getX() - fixX, -next.getZ() - fixZ);
 		}
-		return new Point2f(next.z - fixX, next.x - fixZ);
+		return new Point2f(next.getZ() - fixX, next.getX() - fixZ);
 	}
 
 	public boolean hit(double x, double z){

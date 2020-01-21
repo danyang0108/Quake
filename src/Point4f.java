@@ -15,4 +15,28 @@ public class Point4f{
         this.y = y;
         this.z = z;
     }
+	public float getRot() {
+		return rot;
+	}
+	public void setRot(float rot) {
+		this.rot = rot;
+	}
+	public float getX() {
+		return x;
+	}
+	public void setX(float x) {
+		this.x = x;
+	}
+	public float getY() {
+		return y;
+	}
+	public void setY(float y) {
+		this.y = y;
+	}
+	public float getZ() {
+		return z;
+	}
+	public void setZ(float z) {
+		this.z = z;
+	}
 }
