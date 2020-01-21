@@ -1,3 +1,10 @@
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 12th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class creates node objects that can store any data type.
+*/
 public class Node<T>{
     private T data; //Make the data any type, so the node can contain any data
 

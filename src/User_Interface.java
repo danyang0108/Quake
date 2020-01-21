@@ -1,3 +1,12 @@
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 2nd, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This program implements a 4x4 matrix object which uses a 2d array 
+ * to store the elements. Additionally, it contains the operations and transformations 
+ * of matrix.
+*/
 public interface User_Interface {
 	
 	//return current number of ammo for the weapon

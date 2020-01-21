@@ -1,3 +1,11 @@
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 2nd, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class is a subclass of Entity class. It inherits all the methods from
+ * Entity class. It also includes all the actions that the user can perform.
+*/
 public class User extends Entity implements User_Interface{
 	
 	private int health;
