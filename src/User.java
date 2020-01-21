@@ -1,4 +1,4 @@
-public class User extends Entity{
+public class User extends Entity implements User_Interface{
 	
 	private int health;
 	private int curAmmo;
