@@ -60,11 +60,8 @@ public class mainMenu extends Application{
         enterUser.setLayoutY(field_y);
         enterUser.setPrefWidth(field_w);
         enterUser.setPrefHeight(field_h);
-        enterUser.setOnAction(new EventHandler<ActionEvent>() {
-
-            public void handle(ActionEvent arg0) {
-                name = enterUser.getText();
-            }
+        enterUser.setOnAction(arg0 -> {
+            name = enterUser.getText();
         });
 
         Button button = new Button("Start Game");
@@ -76,27 +73,36 @@ public class mainMenu extends Application{
         button.setPrefHeight(button_h);
         button.setOnAction(arg0 -> {
             try{
-                new legacyGL().run();
-                System.out.println("CHECK");
+                legacyGL GL = new legacyGL();
+                GL.run();
+                scene_container.getChildren().clear();
+                scene_container.getChildren().add(background);
+                Text endUser = new Text("User: " + name);
+                int endUserX = 200;
+                int endUserY = 200;
+                endUser.setTranslateX(endUserX);
+                endUser.setTranslateY(endUserY);
+                endUser.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
+                endUser.setFill(Color.WHITE);
+                Text endTime = new Text("Time: " + Integer.toString(GL.gettime()));
+                int endTimeX = 200;
+                int endTimeY = 350;
+                endTime.setTranslateX(endTimeX);
+                endTime.setTranslateY(endTimeY);
+                endTime.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
+                endTime.setFill(Color.WHITE);
+                Text endKill = new Text("Kills: " + Integer.toString(GL.getElimination()));
+                int endKillX = 200;
+                int endKillY = 500;
+                endKill.setTranslateX(endKillX);
+                endKill.setTranslateY(endKillY);
+                endKill.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
+                endKill.setFill(Color.WHITE);
+                scene_container.getChildren().addAll(endUser, endTime, endKill);
             }catch (Exception e){
                 e.printStackTrace();
             }
         });
-        /*Button instruct = new Button("Help");
-        instruct.setLayoutX(scene_x/2-100);
-        instruct.setLayoutY(scene_y/2+30);
-        instruct.setPrefWidth(200);
-        instruct.setPrefHeight(50);
-        instruct.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent arg0) {
-                scene_container.getChildren().clear();
-                //scene_container.getChildren().add(background);
-                Label label = new Label("Player movement");
-                control.getChildren().addAll(label);
-                label.setFont(Font.font ("Verdana", FontWeight.BOLD,20));
-                label.setTextFill(Color.WHITE);
-            }
-        });*/
         scene_container.getChildren().addAll(background,button,title,user, enterUser);
         primaryStage.setTitle("Culminating Project");		//display title
         primaryStage.setScene(scene);

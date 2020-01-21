@@ -41,7 +41,7 @@ public class legacyGL{
 	private int start = 0, end = 0;
 	private long startTime = System.nanoTime();
 	private long accumulate = 0, accumulate2 = 0;
-	private long timeTrack2, timeTrack3;
+	private long timeTrack1, timeTrack2, timeTrack3;
 	private boolean gameStart = true;
 	private int elimination = 0;
 	private User u = new User();
@@ -49,6 +49,14 @@ public class legacyGL{
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
+	}
+
+	public int getElimination(){
+		return elimination;
+	}
+
+	public int gettime(){
+		return (int)(timeTrack1);
 	}
 
 	public void run() throws Exception{
@@ -194,7 +202,7 @@ public class legacyGL{
 		glTranslatef(-TX, 0, -TZ);
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
-		long timeTrack1 = Math.round((System.nanoTime() - timeTrack2) / oneSecond);
+		timeTrack1 = Math.round((System.nanoTime() - timeTrack2) / oneSecond);
 		String health = "Health:" + u.getHealth() + "/" + maxHealth;
 		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
 		String time = "Time:" + timeTrack1;
