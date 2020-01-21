@@ -1,4 +1,13 @@
-public class Enemy extends Entity{
+///Author: Danyang Wang & Ethan Zhang
+//Class: ICS4U
+//Date: Jan 5th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class implements Enemy_Interface. It inherits methods from
+ * the Entity class. The class also includes constructors, getters and setters
+ * for enemy objects.
+ */
+public class Enemy extends Entity implements Enemy_Interface{
 	private final int WS = 100, PS = 80, DS = 180;
 	private final int maxHealth = 100;
 	private final float reach = 1.5f;

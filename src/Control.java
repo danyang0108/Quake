@@ -1,3 +1,11 @@
+///Author: Ethan Zhang
+//Class: ICS4U
+//Date: Jan 10th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class includes the keyboard and mouse controls for 
+ * the 3D first-person shooter game. 
+ */
 import org.lwjgl.BufferUtils;
 import java.nio.DoubleBuffer;
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;

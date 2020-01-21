@@ -1,3 +1,11 @@
+///Author: Ethan Zhang
+//Class: ICS4U
+//Date: Jan 10th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class implements the AL interface, and includes the 
+ * operations of the ArrayList ADT. 
+ */
 public class ArrayList<T> implements AL<T>{
     private int size = 20001; //Default size
     private int length = 0; //Tracks the actual length of the ArrayList
