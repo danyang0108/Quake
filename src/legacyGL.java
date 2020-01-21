@@ -79,7 +79,7 @@ public class legacyGL{
 			if (action == GLFW_PRESS){
 				if (button == GLFW_MOUSE_BUTTON_LEFT && u.getCurAmmo() > 0){
 					mouse = true;
-					u.shoot();
+					u.attack();
 				}
 				else if (button == GLFW_MOUSE_BUTTON_RIGHT && u.getTotalAmmo() > 0){
 					u.reload();
@@ -324,7 +324,7 @@ public class legacyGL{
 				E.setDead(true);
 			}else if (nearUser(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
 				E.setChoice(1);
-				E.setPunch(true);
+				E.attack();
 				dropHealth = true;
 			};
 			int choice = E.getChoice(); //Which animation it's in

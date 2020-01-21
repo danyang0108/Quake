@@ -19,7 +19,9 @@ public class User extends Entity{
 		curAmmo = ammo;
 	}
 	
-	public void shoot() {
+	//example of dynamic polymorphism, since there's a method with same name
+	//and same parameters in Enemy.java
+	public void attack() {
 		curAmmo--;
 	}
 	//returns total ammo count 

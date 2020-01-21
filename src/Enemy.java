@@ -93,6 +93,12 @@ public class Enemy extends Entity{
 		else if (moveX == 0.05 && moveZ == 0) rotate = new Point4f(90, 0, 1, 0);
 	}
 
+	//example of dynamic polymorphism, since there's a method with same name
+	//and same parameters in User.java
+	public void attack() {
+		setPunch(true);
+	}
+	
 	public double getMoveX(){
 		return moveX;
 	}
