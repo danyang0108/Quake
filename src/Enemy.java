@@ -9,12 +9,14 @@ public class Enemy extends Entity{
 	private int health;
 	private int walk; //For movement
 	private double moveX, moveZ;
-
+	private float enemyReach;
+	
 	public Enemy(Point3f shift){
 		choice = 0;
 		WF = PF = DF = 1;
 		health = 100;
 		walk = 0;
+		enemyReach = 1.5f;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 	}
 
@@ -23,6 +25,7 @@ public class Enemy extends Entity{
 		WF = PF = DF = 1;
 		health = 100;
 		walk = 0;
+		enemyReach = 1.5f;
 		this.shift = new Point3f(0, 0, 0);
 		this.rotate = rotate;
 	}
@@ -32,6 +35,7 @@ public class Enemy extends Entity{
 		WF = PF = DF = 1;
 		health = 100;
 		walk = 0;
+		enemyReach = 1.5f;
 		this.shift = new Point3f(-shift.x, shift.y, -shift.z);
 		this.rotate = rotate;
 	}
@@ -187,5 +191,9 @@ public class Enemy extends Entity{
 
 	public int getWalk(){
 		return walk;
+	}
+	
+	public float getEnemyReach() {
+		return enemyReach;
 	}
 }

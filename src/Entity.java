@@ -1,7 +1,6 @@
 public class Entity {
 	
 	private int health; 
-	private Point3f curPos;
 	
 	public Entity() {
 		health = 100;
@@ -20,9 +19,6 @@ public class Entity {
 		return health;
 	}
 		
-	public Point3f getCurPos() {
-		return curPos;
-	}
 	
 	
 }

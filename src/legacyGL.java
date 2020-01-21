@@ -43,6 +43,7 @@ public class legacyGL{
 	private boolean gameStart = true;
 	private int elimination = 0;
 	private User u = new User();
+	private Enemy e = new Enemy(new Point3f(0,0,0));
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -321,7 +322,7 @@ public class legacyGL{
 				//One time only
 				E.setChoice(2);
 				E.setDead(true);
-			}else if (nearUser(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
+			}else if (u.hit(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
 				E.setChoice(1);
 				E.setPunch(true);
 				dropHealth = true;
@@ -479,7 +480,7 @@ public class legacyGL{
 	}
 
 	public boolean nearUser(double x, double z){
-		double enemyReach = 1.5;
+		double enemyReach = e.getEnemyReach();
 		return (x + TX) * (x + TX) + (z + TZ) * (z + TZ) <= enemyReach * enemyReach;
 	}
 

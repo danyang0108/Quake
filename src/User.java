@@ -1,6 +1,5 @@
 public class User extends Entity{
 	
-	private Point3f curPos;
 	private int health;
 	private int curAmmo;
 	private int totalAmmo;
@@ -42,6 +41,14 @@ public class User extends Entity{
 			curAmmo += totalAmmo;
 			totalAmmo = 0;
 		}
+	}
+	
+	public boolean hit(double x, double z) {
+		legacyGL method = new legacyGL();
+		if (method.nearUser(x,z)) {
+			return true;
+		}
+		return false;
 	}
 	
 }
