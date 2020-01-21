@@ -113,9 +113,9 @@ public class legacyGL{
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
-		medTex = new Texture("Resource/Images/Medkit.png");
+		/*medTex = new Texture("Resource/Images/Medkit.png");
 		ammoTex = new Texture("Resource/Images/Ammo.jpg");
-
+*/
 		glfwShowWindow(window);
 		loop();
 		glfwFreeCallbacks(window);
@@ -148,12 +148,12 @@ public class legacyGL{
 		gun = new MeshObject("Resource/Models/M9A1.obj");
 		gun.setTexture(gunTex);
 		gun.scale(new Point3f(gunScale, gunScale, gunScale));
-		medKit = new MeshObject("Resource/Models/MedKit.obj");
+		/*medKit = new MeshObject("Resource/Models/MedKit.obj");
 		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
 		medKit.setTexture(medTex);
 		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
 		ammoPack.setTexture(ammoTex);
-
+*/
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
 		int frames = 360, ten = 10, hundred = 100;
@@ -213,7 +213,7 @@ public class legacyGL{
 		moveUser(); //Handles keyboard input
 		rotateUser(); //Handles mouse input
 
-		ArrayList<Point2f> newKit = space;
+		/*ArrayList<Point2f> newKit = space;
 		Collections.shuffle(probability);
 		if (probability.get(0)){ //Add new med kit/ammo pack
 			Random RD = new Random();
@@ -232,7 +232,7 @@ public class legacyGL{
 				if (RD.nextBoolean()) medPos.add(addPoint);
 				else ammoPos.add(addPoint);
 			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
-		}
+		}*/
 
 		//Draw the objects
 		map.draw();
@@ -267,7 +267,7 @@ public class legacyGL{
 		}
 		startTime = nowTime;
 
-		ArrayList<Point2f> removeMed = new ArrayList<>();
+		/*ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
@@ -302,7 +302,7 @@ public class legacyGL{
 			}
 		}
 		for (Point2f p: removeAmmo) ammoPos.remove(p);
-
+*/
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
 			boolean dropHealth = false;
@@ -322,7 +322,7 @@ public class legacyGL{
 				//One time only
 				E.setChoice(2);
 				E.setDead(true);
-			}else if (u.hit(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
+			}else if (nearUser(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
 				E.setChoice(1);
 				E.setPunch(true);
 				dropHealth = true;
@@ -487,6 +487,7 @@ public class legacyGL{
 	public boolean nearEnemy(double x, double z){
 		double userReach = 1.0;
 		return (x + TX) * (x + TX) + (z + TZ) * (z + TZ) <= userReach * userReach;
+		
 	}
 
 	public Point2f roundUser(double x, double z){

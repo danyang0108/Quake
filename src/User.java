@@ -43,12 +43,4 @@ public class User extends Entity{
 		}
 	}
 	
-	public boolean hit(double x, double z) {
-		legacyGL method = new legacyGL();
-		if (method.nearUser(x,z)) {
-			return true;
-		}
-		return false;
-	}
-	
 }
