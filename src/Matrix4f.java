@@ -11,6 +11,7 @@ public class Matrix4f implements Matrix4f_Interface {
 
 	private float[][] data;
 
+	//Constructors
 	public Matrix4f() {
 		data = new float[4][4];
 	}
@@ -27,6 +28,7 @@ public class Matrix4f implements Matrix4f_Interface {
 		return data;
 	}
 
+	// perform matrix addition 
 	@Override
 	public Matrix4f add(Matrix4f m) {
 		float[][] mData = m.getData();
@@ -42,6 +44,7 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// perform matrix subtraction 
 	public Matrix4f subtract(Matrix4f m) {
 		float[][] mData = m.getData();
 		float[][] newData = new float[4][4];
@@ -56,6 +59,7 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// perform matrix multiplication
 	public Matrix4f multiply(Matrix4f m) {
 		float[][] mData = m.getData();
 		float[][] newData = new float[4][4];
@@ -72,6 +76,7 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// creates an identity matrix
 	public Matrix4f identity() {
 		float[][] d = new float[4][4];
 		for (int i = 0; i < 4; i++) {
@@ -83,6 +88,7 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// represent translation using matrix
 	public Matrix4f translate(Point3f p) {
 		float[][] translation_matrix = new float[4][4];
 		translation_matrix[0][0] = 1;
@@ -97,7 +103,8 @@ public class Matrix4f implements Matrix4f_Interface {
 		return m;
 	}
 
-	// euler's angles
+	// represent rotation using matrix
+	// using euler's angles
 	@Override
 	public Matrix4f rotate(Point3f p) {
 		float x = (float) Math.toRadians(p.x);
@@ -136,6 +143,7 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// represent scaling using matrix
 	public Matrix4f scale(Point3f p) {
 		float[][] scale_matrix = new float[4][4];
 		scale_matrix[0][0] = p.x;
@@ -148,6 +156,8 @@ public class Matrix4f implements Matrix4f_Interface {
 	}
 
 	@Override
+	// finds the inverse of the current matrix
+	// visited geeks for geeks
 	public Matrix4f findInverse() {
 		float[][] ans = new float[4][4];
 		float[][] a = data;

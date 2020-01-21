@@ -1,3 +1,11 @@
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 12th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class provides a start menu for the first-person shooter game.
+ * The menu is made using JavaFX. The start button loads the game.
+ */
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -103,6 +111,7 @@ public class mainMenu extends Application{
                 e.printStackTrace();
             }
         });
+
         scene_container.getChildren().addAll(background,button,title,user, enterUser);
         primaryStage.setTitle("Culminating Project");		//display title
         primaryStage.setScene(scene);
