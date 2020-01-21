@@ -387,6 +387,8 @@ public class legacyGL{
 			temp.draw(); //Draw the enemy
 			E.updateFrame(); //Calculate the next frame
 			if (dropHealth) u.reduceHealth(1); //If the user was attacked, drop the health
+			//If the user has no health left, quit the game
+			if (u.getHealth() <= 0) glfwSetWindowShouldClose(window, true);
 		}
 		//Sort in decreasing order for removing
 		Collections.sort(remove);
