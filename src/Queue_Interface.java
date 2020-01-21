@@ -1,3 +1,10 @@
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 2nd, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This interface includes the operations of the Queue ADT.
+*/
 public interface Queue_Interface<T> {
 	
 	//inserts an element into the front of queue

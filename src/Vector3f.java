@@ -1,4 +1,4 @@
-///Author: Danyang Wang
+//Author: Danyang Wang
 //Class: ICS4U
 //Date: Dec 20th, 2019
 //Instructor: Mr Radulovic
@@ -18,12 +18,6 @@ public class Vector3f {
 		direction = new Point3f();
 		id = 0;
 	}
-
-	/*
-	 * public Vector3f(float dx, float dy, float dz){ Point3f direction = new
-	 * Point3f(dx, dy, dz); this.direction = direction; magnitude =
-	 * calcMagnitude(direction); id = 0; }
-	 */
 
 	public Vector3f(Point3f direction) {
 		this.direction = direction;
@@ -139,10 +133,4 @@ public class Vector3f {
 		this.direction = direction;
 		magnitude = calcMagnitude(direction);
 	}
-	/*
-	 * public static void main(String args[]) { Vector3f v = new Vector3f(new
-	 * Point3f(1,1,1)); Vector3f v2 = new Vector3f(new Point3f(2,1,-1)); v.scale(2);
-	 * System.out.println(v.subtract(v2).getDirection().toString());
-	 * System.out.println(v.getMagnitude()); }
-	 */
 }

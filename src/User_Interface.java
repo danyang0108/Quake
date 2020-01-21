@@ -3,9 +3,8 @@
 //Date: Jan 2nd, 2020
 //Instructor: Mr Radulovic
 //Assignment name: ICS4U Culminating
-/*Description: This program implements a 4x4 matrix object which uses a 2d array 
- * to store the elements. Additionally, it contains the operations and transformations 
- * of matrix.
+/*Description: This interface includes the action that the user can
+ * perform, as well as getters and setters.
 */
 public interface User_Interface {
 	

@@ -1,4 +1,12 @@
-public class Queue<T>{
+///Author: Danyang Wang
+//Class: ICS4U
+//Date: Jan 12th, 2020
+//Instructor: Mr Radulovic
+//Assignment name: ICS4U Culminating
+/*Description: This class implements Queue_Interface. This class contains
+ * the operations for the Queue ADT.
+*/
+public class Queue<T> implements Queue_Interface<T>{
     private ArrayList<T> array = new ArrayList<>(); //Implement queue with ArrayList
 
     public void enqueue(T node){

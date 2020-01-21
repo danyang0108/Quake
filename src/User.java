@@ -4,7 +4,7 @@
 //Instructor: Mr Radulovic
 //Assignment name: ICS4U Culminating
 /*Description: This class is a subclass of Entity class. It inherits all the methods from
- * Entity class. It also includes all the actions that the user can perform.
+ * Entity class. It also implements all the methods from the User_Interface class.
 */
 public class User extends Entity implements User_Interface{
 	
