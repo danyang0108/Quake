@@ -23,6 +23,7 @@ public class legacyGL{
 	private final int packLimit = 3;
 	private final int enemyDamage = 5;
 	private final double oneSecond = 1e9d;
+	private boolean quitGame = false;
 	private MeshObject map, gun, medKit, ammoPack;
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
@@ -44,7 +45,7 @@ public class legacyGL{
 	private boolean gameStart = true;
 	private int elimination = 0;
 	private User u = new User();
-	private Enemy e = new Enemy(new Point3f(0,0,0));
+	private Enemy e = new Enemy(new Point3f(0, 0, 0));
 
 	public static void main(String[] args) throws Exception{
 		new legacyGL().run();
@@ -117,10 +118,6 @@ public class legacyGL{
 
 		glfwShowWindow(window);
 		loop();
-		glfwFreeCallbacks(window);
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		glfwSetErrorCallback(null).free();
 	}
 
 	// sets a perspective projection
@@ -180,10 +177,16 @@ public class legacyGL{
 			//Draw the text and objects
 			text();
 			render();
+			if (quitGame) break;
 
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+		glfwSetWindowShouldClose(window, true);
+		glfwFreeCallbacks(window);
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
 	}
 
 	private void text() throws Exception{
@@ -389,7 +392,11 @@ public class legacyGL{
 			E.updateFrame(); //Calculate the next frame
 			if (dropHealth) u.reduceHealth(enemyDamage); //If the user was attacked, drop the health
 			//If the user has no health left, quit the game
-			if (u.getHealth() <= 0) glfwSetWindowShouldClose(window, true);
+			if (u.getHealth() <= 0){
+				//Game Over
+				quitGame = true;
+				return;
+			}
 		}
 		//Sort in decreasing order for removing
 		Collections.sort(remove);

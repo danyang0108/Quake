@@ -77,6 +77,7 @@ public class mainMenu extends Application{
         button.setOnAction(arg0 -> {
             try{
                 new legacyGL().run();
+                System.out.println("CHECK");
             }catch (Exception e){
                 e.printStackTrace();
             }
