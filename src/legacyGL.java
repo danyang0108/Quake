@@ -21,6 +21,7 @@ public class legacyGL{
 	private final int maxRound = 30;
 	private final int offset = 32;
 	private final int packLimit = 3;
+	private final int enemyDamage = 5;
 	private final double oneSecond = 1e9d;
 	private MeshObject map, gun, medKit, ammoPack;
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
@@ -386,7 +387,7 @@ public class legacyGL{
 			temp.rotate(E.getRotate());
 			temp.draw(); //Draw the enemy
 			E.updateFrame(); //Calculate the next frame
-			if (dropHealth) u.reduceHealth(1); //If the user was attacked, drop the health
+			if (dropHealth) u.reduceHealth(enemyDamage); //If the user was attacked, drop the health
 			//If the user has no health left, quit the game
 			if (u.getHealth() <= 0) glfwSetWindowShouldClose(window, true);
 		}
