@@ -261,112 +261,134 @@ public class legacyGL{
 		if (accumulate / oneSecond >= spawnTime){
 			accumulate = 0;
 			if (enemies.size() < enemyLimit){ //Upper limit of 4
-				Collections.shuffle(space);
+				Collections.shuffle(space); //Randomize the spawn point
 				boolean finish = true;
 				int index = 0;
 				while (finish){
 					Point2f generate = space.get(index);
+					//Convert from indices to world coordinates
 					float coordX = generate.z - fixX;
 					float coordZ = generate.x - fixZ;
-					if (!nearUser(coordX, coordZ)){
+					if (!nearUser(coordX, coordZ)){ //Do not generate right beside the user
 						float shiftEnemy = -1f;
 						Enemy newEnemy = new Enemy(new Point3f(coordX, shiftEnemy, coordZ));
 						enemies.add(newEnemy);
-						finish = false;
+						finish = false; //An enemy has been added
 					}
 				}
 			}
 		}
 		startTime = nowTime;
 
+		//Remove med packs that were consumed by the user
 		ArrayList<Point2f> removeMed = new ArrayList<>();
 		for (Point2f p: medPos){
+			//Convert to local coordinates
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
 			if (nearUser(coordX, coordZ) && u.getHealth() < maxHealth){
+				//If the user walked near it and user health is not full
 				//The medkit is used
 				u.setHealth(maxHealth);
 				removeMed.add(p);
 			}else{
+				//It has not been used; display it normally
 				MeshObject medkit = medKit;
 				float shiftKit = -2f;
 				medkit.translate(new Point3f(coordX, shiftKit, coordZ));
 				medkit.draw();
 			}
 		}
-		for (Point2f p: removeMed) medPos.remove(p);
+		for (Point2f p: removeMed) medPos.remove(p); //Remove packs that were used
 
+		//Remove ammo packs that were used by the user
 		ArrayList<Point2f> removeAmmo = new ArrayList<>();
 		for (Point2f p: ammoPos){
+			//Convert to local coordinates
 			float coordX = p.z - fixX;
 			float coordZ = p.x - fixZ;
 			int maxAmmo = 90;
 			if (nearUser(coordX, coordZ) && (u.getCurAmmo() != maxRound || u.getTotalAmmo() != maxAmmo)){
-				//The medkit is used
+				//If the user walked near it and user ammo count is not full
+				//The ammo pack is used
 				u.setCurAmmo(maxRound);
 				u.setTotalAmmo(maxAmmo);
 				removeAmmo.add(p);
 			}else{
+				//It has not been used; display it normally
 				MeshObject newPack = ammoPack;
 				float shiftPack = -2f;
 				newPack.translate(new Point3f(coordX, shiftPack, coordZ));
 				newPack.draw();
 			}
 		}
-		for (Point2f p: removeAmmo) ammoPos.remove(p);
+		for (Point2f p: removeAmmo) ammoPos.remove(p); //Remove packs that were used
 
+		//Update enemies; remove dead ones
 		ArrayList<Integer> remove = new ArrayList<>();
 		for (int i = 0; i < enemies.size(); i++){
 			boolean dropHealth = false;
 			Enemy E = enemies.get(i);
-			if (E.isDead()){
+			if (E.isDead()){ //The enemy is already dead
 				if (E.updateFrame()){
-					elimination++;
-					remove.add(i);
+					//The function returns true when the animation is completed
+					elimination++; //Add to the kill count displayed on the screen
+					remove.add(i); //Remove the dead enemy from the ArrayList
 				}
+				//Otherwise, continue the death animation.
 				MeshObject temp = keyframes.get(E.getWS() + E.getPS() + E.getDF());
+				//Shift the enemy to its local position
 				temp.translate(E.getShift());
 				temp.rotate(E.getRotate());
-				temp.draw();
+				temp.draw(); //Draw the enemy
 				continue;
 			}
+			//If this point is reached, then the enemy is still alive
 			if (E.getHealth() <= 0){
-				//One time only
-				E.setChoice(2);
+				//Check if the enemy is supposed to be dead
+				E.setChoice(2); //2 represents dead
 				E.setDead(true);
 			}else if (nearUser(E.getShiftX(), E.getShiftZ()) && !E.getPunch()){
-				E.setChoice(1);
-				E.attack();
+				//The enemy is near the user, and it has not started punching
+				E.setChoice(1); //1 represents punch
+				E.attack(); //Start the punching animation while dropping the user health
 				dropHealth = true;
 			};
 			int choice = E.getChoice(); //Which animation it's in
 			MeshObject temp;
-			if (choice == 0) temp = keyframes.get(E.getWF());
-			else if (choice == 1) temp = keyframes.get(E.getWS() + E.getPF());
-			else temp = keyframes.get(E.getWS() + E.getPS() + E.getDF());
+			if (choice == 0) temp = keyframes.get(E.getWF()); //Walking
+			else if (choice == 1) temp = keyframes.get(E.getWS() + E.getPF()); //Punching
+			else temp = keyframes.get(E.getWS() + E.getPS() + E.getDF()); //Dying
 			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
 			if (E.getWalk() == 0 && !nearUser(E.getShiftX(), E.getShiftZ())){
-				Point2f answer = E.findUser(userRounded.x, userRounded.z);
-				double enemySpeed = 0.05;
+				//If the enemy is walking but not close to the user
+				//This call finds the next step the enemy should take to get closer to the user
+				Point2f answer = E.findUser(userRounded.x, userRounded.z); //BFS
+				double enemySpeed = 0.05; //How fast the enemy walks per frame
+				//Update enemy position to be closer to the user
 				E.setMoveX(enemySpeed * Math.round(answer.x - E.getShiftX()));
 				E.setMoveZ(enemySpeed * Math.round(answer.z - E.getShiftZ()));
-				E.turnToUser();
+				E.turnToUser(); //Rotate the enemy so it's facing in the direction it's travelling in
 			}else if (nearUser(E.getShiftX(), E.getShiftZ())){
+				//If the enemy is near the user, start attacking
 				double angle = Math.toDegrees(Math.atan2((E.getShiftX() + TX), (E.getShiftZ() + TZ)));
 				float fixAngle = 180;
+				//Face the user when attacking
 				E.setRotate(new Point4f(fixAngle + (float)angle, 0, 1, 0));
 			}else{
+				//Otherwise, the enemy is on its way to the user; update the position
 				E.setShiftX(E.getShiftX() + (float)E.getMoveX());
 				E.setShiftZ(E.getShiftZ() + (float)E.getMoveZ());
-				E.turnToUser();
+				E.turnToUser(); //Face the direction it's going
 			}
+			//Update enemy position and rotation
 			temp.translate(E.getShift());
 			temp.rotate(E.getRotate());
-			temp.draw();
-			E.updateFrame();
-			if (dropHealth) u.reduceHealth(1);
+			temp.draw(); //Draw the enemy
+			E.updateFrame(); //Calculate the next frame
+			if (dropHealth) u.reduceHealth(1); //If the user was attacked, drop the health
 		}
-		//Sort in decreasing order
+		//Sort in decreasing order for removing
 		Collections.sort(remove);
 		//Remove dead enemies
 		for (int i = remove.size()-1; i >= 0; i--) enemies.remove((int)remove.get(i));
