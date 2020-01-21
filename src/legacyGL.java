@@ -130,9 +130,9 @@ public class legacyGL{
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
-		/*medTex = new Texture("Resource/Images/Medkit.png");
+		medTex = new Texture("Resource/Images/Medkit.png");
 		ammoTex = new Texture("Resource/Images/Ammo.jpg");
-*/
+
 		glfwShowWindow(window);
 		loop();
 	}
@@ -215,8 +215,7 @@ public class legacyGL{
 		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
 		String time = "Time:" + timeTrack1;
 		String kills = "Kills:" + elimination;
-		//Take care of magic numbers
-		float textX = -0.3f, textY = -0.27f, intervalY = 0.04f;
+		float textX = -0.3f, textY = -0.27f, intervalY = 0.03f;
 		float statX = 0.15f, statY = -0.27f;
 		int fontSize = 4;
 		drawText(health, textX, textY, fontSize);
@@ -341,7 +340,7 @@ public class legacyGL{
 				newPack.translate(new Point3f(coordX, shiftPack, coordZ));
 				newPack.draw();
 			}
-		}
+		}	
 		for (Point2f p: removeAmmo) ammoPos.remove(p); //Remove packs that were used
 
 		//Update enemies; remove dead ones
