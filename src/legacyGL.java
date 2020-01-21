@@ -15,31 +15,30 @@ public class legacyGL{
 	//Variables
 	private long window;
 	private final int WINDOW_WIDTH = 1366, WINDOW_HEIGHT = 768;
-	private int fixX = 10, fixZ = 12;
-	private int sizeX = 24, sizeZ = 21;
+	private final int fixX = 10, fixZ = 12;
+	private final int sizeX = 24, sizeZ = 21;
+	private final int maxHealth = 100;
+	private final int maxRound = 30;
+	private final int offset = 32;
+	private final int packLimit = 3;
 	private MeshObject map, gun, medKit, ammoPack;
 	private Boolean[][] vis = new Boolean[sizeX][sizeZ];
 	private ArrayList<MeshObject> keyframes = new ArrayList<>();
 	private float TX = 0, TZ = 0; //For actual translations
-	private int maxHealth = 100;
-	private int maxRound = 30;
 	private boolean[] movement = new boolean[5]; //For keyboard controls (W, S, A, D, SHIFT)
 	private boolean mouse = false;
 	private ArrayList<Enemy> enemies = new ArrayList<>();
 	private ArrayList<Point2f> space = new ArrayList<>(); //Spaces in map
 	private ArrayList<Point2f> medPos = new ArrayList<>(); //Track medical kit positions
 	private ArrayList<Point2f> ammoPos = new ArrayList<>(); //Track ammo kit positions
-	private ArrayList<Boolean> probability = new ArrayList<>();
 	private Point4f move;
 	private Texture enemyTex, mapTex, gunTex, charTex, medTex, ammoTex;
-	private int offset = 32;
 	private final Colour yellow = new Colour(255, 255, 0);
 	private final Colour blue = new Colour(0, 0, 255);
 	private int start = 0, end = 0;
 	private long startTime = System.nanoTime();
-	private long accumulate = 0;
-	private long loadTime;
-	private long elapsedTime;
+	private long accumulate = 0, accumulate2 = 0;
+	private long timeTrack2, timeTrack3;
 	private boolean gameStart = true;
 	private int elimination = 0;
 	private User u = new User();
@@ -93,6 +92,7 @@ public class legacyGL{
 		glfwSwapInterval(1);
 		GL.createCapabilities();
 
+		//Load the adjacency matrix of the map (store wall positions)
 		Scanner maze = new Scanner(new File("Resource/Models/Map.txt"));
 		int counter = 0;
 		while (maze.hasNextLine()){
@@ -104,18 +104,15 @@ public class legacyGL{
 			counter++;
 		}
 
-		int numFalse = 399;
-		for (int i = 0; i < numFalse; i++) probability.add(false);
-		probability.add(true);
-
+		//Load the image texture
 		charTex = new Texture("Resource/Images/text.png");
 		charTex.setPixel(0);
 		mapTex = new Texture("Resource/Images/Wall.jpg");
 		enemyTex = new Texture("Resource/Images/Enemy1.png");
 		gunTex = new Texture("Resource/Images/Pistol.png");
-		/*medTex = new Texture("Resource/Images/Medkit.png");
+		medTex = new Texture("Resource/Images/Medkit.png");
 		ammoTex = new Texture("Resource/Images/Ammo.jpg");
-*/
+
 		glfwShowWindow(window);
 		loop();
 		glfwFreeCallbacks(window);
@@ -141,6 +138,7 @@ public class legacyGL{
 		glEnable(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
 
+		//Create the objects and use the textures
 		float gunScale = 0.09f;
 		float kitScale = 0.8f;
 		map = new MeshObject("Resource/Models/Map.obj");
@@ -148,12 +146,12 @@ public class legacyGL{
 		gun = new MeshObject("Resource/Models/M9A1.obj");
 		gun.setTexture(gunTex);
 		gun.scale(new Point3f(gunScale, gunScale, gunScale));
-		/*medKit = new MeshObject("Resource/Models/MedKit.obj");
+		medKit = new MeshObject("Resource/Models/MedKit.obj");
 		medKit.scale(new Point3f(kitScale, kitScale, kitScale));
 		medKit.setTexture(medTex);
 		ammoPack = new MeshObject("Resource/Models/Ammo.obj");
 		ammoPack.setTexture(ammoTex);
-*/
+
 		String path2 = "Resource/Models/Move_000";
 		//There are 360 frames in total for enemy animation.
 		int frames = 360, ten = 10, hundred = 100;
@@ -171,7 +169,7 @@ public class legacyGL{
 
 		if (gameStart) {
 			gameStart = false;
-			loadTime = System.nanoTime();
+			timeTrack2 = System.nanoTime();
 		}
 
 		while (!glfwWindowShouldClose(window)){
@@ -191,10 +189,10 @@ public class legacyGL{
 		glTranslatef(-TX, 0, -TZ);
 		if (move != null) glRotatef(-move.rot, 0, 1, 0);
 		charTex.bind();
-		elapsedTime = Math.round((System.nanoTime()-loadTime) / 1e9d);
+		long timeTrack1 = Math.round((System.nanoTime() - timeTrack2) / 1e9d);
 		String health = "Health:" + u.getHealth() + "/" + maxHealth;
 		String ammo = "Ammo:" + u.getCurAmmo() + "/" + u.getTotalAmmo();
-		String time = "Time:" + elapsedTime;
+		String time = "Time:" + timeTrack1;
 		String kills = "Kills:" + elimination;
 		//Take care of magic numbers
 		float textX = -0.4f, textY = -0.31f, intervalY = 0.04f;
@@ -213,26 +211,32 @@ public class legacyGL{
 		moveUser(); //Handles keyboard input
 		bullet(); //Handles bullets
 
-		ArrayList<Point2f> newKit = space;
-		Collections.shuffle(probability);
-		if (probability.get(0)){ //Add new med kit/ammo pack
-			Random RD = new Random();
-			ArrayList<Integer> removed = new ArrayList<>();
-			for (int i = 0; i < newKit.size(); i++){
-				if (medPos.contains(newKit.get(i))) removed.add(i);
-				else if (ammoPos.contains(newKit.get(i))) removed.add(i);
+		long nowTime = System.nanoTime();
+		accumulate2 += (nowTime - timeTrack3);
+		double packTime = 5;
+		if (accumulate2 / 1e9 >= packTime){
+			accumulate2 = 0;
+			if (medPos.size() < packLimit && ammoPos.size() < packLimit){
+				Random RD = new Random();
+				ArrayList<Point2f> newKit = space;
+				ArrayList<Integer> removed = new ArrayList<>();
+				for (int i = 0; i < newKit.size(); i++){
+					if (medPos.contains(newKit.get(i))) removed.add(i);
+					else if (ammoPos.contains(newKit.get(i))) removed.add(i);
+				}
+				for (int i: removed) newKit.remove(i); //This is the remaining space
+				Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
+				newKit.remove(userRounded); //Don't generate at user position
+				if (newKit.size() > 0){
+					Collections.shuffle(newKit);
+					Point2f addPoint = newKit.get(0);
+					//Define TRUE as medkit, FALSE as ammo pack
+					if (RD.nextBoolean()) medPos.add(addPoint);
+					else ammoPos.add(addPoint);
+				}//Otherwise, there are no more spots to place packs (Shouldn't happen)
 			}
-			for (int i: removed) newKit.remove(i); //This is the remaining space
-			Point2f userRounded = roundUser(-TZ + fixZ, -TX + fixX);
-			newKit.remove(userRounded); //Don't generate at user position
-			if (newKit.size() > 0){
-				Collections.shuffle(newKit);
-				Point2f addPoint = newKit.get(0);
-				//Define TRUE as medkit, FALSE as ammo pack
-				if (RD.nextBoolean()) medPos.add(addPoint);
-				else ammoPos.add(addPoint);
-			}//Otherwise, there are no more spots to place packs (Shouldn't happen)
 		}
+		timeTrack3 = nowTime;
 
 		//Draw the objects
 		map.draw();
@@ -242,10 +246,10 @@ public class legacyGL{
 		gun.draw();
 
 		//Add new enemies
-		long nowTime = System.nanoTime();
-		accumulate += (nowTime - startTime);
 		double spawnTime = 15;
 		int enemyLimit = 4;
+		nowTime = System.nanoTime();
+		accumulate += (nowTime - startTime);
 		if (accumulate / 1e9d >= spawnTime){
 			accumulate = 0;
 			if (enemies.size() < enemyLimit){ //Upper limit of 4
