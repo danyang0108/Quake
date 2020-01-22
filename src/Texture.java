@@ -1,4 +1,4 @@
-///Author: Ethan Zhang
+///Author: Danyang Wang
 //Class: ICS4U
 //Date: Jan 2nd, 2020
 //Instructor: Mr Radulovic
@@ -27,6 +27,8 @@ public class Texture{
         int height = bi.getHeight();
         pixels_raw = bi.getRGB(0, 0, width, height, null, 0, width);
         ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
+        
+        //loop through the image pixels, and load the colour
         for (int i = 0; i < width; i++){
             for (int j = 0; j < height; j++){
                 if (i * height + j < pixels_raw.length){
@@ -53,6 +55,9 @@ public class Texture{
 
     //returns the colour of the pixel at (x,y)
     public Colour getPixel(int x, int y) throws Exception {
+    	
+    	//calculate the index of the pixel, and convert the colour
+    	//to a rgb value
         if (y <= bi.getHeight() && x <= bi.getWidth()){
           int pixel = pixels_raw[y * bi.getWidth() + x];
           int r=(pixel >> 16) & 0xFF;     // Red 
@@ -70,6 +75,7 @@ public class Texture{
     	int width = bi.getWidth();
     	int height = bi.getHeight();
     	Colour pink = new Colour(255,0,255);
+    	//update the pixel colour inside the pixels_raw[] array
     	for (int i = 0; i < width; i++) {
     		for (int j = 0; j < height; j++) {
     			Colour c = getPixel(i,j);
@@ -79,6 +85,7 @@ public class Texture{
     		}
     	}
     	ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
+    	//loop through the image pixels, and load the colour
         for (int i = 0; i < width; i++){
             for (int j = 0; j < height; j++){
                 if (i * height + j < pixels_raw.length){
@@ -98,6 +105,7 @@ public class Texture{
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     }
     
+    //getter 
     public BufferedImage getBI() {
     	return bi;
     }

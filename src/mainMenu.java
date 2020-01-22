@@ -69,6 +69,8 @@ public class mainMenu extends Application{
         enterUser.setLayoutY(field_y);
         enterUser.setPrefWidth(field_w);
         enterUser.setPrefHeight(field_h);
+        
+        //stores the username after the user presses enter
         enterUser.setOnAction(arg0 -> {
             name = enterUser.getText();
         });
@@ -90,6 +92,8 @@ public class mainMenu extends Application{
                 //prints the score after the player dies
                 scene_container.getChildren().clear();
                 scene_container.getChildren().add(background);
+                
+                //prints username
                 Text endUser = new Text("User: " + name);
                 int endUserX = 200;
                 int endUserY = 200;
@@ -97,6 +101,8 @@ public class mainMenu extends Application{
                 endUser.setTranslateY(endUserY);
                 endUser.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
                 endUser.setFill(Color.WHITE);
+                
+                //prints time survived
                 Text endTime = new Text("Time: " + Integer.toString(GL.gettime()));
                 int endTimeX = 200;
                 int endTimeY = 350;
@@ -104,6 +110,8 @@ public class mainMenu extends Application{
                 endTime.setTranslateY(endTimeY);
                 endTime.setFont(Font.font ("Verdana", FontWeight.BOLD,sfont));
                 endTime.setFill(Color.WHITE);
+                
+                //prints number of enemies killed
                 Text endKill = new Text("Kills: " + Integer.toString(GL.getElimination()));
                 int endKillX = 200;
                 int endKillY = 500;
