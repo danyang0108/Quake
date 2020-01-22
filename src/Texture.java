@@ -1,4 +1,4 @@
-///Author: Danyang Wang
+///Author: Ethan Zhang
 //Class: ICS4U
 //Date: Jan 2nd, 2020
 //Instructor: Mr Radulovic
@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;

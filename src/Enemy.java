@@ -28,6 +28,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 	private float enemyReach;
 	
 	public Enemy(Point3f shift){
+		//If the translation is passed in, then only shift the user.
 		choice = 0;
 		WF = PF = DF = 1;
 		health = maxHealth;
@@ -37,6 +38,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 	}
 
 	public Enemy(Point4f rotate){
+		//If only the rotation is passed in, rotate according to the given value.
 		choice = 0;
 		WF = PF = DF = 1;
 		health = maxHealth;
@@ -47,6 +49,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 	}
 
 	public Enemy(Point3f shift, Point4f rotate){
+		//If both are passed in, change the object accordingly.
 		choice = 0;
 		WF = PF = DF = 1;
 		health = maxHealth;
@@ -57,11 +60,13 @@ public class Enemy extends Entity implements Enemy_Interface{
 	}
 
 	public void setChoice(int choice){
+		//Whenever the choice is reset, reset every frame to 1
 		this.choice = choice;
 		WF = PF = DF = 1;
 	}
 
 	public boolean updateFrame(){
+		//Update the frame of the animation.
 		walk = (walk == frames) ? 0 : (walk + 1);
 		//0 is walk, 1 is punch, 2 is despawn
 		if (choice == 0) WF = (WF == WS - 1) ? 1 : (WF + 1);
@@ -88,6 +93,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 		BFS RUN = new BFS();
 		Point2f next = RUN.bfs(EPos, UPos);
 		if (next.getX() == -1 && next.getZ() == -1){
+			//If a path is not found, continue on the path the enemy is on
 			return new Point2f(-next.getX() - fixX, -next.getZ() - fixZ);
 		}
 		return new Point2f(next.getZ() - fixX, next.getX() - fixZ);
@@ -100,6 +106,7 @@ public class Enemy extends Entity implements Enemy_Interface{
 	}
 
 	public void turnToUser(){
+		//Rotate the enemy so that it's facing the user when attacking.
 		if (moveX == 0 && moveZ == -adjust) rotate = new Point4f(q3, 0, 1, 0);
 		else if (moveX == 0 && moveZ == adjust) rotate = new Point4f(q1, 0, 1, 0);
 		else if (moveX == -adjust && moveZ == 0) rotate = new Point4f(q4, 0, 1, 0);
@@ -111,7 +118,8 @@ public class Enemy extends Entity implements Enemy_Interface{
 	public void attack() {
 		setPunch(true);
 	}
-	
+
+	//Getters & Setters for variables
 	public double getMoveX(){
 		return moveX;
 	}

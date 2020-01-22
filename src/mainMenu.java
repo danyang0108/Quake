@@ -7,12 +7,9 @@
  * The menu is made using JavaFX. The start button loads the game.
  */
 import javafx.application.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,13 +20,11 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 
 public class mainMenu extends Application{
 
-    private int scene_x, scene_y;
     private int lfont, sfont;
     private String name;
 

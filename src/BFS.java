@@ -40,38 +40,45 @@ public class BFS{
 	//reads the map, 0 represents a wall and 1 represents open space
 	public void readFile(String fileName) throws Exception{
 		Scanner scan = new Scanner(new File(fileName));
-		int j = 0;
+		int j = 0; //For tracking number of rows
 		while (scan.hasNextLine()){
 			String[] line = scan.nextLine().split(" ");
 			for (int i = 0; i < line.length; i++){
+				//If the value is 1, then it's an open space.
+				//The 2D array "wall" also stores 1 if it's an open space.
 				wall[j][i] = Integer.parseInt(line[i]) == 1;
 			}
+			//Increase the row count
 			j++;
 		}
 		scan.close();
 	}
 
-	//finds the shortest path from the start position to the end position
-	//then backtrack to trace the path
+	//Finds the shortest path from the start position to the end position
+	//then backtrack to trace the path.
 	public Point2f bfs(Point2f start, Point2f end){
 		q.enqueue(start);
+		//Clear the arrays
 		for (int i = 0; i < HEIGHT; i++){
 			for (int j = 0; j < WIDTH; j++){
 				vis[i][j] = false;
 				dis[i][j] = 0;
 			}
 		}
-		vis[start.getX()][start.getZ()] = true;
-		dis[start.getX()][start.getZ()] = 0;
+		vis[start.getX()][start.getZ()] = true; //Mark starting position as visited
+		dis[start.getX()][start.getZ()] = 0; //Ensure the starting distance is reset
 		while (!q.isEmpty()){
-			Point2f cur = q.dequeue();
+			Point2f cur = q.dequeue(); //Current position
 			if (cur.getX() == end.getX() && cur.getZ() == end.getZ()){
 				//Backtrack to the original point
 				Point2f backtrack = new Point2f(end.getX(), end.getZ());
 				while (prev[backtrack.getX()][backtrack.getZ()].getX() != start.getX() || 
 						prev[backtrack.getX()][backtrack.getZ()].getZ() != start.getZ()){
 					backtrack = prev[backtrack.getX()][backtrack.getZ()];
+					//Keep on backtracking until at the starting position
 				}
+				//Since the BFS function must be correct for the program to reach this point,
+				//There's no worry that the program would be stuck inside the backtrack progress.
 				return backtrack;
 			}
 
@@ -79,16 +86,20 @@ public class BFS{
 			for (int i = 0; i < 4; i++){
 				int nx = cur.getX() + d[i][0];
 				int nz = cur.getZ() + d[i][1];
+				//First, ensure the new position is inside the map (i.e. the 2D array)
 				if (nx >= 0 && nx < HEIGHT && nz >= 0 && nz < WIDTH){
 					if (vis[nx][nz]) continue; //Already visited
 					if (!wall[nx][nz]) continue; //Wall
 					q.enqueue(new Point2f(nx, nz));
 					vis[nx][nz] = true;
 					dis[nx][nz] = dis[cur.getX()][cur.getZ()] + 1;
+					//Store the previous position, which represents where the path travelled to
 					prev[nx][nz] = cur;
 				}
 			}
 		}
+		//If this point is ever reached, then there's no path to the user.
+		//This should never happen.
 		return new Point2f(-1, -1);
 	}
 }

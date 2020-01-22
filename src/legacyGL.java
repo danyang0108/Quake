@@ -56,18 +56,6 @@ public class legacyGL{
 	private User u = new User();
 	private Enemy e = new Enemy(new Point3f(0, 0, 0));
 
-	public static void main(String[] args) throws Exception{
-		new legacyGL().run();
-	}
-
-	public int getElimination(){
-		return elimination;
-	}
-
-	public int gettime(){
-		return (int)(timeTrack1);
-	}
-
 	public void run() throws Exception{
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwInit();
@@ -580,6 +568,14 @@ public class legacyGL{
 		double userReach = 1.0;
 		return (x + TX) * (x + TX) + (z + TZ) * (z + TZ) <= userReach * userReach;
 		
+	}
+
+	public int getElimination(){
+		return elimination;
+	}
+
+	public int gettime(){
+		return (int)(timeTrack1);
 	}
 
 	public Point2f roundUser(double x, double z){

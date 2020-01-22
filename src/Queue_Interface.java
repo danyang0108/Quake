@@ -1,4 +1,4 @@
-///Author: Danyang Wang
+///Author: Ethan Zhang
 //Class: ICS4U
 //Date: Jan 2nd, 2020
 //Instructor: Mr Radulovic
