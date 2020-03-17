@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL11.glRotatef;
 public class Control{
     private final double fast = 1.5;
     private final double WINDOW_WIDTH = 1366;
+    private final double WINDOW_HEIGHT = 768;
     private final double cycle = 180;
 
     public double getCursorX(long window){
@@ -24,11 +25,20 @@ public class Control{
         //Zero stores x-value, one stores y-value.
     }
 
+    public double getCursorY(long window){
+        //Returns the value of the x-value of the cursor.
+        DoubleBuffer posY = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(window, null, posY);
+        return posY.get(0);
+        //Zero stores x-value, one stores y-value.
+    }
+
     public Point4f movement(long window, boolean[] movement){
         //Finds the x-value of the current position of the cursor on the screen.
         float tx = 0, tz = 0;
         float SEN = 0.05f, SED = SEN / (float)Math.sqrt(2);
         double dx = getCursorX(window) - WINDOW_WIDTH / 2;
+        double dy = getCursorY(window) - WINDOW_HEIGHT / 2;
         boolean FB = movement[0] || movement[1];
         boolean LR = movement[2] || movement[3];
         //In order to find exactly how much the screen should rotate according to mouse movement,
@@ -37,7 +47,9 @@ public class Control{
         //moved, multiply by 180 degrees, and finally divide by the window width to find the
         //best mouse movement. Finally, I add another 360 degrees to ensure that the degree is positive.
         double degreeX = (cycle / WINDOW_WIDTH * dx + cycle * 2) % (cycle * 2); //Up to 180 degrees for x
+        double degreeY = (cycle / WINDOW_HEIGHT * dy + cycle * 2) % (cycle * 2);
         //Rotate the screen according the mouse movement
+        glRotatef((float)degreeY, 1f, 0f, 0f);
         glRotatef((float)degreeX, 0f, 1f, 0f);
 
         //Handle keyboard input
