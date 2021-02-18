@@ -1,2 +1,0 @@
-1) Detect collision with buildings in WCS
-2)
